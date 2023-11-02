@@ -60,6 +60,8 @@ namespace MAUIMiniApp.ViewModels
 
             try
             {
+                await Task.Delay(2000);
+
                 timer = new System.Timers.Timer();
                 timer.Interval = 1000;
                 timer.Elapsed += t_Tick;

@@ -1,0 +1,9 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/MAUIMiniApp/.vs/MAUIMiniApp
+/MAUIMiniApp/bin/Debug
+/MAUIMiniApp/obj
+/YAP.Libs/bin/Debug
+/YAP.Libs/obj

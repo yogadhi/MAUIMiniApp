@@ -49,6 +49,8 @@ namespace MAUIMiniApp
 
             try
             {
+                await Task.Delay(2000);
+
                 var IsFirst = VersionTracking.Default.IsFirstLaunchEver.ToString();
                 infoList.Add("IsFirst", IsFirst);
                 var CurrentVersionIsFirst = VersionTracking.Default.IsFirstLaunchForCurrentVersion.ToString();

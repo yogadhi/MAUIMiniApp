@@ -1,3 +1,6 @@
+using YAP.Libs.Alerts;
+
+
 namespace MAUIMiniApp.Views;
 
 public partial class LoginPage : ContentPage
@@ -16,7 +19,7 @@ public partial class LoginPage : ContentPage
     {
         if (IsCredentialCorrect(Username.Text, Password.Text))
         {
-            Alerts.Toasts.Show("Login success");
+            Toasts.Show("Login success");
             await SecureStorage.SetAsync("hasAuth", "true");
             await Shell.Current.GoToAsync("///home");
         }
