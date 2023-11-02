@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:MAUIMiniApp.Flayouts"
+             xmlns:main="clr-namespace:MAUIMiniApp"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="MAUIMiniApp.Flayouts.FlyoutMenuPage"
+             Title="FlyoutMenuPage">
+    <StackLayout VerticalOptions="FillAndExpand"
+                 HorizontalOptions="FillAndExpand"
+                 Padding="10">
+        <Grid HorizontalOptions="FillAndExpand"
+              VerticalOptions="Start">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            
+            <VerticalStackLayout Grid.Row="0" Grid.Column="0" Padding="10">
+                <toolkit:AvatarView Text="YA" ImageSource="dotnet_bot" />
+            </VerticalStackLayout>
+            <Label Grid.Row="0" Grid.Column="1" Text="Hello, Yoga Adhi" VerticalOptions="Center" />
+        </Grid>
+        
+        <CollectionView x:Name="collectionView"
+                        x:FieldModifier="public"
+                        SelectionMode="Single">
+            <CollectionView.ItemsSource>
+                <x:Array Type="{x:Type local:FlyoutPageItem}">
+                    <local:FlyoutPageItem Title="Contacts"
+                                          IconSource="contacts.png"
+                                          TargetType="{x:Type main:MainPage}" />
+                    <local:FlyoutPageItem Title="TodoList"
+                                          IconSource="todo.png"
+                                          TargetType="{x:Type main:MainPage}" />
+                    <local:FlyoutPageItem Title="Reminders"
+                                          IconSource="reminders.png"
+                                          TargetType="{x:Type main:MainPage}" />
+                </x:Array>
+            </CollectionView.ItemsSource>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="5,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="30"/>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Image Source="{Binding IconSource}" />
+                        <Label Grid.Column="1"
+                               Margin="20,0"
+                               Text="{Binding Title}"
+                               FontSize="20"
+                               FontAttributes="Bold"
+                               VerticalOptions="Center" />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </StackLayout>
+
+</ContentPage>
