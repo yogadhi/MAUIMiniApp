@@ -6,7 +6,7 @@
              xmlns:pinview="clr-namespace:YAP.Libs;assembly=YAP.Libs"
              x:Class="MAUIMiniApp.Views.OTPPage"
              Shell.NavBarIsVisible="False"
-             Title="OTP">
+             Title="One-Time Password">
     <ContentPage.BindingContext>
         <vm:OTPViewModel />
     </ContentPage.BindingContext>

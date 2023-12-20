@@ -4,7 +4,6 @@ using Microsoft.Maui.Controls.Compatibility.Platform.Android;
 #endif
 
 using MAUIMiniApp.Views;
-using YAP.Libs.Flyouts;
 using YAP.Libs.Interfaces;
 using YAP.Libs.Logger;
 using YAP.Libs.Models;
@@ -29,13 +28,12 @@ namespace MAUIMiniApp
                     MenuItemList = new List<FlyoutPageItem>()
                 };
 
-                RootItem.Provider = provider;
                 AlertSvc = RootItem.Provider.GetService<IAlertService>();
 
                 RootItem.MenuItemList = new List<FlyoutPageItem>
                 {
-                    new FlyoutPageItem { Title = "Contacts", IconSource = "contacts.png", TargetType = typeof(MainPage) },
                     new FlyoutPageItem { Title = "OTP", IconSource = "contacts.png", TargetType = typeof(OTPPage) },
+                    new FlyoutPageItem { Title = "Contacts", IconSource = "contacts.png", TargetType = typeof(MainPage) },
                     new FlyoutPageItem { Title = "Todo List", IconSource = "todo.png", TargetType = typeof(MainPage) },
                     new FlyoutPageItem { Title = "Reminders", IconSource = "reminders.png", TargetType = typeof(MainPage) },
                 };

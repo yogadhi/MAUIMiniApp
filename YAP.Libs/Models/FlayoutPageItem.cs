@@ -1,4 +1,4 @@
-﻿namespace YAP.Libs.Flyouts;
+﻿namespace YAP.Libs.Models;
 
 public class FlyoutPageItem
 {

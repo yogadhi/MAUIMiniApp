@@ -2,15 +2,6 @@
 <FlyoutPage  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="YAP.Libs.Flyouts.AppFlyout"
+             FlyoutLayoutBehavior="Popover"
              x:Name="mainFlyout">
-    <!--<FlyoutPage.Flyout>
-        <local:FlyoutMenuPage x:Name="menuFlyout" />
-    </FlyoutPage.Flyout>-->
-    <!--<FlyoutPage.Detail>
-        <NavigationPage>
-            <x:Arguments>
-                <main:MainPage />
-            </x:Arguments>
-        </NavigationPage>
-    </FlyoutPage.Detail>-->
 </FlyoutPage>
