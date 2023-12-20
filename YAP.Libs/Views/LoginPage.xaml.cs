@@ -1,14 +1,23 @@
 using YAP.Libs.Alerts;
+using YAP.Libs.Flyouts;
+using YAP.Libs.Interfaces;
+using YAP.Libs.Models;
 
-
-namespace MAUIMiniApp.Views;
+namespace YAP.Libs.Views;
 
 public partial class LoginPage : ContentPage
 {
-	public LoginPage()
+    IAlertService AlertSvc { get; set; }
+    RootItem RootItem { get; set; }
+
+    public LoginPage(RootItem rootItem)
 	{
 		InitializeComponent();
-	}
+
+        RootItem = rootItem;
+        AlertSvc = RootItem.Provider.GetService<IAlertService>();
+    }
+
     protected override bool OnBackButtonPressed()
     {
         Application.Current.Quit();
@@ -21,11 +30,12 @@ public partial class LoginPage : ContentPage
         {
             Toasts.Show("Login success");
             await SecureStorage.SetAsync("hasAuth", "true");
-            await Shell.Current.GoToAsync("///home");
+            //await Shell.Current.GoToAsync("///home");
+            await Navigation.PushModalAsync(new AppFlyout(RootItem));
         }
         else
         {
-            await App.AlertSvc.ShowAlertAsync("Login failed", "Username or password is invalid", "Try again");
+            await AlertSvc.ShowAlertAsync("Login failed", "Username or password is invalid", "Try again");
             //await DisplayAlert("Login failed", "Username or password is invalid", "Try again");
         }
     }
@@ -33,7 +43,6 @@ public partial class LoginPage : ContentPage
 
     bool IsCredentialCorrect(string username, string password)
     {
-        return Username.Text == "admin" && Password.Text == "1234";
+        return Username.Text == "admin" && Password.Text == "123456";
     }
-
 }

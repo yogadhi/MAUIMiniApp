@@ -6,13 +6,13 @@
        xmlns:views="clr-namespace:MAUIMiniApp.Views"
        Shell.FlyoutBehavior="Disabled">
 
-    <ShellContent Title="Home"
+    <!--<ShellContent Title="Home"
                   ContentTemplate="{DataTemplate views:LoadingPage}"
-                  Route="loading" />
+                  Route="loading" />-->
 
-    <ShellContent Title="Login" 
+    <!--<ShellContent Title="Login" 
                   ContentTemplate="{DataTemplate views:LoginPage}"
-                  Route="login"/>
+                  Route="login"/>-->
 
     <ShellContent Title="OTP" 
                   ContentTemplate="{DataTemplate views:OTPPage}"

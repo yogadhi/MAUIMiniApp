@@ -8,11 +8,11 @@ namespace MAUIMiniApp
         {
             InitializeComponent();
 
-            Routing.RegisterRoute("login", typeof(LoginPage));
-            Routing.RegisterRoute("otp", typeof(OTPPage));
-            Routing.RegisterRoute("main", typeof(MainPage));
-            Routing.RegisterRoute("home", typeof(HomePage));
-            Routing.RegisterRoute("settings", typeof(SettingsPage));
+            //Routing.RegisterRoute("login", typeof(LoginPage));
+            //Routing.RegisterRoute("otp", typeof(OTPPage));
+            //Routing.RegisterRoute("main", typeof(MainPage));
+            //Routing.RegisterRoute("home", typeof(HomePage));
+            //Routing.RegisterRoute("settings", typeof(SettingsPage));
         }
     }
 }

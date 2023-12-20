@@ -3,43 +3,77 @@ using Android.Content.Res;
 using Microsoft.Maui.Controls.Compatibility.Platform.Android;
 #endif
 
+using MAUIMiniApp.Views;
+using YAP.Libs.Flyouts;
 using YAP.Libs.Interfaces;
+using YAP.Libs.Logger;
+using YAP.Libs.Models;
+using YAP.Libs.Views;
 
 namespace MAUIMiniApp
 {
     public partial class App : Application
     {
-        public static IServiceProvider Services;
         public static IAlertService AlertSvc;
+        private static RootItem RootItem { get; set; }
 
         public App(IServiceProvider provider)
         {
-            InitializeComponent();
-
-            Services = provider;
-            AlertSvc = Services.GetService<IAlertService>();
-
-
-            MainPage = new AppShell();
-            //MainPage = new AppFlyout();
-            //MainPage = new AppTabbed();
-            //MainPage = new NavigationPage(new AppFlyout());
-
-            Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping("NoUnderLine", (handler, view) =>
+            try
             {
+                InitializeComponent();
+
+                RootItem = new RootItem
+                {
+                    Provider = provider,
+                    MenuItemList = new List<FlyoutPageItem>()
+                };
+
+                RootItem.Provider = provider;
+                AlertSvc = RootItem.Provider.GetService<IAlertService>();
+
+                RootItem.MenuItemList = new List<FlyoutPageItem>
+                {
+                    new FlyoutPageItem { Title = "Contacts", IconSource = "contacts.png", TargetType = typeof(MainPage) },
+                    new FlyoutPageItem { Title = "OTP", IconSource = "contacts.png", TargetType = typeof(OTPPage) },
+                    new FlyoutPageItem { Title = "Todo List", IconSource = "todo.png", TargetType = typeof(MainPage) },
+                    new FlyoutPageItem { Title = "Reminders", IconSource = "reminders.png", TargetType = typeof(MainPage) },
+                };
+                //MainPage = new AppFlyout(MenuItemList);
+
+                MainPage = new LoadingPage(RootItem);
+
+                //MainPage = new AppShell();
+                //MainPage = new AppTabbed();
+                //MainPage = new NavigationPage(new AppFlyout());
+
+                Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping("NoUnderLine", (handler, view) =>
+                {
 #if __ANDROID__
                 (handler.PlatformView as Android.Views.View).SetBackgroundColor(Microsoft.Maui.Graphics.Colors.Transparent.ToAndroid());
 #endif
-            });
+                });
+            }
+            catch (Exception ex)
+            {
+                Log.Write(Log.LogEnum.Error, nameof(App) + " - " + ex.Message);
+            }
         }
 
         protected override async void OnStart()
         {
-            base.OnStart();
-            var versionInfo = await GetVersionInfoList();
-            if (versionInfo != null)
+            try
             {
+                base.OnStart();
+                var versionInfo = await GetVersionInfoList();
+                if (versionInfo != null)
+                {
 
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Write(Log.LogEnum.Error, nameof(OnStart) + " - " + ex.Message);
             }
         }
 
@@ -78,7 +112,7 @@ namespace MAUIMiniApp
             }
             catch (Exception ex)
             {
-                string exMsg = ex.Message;
+                Log.Write(Log.LogEnum.Error, nameof(GetVersionInfoList) + " - " + ex.Message);
             }
             return infoList;
         }

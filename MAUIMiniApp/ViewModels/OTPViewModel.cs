@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using YAP.Libs.Logger;
 using YAP.Libs.ViewModels;
 
 namespace MAUIMiniApp.ViewModels
@@ -42,11 +43,18 @@ namespace MAUIMiniApp.ViewModels
 
         public OTPViewModel()
         {
-            Title = "About";
-            Random generator = new Random();
-            CurrentOTP = generator.Next(0, 1000000).ToString("D6");
-            //OpenWebCommand = new Command(async () => await Browser.OpenAsync("https://aka.ms/xamarin-quickstart"));
-            //LoadCommand.Execute(null);
+            try
+            {
+                Title = "About";
+                Random generator = new Random();
+                CurrentOTP = generator.Next(0, 1000000).ToString("D6");
+                //OpenWebCommand = new Command(async () => await Browser.OpenAsync("https://aka.ms/xamarin-quickstart"));
+                //LoadCommand.Execute(null);
+            }
+            catch (Exception ex)
+            {
+                Log.Write(Log.LogEnum.Error, nameof(OTPViewModel) + " - " + ex.Message);
+            }
         }
 
         public ICommand OpenWebCommand { get; }
@@ -60,8 +68,6 @@ namespace MAUIMiniApp.ViewModels
 
             try
             {
-                await Task.Delay(2000);
-
                 timer = new System.Timers.Timer();
                 timer.Interval = 1000;
                 timer.Elapsed += t_Tick;

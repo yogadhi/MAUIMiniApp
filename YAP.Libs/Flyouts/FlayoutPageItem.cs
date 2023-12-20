@@ -1,8 +1,9 @@
-﻿namespace MAUIMiniApp.Flayouts;
+﻿namespace YAP.Libs.Flyouts;
 
 public class FlyoutPageItem
 {
     public string Title { get; set; }
     public string IconSource { get; set; }
     public Type TargetType { get; set; }
+    public Page TargetPage { get; set; }
 }
