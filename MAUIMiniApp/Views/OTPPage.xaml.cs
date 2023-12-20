@@ -10,20 +10,37 @@ public partial class OTPPage : ContentPage
         {
             InitializeComponent();
 
-            if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
-            {
-                circularProgress.IsEnabled = false;
-                circularProgress.IsVisible = false;
-            }
-            else
-            {
-                circularProgress.IsEnabled = true;
-                circularProgress.IsVisible = true;
-            }
+            //if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
+            //{
+            //    circularProgress.IsEnabled = false;
+            //    circularProgress.IsVisible = false;
+
+            //    lineProgress.IsEnabled = true;
+            //    lineProgress.IsVisible = true;
+
+            //    lblCounter.IsEnabled = false;
+            //    lblCounter.IsVisible = false;
+            //}
+            //else
+            //{
+            //    circularProgress.IsEnabled = true;
+            //    circularProgress.IsVisible = true;
+
+            //    lineProgress.IsEnabled = false;
+            //    lineProgress.IsVisible = false;
+
+            //    lblCounter.IsEnabled = true;
+            //    lblCounter.IsVisible = true;
+            //}
         }
         catch (Exception ex)
         {
             Log.Write(Log.LogEnum.Error, nameof(OTPPage) + " - " + ex.Message);
         }
+    }
+
+    protected override async void OnAppearing()
+    {
+
     }
 }

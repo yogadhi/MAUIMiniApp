@@ -5,7 +5,6 @@
              xmlns:control="clr-namespace:YAP.Libs.Views;assembly=YAP.Libs"
              xmlns:pinview="clr-namespace:YAP.Libs;assembly=YAP.Libs"
              x:Class="MAUIMiniApp.Views.OTPPage"
-             Shell.NavBarIsVisible="False"
              Title="One-Time Password">
     <ContentPage.BindingContext>
         <vm:OTPViewModel />
@@ -17,22 +16,26 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <VerticalStackLayout BackgroundColor="White">
-        <Grid HorizontalOptions="FillAndExpand"
-              VerticalOptions="FillAndExpand">
+    <VerticalStackLayout HorizontalOptions="CenterAndExpand"
+                         VerticalOptions="CenterAndExpand">
+        <Grid HorizontalOptions="CenterAndExpand"
+              VerticalOptions="CenterAndExpand">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <Label Grid.Row="0" HorizontalOptions="Center" VerticalOptions="Center" Text="{Binding cTimer}" TextColor="Black" FontSize="50"/>
-            <control:CircularProgressBar x:Name="circularProgress" Margin="10,10" Grid.Row="0" HeightRequest="200" Thickness="10" ProgressColor="Green" ProgressLeftColor="LightGreen" Progress="40" Size="140" IsVisible="False" IsEnabled="False" />
+            <Label x:Name="lblCounter" Grid.Row="0" HorizontalOptions="Center" VerticalOptions="Center" Text="{Binding cTimer}" FontSize="50"/>
+            <control:CircularProgressBar x:Name="circularProgress" Margin="10,10" Grid.Row="0" HeightRequest="200" Thickness="10" ProgressColor="Green" ProgressLeftColor="LightGreen" Progress="{Binding Progress}" TextColor="Transparent" Size="150"  />
 
-            <StackLayout Grid.Row="2" Padding="10,10">
-                <Label TextColor="Black" Text="Google:yogadhiprananda@gmail.com" FontSize="16" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Start"/>
+            <ProgressBar x:Name="lineProgress" Grid.Row="0" Progress="{Binding Progress}" IsVisible="False"  />
+
+            <StackLayout Grid.Row="1" Padding="10,10">
+                <Label Text="Google:yogadhiprananda@gmail.com" FontSize="16" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Start"/>
                 <pinview:PINView x:Name="existingPINView"
                                  BoxFocusAnimation="ZoomInOut"
                                  PINValue="{Binding CurrentOTP}"
+                                 Color="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
                                  BoxShape="Squere"
                                  IsPassword="False"
                                  HorizontalOptions="CenterAndExpand"

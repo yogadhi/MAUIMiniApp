@@ -2,7 +2,8 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:drawables="clr-namespace:YAP.Libs.Drawables"
-             x:Class="YAP.Libs.Views.CircularProgressBar">
+             x:Class="YAP.Libs.Views.CircularProgressBar"
+             x:Name="this">
     <GraphicsView>
         <GraphicsView.Drawable>
             <drawables:CircularProgressBar Progress="{Binding Progress, Source={x:Reference this}}"

@@ -30,14 +30,17 @@ namespace MAUIMiniApp.ViewModels
             set { SetProperty(ref _cTimer, value); }
         }
 
-        string _Progress;
-        public string Progress
+        int _Progress = 40;
+        public int Progress
         {
             get { return _Progress; }
             set
             {
-                _Progress = value;
-                OnPropertyChanged();
+                if(_Progress != value)
+                {
+                    _Progress = value;
+                    OnPropertyChanged("Progress");
+                }
             }
         }
 
@@ -45,11 +48,11 @@ namespace MAUIMiniApp.ViewModels
         {
             try
             {
-                Title = "About";
+                Title = "One-Time Password";
                 Random generator = new Random();
                 CurrentOTP = generator.Next(0, 1000000).ToString("D6");
                 //OpenWebCommand = new Command(async () => await Browser.OpenAsync("https://aka.ms/xamarin-quickstart"));
-                //LoadCommand.Execute(null);
+                LoadCommand.Execute(null);
             }
             catch (Exception ex)
             {
@@ -68,8 +71,10 @@ namespace MAUIMiniApp.ViewModels
 
             try
             {
-                timer = new System.Timers.Timer();
-                timer.Interval = 1000;
+                timer = new System.Timers.Timer
+                {
+                    Interval = 1000
+                };
                 timer.Elapsed += t_Tick;
                 TimeSpan ts = endTime - DateTime.Now;
                 cTimer = ts.Seconds.ToString();
@@ -91,14 +96,22 @@ namespace MAUIMiniApp.ViewModels
             {
                 TimeSpan ts = endTime - DateTime.Now;
 
-
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
                     // Code to run on the main thread  
                     cTimer = ts.Seconds.ToString();
                     var x = (decimal)ts.Seconds / (decimal)maxInterval;
                     var y = Math.Round(x, 2, MidpointRounding.AwayFromZero);
-                    Progress = y.ToString();
+
+                    //if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
+                    //{
+                    //    Progress = (int)(1 - y);
+                    //}
+                    //else
+                    //{
+                    //    Progress = (int)(y * 100);
+                    //}
+                    Progress = (int)(y * 100);
                 });
 
 
