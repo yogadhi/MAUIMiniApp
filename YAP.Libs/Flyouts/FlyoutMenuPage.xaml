@@ -18,7 +18,7 @@
             </Grid.ColumnDefinitions>
 
             <VerticalStackLayout Grid.Row="0" Grid.Column="0" Padding="10">
-                <toolkit:AvatarView Text="YA" ImageSource="dotnet_bot" />
+                <toolkit:AvatarView Text="YA" ImageSource="dotnet_bot.png" BorderColor="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource Gray200}}"/>
             </VerticalStackLayout>
             <Label Grid.Row="0" Grid.Column="1" Text="Hello, Yoga Adhi" VerticalOptions="Center" />
         </Grid>

@@ -32,10 +32,10 @@ namespace MAUIMiniApp
 
                 RootItem.MenuItemList = new List<FlyoutPageItem>
                 {
-                    new FlyoutPageItem { Title = "OTP", IconSource = "contacts.png", TargetType = typeof(OTPPage) },
+                    new FlyoutPageItem { Title = "OTP", IconSource = "reminders.png", TargetType = typeof(OTPPage) },
                     new FlyoutPageItem { Title = "Contacts", IconSource = "contacts.png", TargetType = typeof(MainPage) },
                     new FlyoutPageItem { Title = "Todo List", IconSource = "todo.png", TargetType = typeof(MainPage) },
-                    new FlyoutPageItem { Title = "Reminders", IconSource = "reminders.png", TargetType = typeof(MainPage) },
+                    //new FlyoutPageItem { Title = "Reminders", IconSource = "reminders.png", TargetType = typeof(MainPage) },
                 };
                 //MainPage = new AppFlyout(MenuItemList);
 

@@ -30,13 +30,13 @@ namespace MAUIMiniApp.ViewModels
             set { SetProperty(ref _cTimer, value); }
         }
 
-        int _Progress = 40;
+        int _Progress;
         public int Progress
         {
             get { return _Progress; }
             set
             {
-                if(_Progress != value)
+                if (_Progress != value)
                 {
                     _Progress = value;
                     OnPropertyChanged("Progress");
@@ -71,6 +71,8 @@ namespace MAUIMiniApp.ViewModels
 
             try
             {
+                await Task.Delay(1000);
+
                 timer = new System.Timers.Timer
                 {
                     Interval = 1000
@@ -82,7 +84,7 @@ namespace MAUIMiniApp.ViewModels
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                Log.Write(Log.LogEnum.Error, nameof(ExecuteLoadCommand) + " - " + ex.Message);
             }
             finally
             {
@@ -103,15 +105,14 @@ namespace MAUIMiniApp.ViewModels
                     var x = (decimal)ts.Seconds / (decimal)maxInterval;
                     var y = Math.Round(x, 2, MidpointRounding.AwayFromZero);
 
-                    //if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
-                    //{
-                    //    Progress = (int)(1 - y);
-                    //}
-                    //else
-                    //{
-                    //    Progress = (int)(y * 100);
-                    //}
-                    Progress = (int)(y * 100);
+                    if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
+                    {
+                        Progress = (int)(1 - y);
+                    }
+                    else
+                    {
+                        Progress = (int)(y * 100);
+                    }
                 });
 
 
@@ -127,9 +128,8 @@ namespace MAUIMiniApp.ViewModels
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                Log.Write(Log.LogEnum.Error, nameof(t_Tick) + " - " + ex.Message);
             }
-
         }
     }
 }

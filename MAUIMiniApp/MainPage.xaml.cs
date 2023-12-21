@@ -1,4 +1,5 @@
-﻿using YAP.Libs.Alerts;
+﻿using MAUIMiniApp.Views;
+using YAP.Libs.Alerts;
 
 namespace MAUIMiniApp
 {
@@ -11,23 +12,24 @@ namespace MAUIMiniApp
             InitializeComponent();
         }
 
-        private void OnCounterClicked(object sender, EventArgs e)
+        private async void OnCounterClicked(object sender, EventArgs e)
         {
-            count++;
+            await Navigation.PushAsync(new SettingsPage());
+            //count++;
 
-            if (count == 1)
-            {
-                CounterBtn.Text = $"Clicked {count} time";
-            }
-            else
-            {
-                CounterBtn.Text = $"Clicked {count} times";
-            }
+            //if (count == 1)
+            //{
+            //    CounterBtn.Text = $"Clicked {count} time";
+            //}
+            //else
+            //{
+            //    CounterBtn.Text = $"Clicked {count} times";
+            //}
 
-            SemanticScreenReader.Announce(CounterBtn.Text);
+            //SemanticScreenReader.Announce(CounterBtn.Text);
 
-            Toasts.Show("Hello");
-            Snackbars.Show("Hello");
+            //Toasts.Show("Hello");
+            //Snackbars.Show("Hello");
         }
     }
 }

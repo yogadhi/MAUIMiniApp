@@ -24,6 +24,7 @@ public partial class FlyoutMenuPage : ContentPage
     private async void btnLogout_Clicked(object sender, EventArgs e)
     {
         SecureStorage.Remove("hasAuth");
-        await Navigation.PushModalAsync(new LoginPage(RootItem));
+        //await Navigation.PushModalAsync(new LoginPage(RootItem));
+        Application.Current.MainPage = new LoginPage(RootItem);
     }
 }

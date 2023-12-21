@@ -4,8 +4,14 @@
              xmlns:vm="clr-namespace:MAUIMiniApp.ViewModels"
              xmlns:control="clr-namespace:YAP.Libs.Views;assembly=YAP.Libs"
              xmlns:pinview="clr-namespace:YAP.Libs;assembly=YAP.Libs"
-             x:Class="MAUIMiniApp.Views.OTPPage"
-             Title="One-Time Password">
+             x:Class="MAUIMiniApp.Views.OTPPage">
+
+    <!--<ContentPage.ToolbarItems>
+        <ToolbarItem Text="Add item"
+                     Order="Secondary"
+                     IconImageSource="reminders.png" />
+    </ContentPage.ToolbarItems>-->
+    
     <ContentPage.BindingContext>
         <vm:OTPViewModel />
     </ContentPage.BindingContext>
@@ -26,7 +32,7 @@
             </Grid.RowDefinitions>
 
             <Label x:Name="lblCounter" Grid.Row="0" HorizontalOptions="Center" VerticalOptions="Center" Text="{Binding cTimer}" FontSize="50"/>
-            <control:CircularProgressBar x:Name="circularProgress" Margin="10,10" Grid.Row="0" HeightRequest="200" Thickness="10" ProgressColor="Green" ProgressLeftColor="LightGreen" Progress="{Binding Progress}" TextColor="Transparent" Size="150"  />
+            <control:CircularProgressBar x:Name="circularProgress" Margin="10,10" Grid.Row="0" HeightRequest="200" Progress="{Binding Progress, Mode=TwoWay}" Thickness="10" ProgressColor="Green" ProgressLeftColor="LightGreen" TextColor="Transparent" Size="150"  />
 
             <ProgressBar x:Name="lineProgress" Grid.Row="0" Progress="{Binding Progress}" IsVisible="False"  />
 

@@ -8,9 +8,6 @@
     <MauiXaml Update="Flyouts\FlyoutMenuPage.xaml">
       <SubType>Designer</SubType>
     </MauiXaml>
-    <MauiXaml Update="MainPage.xaml">
-      <SubType>Designer</SubType>
-    </MauiXaml>
     <MauiXaml Update="Views\CircularProgressBar.xaml">
       <SubType>Designer</SubType>
     </MauiXaml>

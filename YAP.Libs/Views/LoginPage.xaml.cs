@@ -31,7 +31,8 @@ public partial class LoginPage : ContentPage
             Toasts.Show("Login success");
             await SecureStorage.SetAsync("hasAuth", "true");
             //await Shell.Current.GoToAsync("///home");
-            await Navigation.PushModalAsync(new AppFlyout(RootItem));
+            //await Navigation.PushModalAsync(new AppFlyout(RootItem));
+            Application.Current.MainPage = new AppFlyout(RootItem);
         }
         else
         {
