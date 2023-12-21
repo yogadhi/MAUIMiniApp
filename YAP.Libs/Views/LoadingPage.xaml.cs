@@ -33,12 +33,14 @@ public partial class LoadingPage : ContentPage
         if (await isAuthenticated())
         {
             //await Shell.Current.GoToAsync("otp");
-            await Navigation.PushModalAsync(new AppFlyout(RootItem));
+            //await Navigation.PushModalAsync(new AppFlyout(RootItem));
+            Application.Current.MainPage = new AppFlyout(RootItem);
         }
         else
         {
             //await Shell.Current.GoToAsync("login");
-            await Navigation.PushModalAsync(new LoginPage(RootItem));
+            //await Navigation.PushModalAsync(new LoginPage(RootItem));
+            Application.Current.MainPage = new LoginPage(RootItem);
         }
     }
 

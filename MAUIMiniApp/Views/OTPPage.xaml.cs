@@ -1,3 +1,4 @@
+using System.Drawing;
 using YAP.Libs.Logger;
 
 namespace MAUIMiniApp.Views;
@@ -37,10 +38,5 @@ public partial class OTPPage : ContentPage
         {
             Log.Write(Log.LogEnum.Error, nameof(OTPPage) + " - " + ex.Message);
         }
-    }
-
-    protected override async void OnAppearing()
-    {
-
     }
 }
