@@ -5,7 +5,7 @@ VisualStudioVersion = 17.7.34202.233
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MAUIMiniApp", "MAUIMiniApp.csproj", "{CA038366-50DF-462A-B1ED-318361F945E5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YAP.Libs", "..\YAP.Libs\YAP.Libs.csproj", "{28C81ACD-9E11-4322-BCF9-09BD87D26840}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YAP.Libs", "..\YAP.Libs\YAP.Libs.csproj", "{28C81ACD-9E11-4322-BCF9-09BD87D26840}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

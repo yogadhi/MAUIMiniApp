@@ -44,6 +44,20 @@ namespace MAUIMiniApp.ViewModels
             }
         }
 
+        Color _ProgressColor = Colors.Green;
+        public Color ProgressColor
+        {
+            get { return _ProgressColor; }
+            set
+            {
+                if (_ProgressColor != value)
+                {
+                    _ProgressColor = value;
+                    OnPropertyChanged("ProgressColor");
+                }
+            }
+        }
+
         public OTPViewModel()
         {
             try
@@ -51,7 +65,7 @@ namespace MAUIMiniApp.ViewModels
                 Title = "One-Time Password";
                 Random generator = new Random();
                 CurrentOTP = generator.Next(0, 1000000).ToString("D6");
-                //OpenWebCommand = new Command(async () => await Browser.OpenAsync("https://aka.ms/xamarin-quickstart"));
+                //OpenWebCommand.Execute("https://aka.ms/xamarin-quickstart");
                 LoadCommand.Execute(null);
             }
             catch (Exception ex)
@@ -60,8 +74,19 @@ namespace MAUIMiniApp.ViewModels
             }
         }
 
-        public ICommand OpenWebCommand { get; }
-
+        ICommand _OpenWebCommand;
+        public ICommand OpenWebCommand => _OpenWebCommand ?? (_OpenWebCommand = new Command<string>(async (x) => await ExecuteOpenWebCommand(x)));
+        async Task ExecuteOpenWebCommand(string url)
+        {
+            try
+            {
+                await Browser.OpenAsync(url);
+            }
+            catch (Exception ex)
+            {
+                Log.Write(Log.LogEnum.Error, nameof(ExecuteOpenWebCommand) + " - " + ex.Message);
+            }
+        }
 
         ICommand _LoadCommand;
         public ICommand LoadCommand => _LoadCommand ?? (_LoadCommand = new Command(async () => await ExecuteLoadCommand()));
@@ -98,6 +123,19 @@ namespace MAUIMiniApp.ViewModels
             {
                 TimeSpan ts = endTime - DateTime.Now;
 
+                if (ts.Seconds > 15)
+                {
+                    ProgressColor = Colors.Green;
+                }
+                else if (ts.Seconds <= 15 && ts.Seconds > 10)
+                {
+                    ProgressColor = Colors.Yellow;
+                }
+                else if (ts.Seconds <= 10)
+                {
+                    ProgressColor = Colors.Red;
+                }
+
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
                     // Code to run on the main thread  
@@ -114,7 +152,6 @@ namespace MAUIMiniApp.ViewModels
                         Progress = (int)(y * 100);
                     }
                 });
-
 
                 if ((ts.TotalMilliseconds < 0) || (ts.TotalMilliseconds < 1000))
                 {

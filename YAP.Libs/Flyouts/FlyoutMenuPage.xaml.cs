@@ -4,7 +4,7 @@ using YAP.Libs.Views;
 namespace YAP.Libs.Flyouts;
 
 public partial class FlyoutMenuPage : ContentPage
-{ 
+{
     RootItem RootItem { get; set; }
 
     public FlyoutMenuPage(RootItem rootItem)
@@ -21,10 +21,17 @@ public partial class FlyoutMenuPage : ContentPage
         }
     }
 
-    private async void btnLogout_Clicked(object sender, EventArgs e)
+    private void btnLogout_Clicked(object sender, EventArgs e)
     {
-        SecureStorage.Remove("hasAuth");
-        //await Navigation.PushModalAsync(new LoginPage(RootItem));
-        Application.Current.MainPage = new LoginPage(RootItem);
+        try
+        {
+            SecureStorage.Remove("hasAuth");
+            //await Navigation.PushModalAsync(new LoginPage(RootItem));
+            Application.Current.MainPage = new LoginPage(RootItem);
+        }
+        catch (Exception ex)
+        {
+            Logger.Log.Write(Logger.Log.LogEnum.Error, nameof(btnLogout_Clicked) + " - " + ex.Message);
+        }
     }
 }

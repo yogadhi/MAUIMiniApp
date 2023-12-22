@@ -14,7 +14,7 @@
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
             <VerticalStackLayout Grid.Row="0" Grid.Column="0" Padding="10">
@@ -30,17 +30,12 @@
                         SelectionMode="Single">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Grid Padding="5,10">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="30"/>
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Image Source="{Binding IconSource}" />
+                    <Grid Padding="5,10" ColumnDefinitions="Auto,Auto">
+                        <Image Source="{Binding IconSource}" Aspect="AspectFit" />
                         <Label Grid.Column="1"
                                Margin="20,0"
                                Text="{Binding Title}"
                                FontSize="20"
-                               FontAttributes="Bold"
                                VerticalOptions="Center" />
                     </Grid>
                 </DataTemplate>

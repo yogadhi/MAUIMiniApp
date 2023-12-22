@@ -32,18 +32,14 @@ namespace MAUIMiniApp
 
                 RootItem.MenuItemList = new List<FlyoutPageItem>
                 {
+                    new FlyoutPageItem { Title = "Home", IconSource = "contacts.png", TargetType = typeof(HomePage) },
                     new FlyoutPageItem { Title = "OTP", IconSource = "reminders.png", TargetType = typeof(OTPPage) },
-                    new FlyoutPageItem { Title = "Contacts", IconSource = "contacts.png", TargetType = typeof(MainPage) },
-                    new FlyoutPageItem { Title = "Todo List", IconSource = "todo.png", TargetType = typeof(MainPage) },
-                    //new FlyoutPageItem { Title = "Reminders", IconSource = "reminders.png", TargetType = typeof(MainPage) },
+                    new FlyoutPageItem { Title = "Settings", IconSource = "todo.png", TargetType = typeof(SettingsPage) },
                 };
+
                 //MainPage = new AppFlyout(MenuItemList);
-
                 MainPage = new LoadingPage(RootItem);
-
                 //MainPage = new AppShell();
-                //MainPage = new AppTabbed();
-                //MainPage = new NavigationPage(new AppFlyout());
 
                 Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping("NoUnderLine", (handler, view) =>
                 {
