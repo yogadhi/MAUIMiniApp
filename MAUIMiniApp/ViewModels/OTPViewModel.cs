@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using YAP.Libs.Logger;
 using YAP.Libs.ViewModels;
+using YAP.Libs.Alerts;
 
 namespace MAUIMiniApp.ViewModels
 {
@@ -26,15 +27,66 @@ namespace MAUIMiniApp.ViewModels
             set { SetProperty(ref _CurrentOTP, value); }
         }
 
+        int _cTimerInt = 0;
+        public int cTimerInt
+        {
+            get { return _cTimerInt; }
+            set
+            {
+                if (_cTimerInt != value)
+                {
+                    _cTimerInt = value;
+                    OnPropertyChanged("cTimerInt");
+
+                    _cTimer = _cTimerInt.ToString();
+                    OnPropertyChanged("cTimer");
+
+                    if (_cTimerInt > 15)
+                    {
+                        _ProgressColor = Colors.Green;
+                    }
+                    else if (_cTimerInt <= 15 && _cTimerInt > 10)
+                    {
+                        _ProgressColor = Colors.Yellow;
+                    }
+                    else if (_cTimerInt <= 10)
+                    {
+                        _ProgressColor = Colors.Red;
+                    }
+                    OnPropertyChanged("ProgressColor");
+
+                    var x = (decimal)_cTimerInt / (decimal)maxInterval;
+                    var y = Math.Round(x, 2, MidpointRounding.AwayFromZero);
+
+                    if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
+                    {
+                        _Progress = 1 - y;
+                    }
+                    else
+                    {
+                        _Progress = (int)(y * 100);
+                    }
+                    OnPropertyChanged("Progress");
+
+                }
+            }
+        }
+
         string _cTimer = string.Empty;
         public string cTimer
         {
             get { return _cTimer; }
-            set { SetProperty(ref _cTimer, value); }
+            set
+            {
+                if (_cTimer != value)
+                {
+                    _cTimer = value;
+                }
+            }
         }
 
-        int _Progress;
-        public int Progress
+        decimal _Progress;
+        public decimal Progress
         {
             get { return _Progress; }
             set
@@ -42,7 +94,6 @@ namespace MAUIMiniApp.ViewModels
                 if (_Progress != value)
                 {
                     _Progress = value;
-                    OnPropertyChanged("Progress");
                 }
             }
         }
@@ -56,7 +107,6 @@ namespace MAUIMiniApp.ViewModels
                 if (_ProgressColor != value)
                 {
                     _ProgressColor = value;
-                    OnPropertyChanged("ProgressColor");
                 }
             }
         }
@@ -126,7 +176,7 @@ namespace MAUIMiniApp.ViewModels
                 };
                 timer.Elapsed += t_Tick;
                 TimeSpan ts = endTime - DateTime.Now;
-                cTimer = ts.Seconds.ToString();
+                cTimerInt = ts.Seconds;
                 timer.Start();
             }
             catch (Exception ex)
@@ -139,42 +189,27 @@ namespace MAUIMiniApp.ViewModels
             }
         }
 
+        ICommand _SelectionCommand;
+        public ICommand SelectionCommand => _SelectionCommand ?? (_SelectionCommand = new Command<OTPItem>(async (x) => await ExecuteSelectionCommand(x)));
+        async Task ExecuteSelectionCommand(OTPItem obj)
+        {
+            try
+            {
+                await Clipboard.Default.SetTextAsync(obj.OTP);
+                Toasts.Show(obj.OTP + " copied");
+            }
+            catch (Exception ex)
+            {
+                Log.Write(Log.LogEnum.Error, nameof(ExecuteSelectionCommand) + " - " + ex.Message);
+            }
+        }
+
         void t_Tick(object sender, EventArgs e)
         {
             try
             {
                 TimeSpan ts = endTime - DateTime.Now;
-
-                if (ts.Seconds > 15)
-                {
-                    ProgressColor = Colors.Green;
-                }
-                else if (ts.Seconds <= 15 && ts.Seconds > 10)
-                {
-                    ProgressColor = Colors.Yellow;
-                }
-                else if (ts.Seconds <= 10)
-                {
-                    ProgressColor = Colors.Red;
-                }
-
-                MainThread.BeginInvokeOnMainThread(() =>
-                {
-                    // Code to run on the main thread  
-                    cTimer = ts.Seconds.ToString();
-
-                    var x = (decimal)ts.Seconds / (decimal)maxInterval;
-                    var y = Math.Round(x, 2, MidpointRounding.AwayFromZero);
-
-                    if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
-                    {
-                        Progress = (int)(1 - y);
-                    }
-                    else
-                    {
-                        Progress = (int)(y * 100);
-                    }
-                });
+                cTimerInt = ts.Seconds;
 
                 if ((ts.TotalMilliseconds < 0) || (ts.TotalMilliseconds < 1000))
                 {

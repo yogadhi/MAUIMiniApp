@@ -18,13 +18,23 @@ public partial class AppFlyout : FlyoutPage
             {
                 if (RootItem.MenuItemList.Count > 0)
                 {
-                    var menuFlyout = new FlyoutMenuPage(RootItem);
+                    FlyoutMenuPage menuFlyout = new FlyoutMenuPage(RootItem);
+                    FlyoutPageItem obj = new FlyoutPageItem();
 
                     mainFlyout.Flyout = menuFlyout;
-                    mainFlyout.Detail = new NavigationPage((Page)Activator.CreateInstance(RootItem.MenuItemList.FirstOrDefault().TargetType));
 
-                    menuFlyout.collectionView.SelectedItem = RootItem.MenuItemList.FirstOrDefault();
+                    if (RootItem.SelectedMenuIndex == -1)
+                    {
+                        obj = RootItem.MenuItemList.FirstOrDefault();
+                    }
+                    else
+                    {
+                        obj = RootItem.MenuItemList[RootItem.SelectedMenuIndex];
+                    }
+
+                    //mainFlyout.Detail = new NavigationPage((Page)Activator.CreateInstance(obj.TargetType));
                     menuFlyout.collectionView.SelectionChanged += OnSelectionChanged;
+                    menuFlyout.collectionView.SelectedItem = obj;
                 }
             }
         }

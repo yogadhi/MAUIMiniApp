@@ -37,6 +37,8 @@ namespace MAUIMiniApp
                     new FlyoutPageItem { Title = "Settings", IconSource = "todo.png", TargetType = typeof(SettingsPage) },
                 };
 
+                RootItem.SelectedMenuIndex = 1;
+
                 //MainPage = new AppFlyout(MenuItemList);
                 MainPage = new LoadingPage(RootItem);
                 //MainPage = new AppShell();

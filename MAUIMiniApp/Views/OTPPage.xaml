@@ -7,11 +7,11 @@
              x:Class="MAUIMiniApp.Views.OTPPage"
              Title="{Binding Title}">
 
-    <ContentPage.ToolbarItems>
+    <!--<ContentPage.ToolbarItems>
         <ToolbarItem Text="Add account"
                      Order="Primary"
                      IconImageSource="account_plus_outline.svg"/>
-    </ContentPage.ToolbarItems>
+    </ContentPage.ToolbarItems>-->
 
     <ContentPage.BindingContext>
         <vm:OTPViewModel />
@@ -41,6 +41,8 @@
                         HorizontalOptions="FillAndExpand"
                         VerticalOptions="FillAndExpand"
                         Grid.Row="1"
+                        SelectionChangedCommand="{Binding SelectionCommand}"
+                        SelectionChangedCommandParameter="{Binding Path=SelectedItem, Source={x:Reference collectionView}}"
                         VerticalScrollBarVisibility="Always"
                         ItemsSource="{Binding OTPItemList}"
                         SelectionMode="Single">

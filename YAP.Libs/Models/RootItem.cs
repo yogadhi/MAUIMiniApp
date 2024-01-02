@@ -10,5 +10,6 @@ namespace YAP.Libs.Models
     {
         public IServiceProvider Provider { get; set; }
         public List<FlyoutPageItem> MenuItemList { get; set; }
+        public int SelectedMenuIndex { get; set; } = -1;
     }
 }
