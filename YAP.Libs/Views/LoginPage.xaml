@@ -16,7 +16,8 @@
           RowDefinitions="*" 
           ColumnDefinitions="*">
         <VerticalStackLayout VerticalOptions="CenterAndExpand" 
-                             HorizontalOptions="CenterAndExpand">
+                             HorizontalOptions="CenterAndExpand"
+                             Padding="15">
             <Frame CornerRadius="10"
                    HasShadow="True"
                    HorizontalOptions="FillAndExpand"
@@ -51,7 +52,7 @@
                         </Grid.ColumnDefinitions>
 
                         <Label FontFamily="Consolas" Grid.Row="0" Text="Username" />
-                        <Frame CornerRadius="10" Padding="3" Grid.Row="1" HorizontalOptions="FillAndExpand">
+                        <Frame CornerRadius="10" Padding="5" Grid.Row="1" HorizontalOptions="FillAndExpand">
                             <Entry x:Name="Username"
                                    Text="{Binding Username,Mode=TwoWay}"
                                    HorizontalOptions="FillAndExpand"
@@ -59,7 +60,7 @@
                         </Frame>
 
                         <Label FontFamily="Consolas" Text="Password" Margin="0,3,0,0" Grid.Row="2" />
-                        <Frame CornerRadius="10" Padding="3" Margin="0,0,0,0" Grid.Row="3" HorizontalOptions="FillAndExpand" >
+                        <Frame CornerRadius="10" Padding="5" Grid.Row="3" HorizontalOptions="FillAndExpand" >
                             <Entry x:Name="Password" 
                                    Text="{Binding Password,Mode=TwoWay}"
                                    HorizontalOptions="FillAndExpand"

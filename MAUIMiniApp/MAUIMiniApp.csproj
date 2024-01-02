@@ -85,6 +85,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Images\account_plus_outline.svg" />
 	  <None Remove="Resources\Images\contacts.png" />
 	  <None Remove="Resources\Images\gear_fill.svg" />
 	  <None Remove="Resources\Images\heart_fill.svg" />

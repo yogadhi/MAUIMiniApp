@@ -1,7 +1,10 @@
-﻿using System;
+﻿using MAUIMiniApp.Models;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -58,13 +61,26 @@ namespace MAUIMiniApp.ViewModels
             }
         }
 
+        List<OTPItem> _OTPItemList;
+        public List<OTPItem> OTPItemList
+        {
+            get { return _OTPItemList; }
+            set
+            {
+                if (_OTPItemList != value)
+                {
+                    _OTPItemList = value;
+                    OnPropertyChanged("OTPItemList");
+                }
+            }
+        }
+
         public OTPViewModel()
         {
             try
             {
                 Title = "One-Time Password";
-                Random generator = new Random();
-                CurrentOTP = generator.Next(0, 1000000).ToString("D6");
+
                 //OpenWebCommand.Execute("https://aka.ms/xamarin-quickstart");
                 LoadCommand.Execute(null);
             }
@@ -96,7 +112,13 @@ namespace MAUIMiniApp.ViewModels
 
             try
             {
-                await Task.Delay(1000);
+                Random generator = new Random();
+
+                OTPItemList = new List<OTPItem>()
+                {
+                    new OTPItem() { Account = "yogadhiprananda@gmail.com", OTP = generator.Next(0, 1000000).ToString("D6") },
+                    new OTPItem() { Account = "yogadhipra93@gmail.com", OTP = generator.Next(0, 1000000).ToString("D6") },
+                };
 
                 timer = new System.Timers.Timer
                 {
@@ -140,6 +162,7 @@ namespace MAUIMiniApp.ViewModels
                 {
                     // Code to run on the main thread  
                     cTimer = ts.Seconds.ToString();
+
                     var x = (decimal)ts.Seconds / (decimal)maxInterval;
                     var y = Math.Round(x, 2, MidpointRounding.AwayFromZero);
 
@@ -158,8 +181,11 @@ namespace MAUIMiniApp.ViewModels
                     timer.Stop();
 
                     Random generator = new Random();
-                    CurrentOTP = generator.Next(0, 1000000).ToString("D6");
+
+                    OTPItemList.Select(c => { c.OTP = generator.Next(0, 1000000).ToString("D6"); return c; }).ToList();
+
                     endTime = DateTime.Now.AddSeconds(30);
+
                     LoadCommand.Execute(null);
                 }
             }

@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="YAP.Libs.Flyouts.FlyoutMenuPage"
+             BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
              Title="FlyoutMenuPage">
     <StackLayout VerticalOptions="FillAndExpand"
                  HorizontalOptions="FillAndExpand"
@@ -18,7 +19,7 @@
             </Grid.ColumnDefinitions>
 
             <VerticalStackLayout Grid.Row="0" Grid.Column="0" Padding="10">
-                <toolkit:AvatarView Text="YA" ImageSource="dotnet_bot.png" BorderColor="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource Gray200}}"/>
+                <toolkit:AvatarView Text="YA" ImageSource="dotnet_bot.png" BorderColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource Gray900}}"/>
             </VerticalStackLayout>
             <Label Grid.Row="0" Grid.Column="1" Text="Hello, Yoga Adhi" VerticalOptions="Center" />
         </Grid>

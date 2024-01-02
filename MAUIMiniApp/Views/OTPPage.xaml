@@ -7,12 +7,12 @@
              x:Class="MAUIMiniApp.Views.OTPPage"
              Title="{Binding Title}">
 
-    <!--<ContentPage.ToolbarItems>
-        <ToolbarItem Text="Add item"
-                     Order="Secondary"
-                     IconImageSource="reminders.png" />
-    </ContentPage.ToolbarItems>-->
-    
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Add account"
+                     Order="Primary"
+                     IconImageSource="account_plus_outline.svg"/>
+    </ContentPage.ToolbarItems>
+
     <ContentPage.BindingContext>
         <vm:OTPViewModel />
     </ContentPage.BindingContext>
@@ -23,33 +23,51 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <VerticalStackLayout HorizontalOptions="CenterAndExpand"
-                         VerticalOptions="CenterAndExpand">
+    <Grid HorizontalOptions="CenterAndExpand"
+          VerticalOptions="FillAndExpand"
+          RowDefinitions="Auto,*">
+        
         <Grid HorizontalOptions="CenterAndExpand"
-              VerticalOptions="CenterAndExpand">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-
-            <Label x:Name="lblCounter" Grid.Row="0" HorizontalOptions="Center" VerticalOptions="Center" Text="{Binding cTimer}" FontSize="50"/>
-            <control:CircularProgressBar IsVisible="False" IsEnabled="False" x:Name="circularProgress" Margin="10,10" Grid.Row="0" HeightRequest="200" Progress="{Binding Progress, Mode=TwoWay}" Thickness="10" ProgressColor="Green" ProgressLeftColor="LightGreen" TextColor="Transparent" Size="150"  />
-            <ActivityIndicator IsRunning="True" Grid.Row="0" HeightRequest="150" WidthRequest="150" Color="{Binding ProgressColor}" />
-
-            <ProgressBar x:Name="lineProgress" Grid.Row="0" Progress="{Binding Progress}" IsVisible="False"  />
-
-            <StackLayout Grid.Row="1" Padding="10,10">
-                <Label Text="Google:yogadhiprananda@gmail.com" FontSize="16" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Start"/>
-                <pinview:PINView x:Name="existingPINView"
-                                 BoxFocusAnimation="ZoomInOut"
-                                 PINValue="{Binding CurrentOTP}"
-                                 Color="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
-                                 BoxShape="Squere"
-                                 IsPassword="False"
-                                 HorizontalOptions="CenterAndExpand"
-                                 IsEnabled="False"
-                                 PINLength="6"/>
-            </StackLayout>
+              VerticalOptions="Start"
+              Grid.Row="0"
+              Margin="5"
+              RowDefinitions="Auto"
+              ColumnDefinitions="Auto">
+            <Label x:Name="lblCounter" Grid.Row="0" Grid.Column="0" HorizontalOptions="Center" VerticalOptions="Center" Text="{Binding cTimer}" FontSize="50"/>
+            <ActivityIndicator IsRunning="True" Grid.Row="0" Grid.Column="0" HeightRequest="150" WidthRequest="150" Color="{Binding ProgressColor}" />
         </Grid>
-    </VerticalStackLayout>
+        
+        <CollectionView x:Name="collectionView"
+                        HorizontalOptions="FillAndExpand"
+                        VerticalOptions="FillAndExpand"
+                        Grid.Row="1"
+                        VerticalScrollBarVisibility="Always"
+                        ItemsSource="{Binding OTPItemList}"
+                        SelectionMode="Single">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid HorizontalOptions="CenterAndExpand"
+                          VerticalOptions="CenterAndExpand"
+                          RowDefinitions="*"
+                          ColumnDefinitions="*">
+                        <StackLayout Grid.Row="0" Grid.Column="0" Padding="10,10" VerticalOptions="CenterAndExpand">
+                            <HorizontalStackLayout Spacing="3">
+                                <Label Text="Account :" FontSize="16" HorizontalOptions="StartAndExpand" />
+                                <Label Text="{Binding Account}" FontSize="16" HorizontalOptions="StartAndExpand" />
+                            </HorizontalStackLayout>
+                            <pinview:PINView x:Name="existingPINView"
+                                             BoxFocusAnimation="ZoomInOut"
+                                             PINValue="{Binding OTP}"
+                                             Color="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
+                                             BoxShape="Squere"
+                                             IsPassword="False"
+                                             HorizontalOptions="CenterAndExpand"
+                                             IsEnabled="False"
+                                             PINLength="6"/>
+                        </StackLayout>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
 </ContentPage>
