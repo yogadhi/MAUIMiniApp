@@ -13,19 +13,9 @@ public partial class LoadingPage : ContentPage
         RootItem = rootItem;
     }
 
-    protected override async void OnNavigatedTo(NavigatedToEventArgs args)
+    protected override void OnNavigatedTo(NavigatedToEventArgs args)
     {
-        //if (await isAuthenticated())
-        //{
-        //    //await Shell.Current.GoToAsync("otp");
-        //    await Navigation.PushModalAsync(new AppFlyout(MenuItemList));
-        //}
-        //else
-        //{
-        //    //await Shell.Current.GoToAsync("login");
-        //    await Navigation.PushModalAsync(new LoginPage());
-        //}
-        //base.OnNavigatedTo(args);
+
     }
 
     protected override async void OnAppearing()
@@ -33,13 +23,11 @@ public partial class LoadingPage : ContentPage
         if (await isAuthenticated())
         {
             //await Shell.Current.GoToAsync("otp");
-            //await Navigation.PushModalAsync(new AppFlyout(RootItem));
             Application.Current.MainPage = new AppFlyout(RootItem);
         }
         else
         {
             //await Shell.Current.GoToAsync("login");
-            //await Navigation.PushModalAsync(new LoginPage(RootItem));
             Application.Current.MainPage = new LoginPage(RootItem);
         }
     }

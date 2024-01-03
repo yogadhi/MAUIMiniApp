@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -88,14 +89,23 @@ namespace YAP.Libs.ViewModels
 
                 IsBusy = true;
                 await Task.Delay(3000);
-                
+
                 if (Username == "admin" && Password == "123456")
                 {
                     Toasts.Show("Login success");
                     await SecureStorage.SetAsync("hasAuth", "true");
                     //await Shell.Current.GoToAsync("///home");
                     //await Navigation.PushModalAsync(new AppFlyout(RootItem));
-                    Application.Current.MainPage = new AppFlyout(RootItem);
+
+                    var hasAcceptToS = await SecureStorage.GetAsync("hasAcceptToS");
+                    if (string.IsNullOrEmpty(hasAcceptToS))
+                    {
+                        WeakReferenceMessenger.Default.Send(new MyMessage("hasAcceptToS"));
+                    }
+                    else
+                    {
+                        Application.Current.MainPage = new AppFlyout(RootItem);
+                    }
                 }
                 else
                 {

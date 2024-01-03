@@ -1,16 +1,11 @@
 ﻿using MAUIMiniApp.Models;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using YAP.Libs.Logger;
 using YAP.Libs.ViewModels;
 using YAP.Libs.Alerts;
+using MAUIMiniApp.Views;
+using CommunityToolkit.Mvvm.Messaging;
+using YAP.Libs.Models;
 
 namespace MAUIMiniApp.ViewModels
 {
@@ -140,20 +135,6 @@ namespace MAUIMiniApp.ViewModels
             }
         }
 
-        ICommand _OpenWebCommand;
-        public ICommand OpenWebCommand => _OpenWebCommand ?? (_OpenWebCommand = new Command<string>(async (x) => await ExecuteOpenWebCommand(x)));
-        async Task ExecuteOpenWebCommand(string url)
-        {
-            try
-            {
-                await Browser.OpenAsync(url);
-            }
-            catch (Exception ex)
-            {
-                Log.Write(Log.LogEnum.Error, nameof(ExecuteOpenWebCommand) + " - " + ex.Message);
-            }
-        }
-
         ICommand _LoadCommand;
         public ICommand LoadCommand => _LoadCommand ?? (_LoadCommand = new Command(async () => await ExecuteLoadCommand()));
         async Task ExecuteLoadCommand()
@@ -227,6 +208,26 @@ namespace MAUIMiniApp.ViewModels
             catch (Exception ex)
             {
                 Log.Write(Log.LogEnum.Error, nameof(t_Tick) + " - " + ex.Message);
+            }
+        }
+
+        ICommand _CheckToSCommand;
+        public ICommand CheckToSCommand => _CheckToSCommand ?? (_CheckToSCommand = new Command(async () => await ExecuteCheckToSCommand()));
+        async Task ExecuteCheckToSCommand()
+        {
+            try
+            {
+                var hasAuth = await SecureStorage.GetAsync("hasAuth");
+                var hasAcceptToS = await SecureStorage.GetAsync("hasAcceptToS");
+
+                if (!string.IsNullOrEmpty(hasAuth) && string.IsNullOrEmpty(hasAcceptToS))
+                {
+                    WeakReferenceMessenger.Default.Send(new MyMessage("hasAcceptToS"));
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Write(Log.LogEnum.Error, nameof(ExecuteCheckToSCommand) + " - " + ex.Message);
             }
         }
     }

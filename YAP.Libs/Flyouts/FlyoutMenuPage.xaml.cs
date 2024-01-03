@@ -26,7 +26,7 @@ public partial class FlyoutMenuPage : ContentPage
         try
         {
             SecureStorage.Remove("hasAuth");
-            //await Navigation.PushModalAsync(new LoginPage(RootItem));
+            SecureStorage.Remove("hasAcceptToS");
             Application.Current.MainPage = new LoginPage(RootItem);
         }
         catch (Exception ex)

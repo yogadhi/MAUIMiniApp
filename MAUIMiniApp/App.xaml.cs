@@ -3,7 +3,9 @@ using Android.Content.Res;
 using Microsoft.Maui.Controls.Compatibility.Platform.Android;
 #endif
 
+using CommunityToolkit.Mvvm.Messaging;
 using MAUIMiniApp.Views;
+using YAP.Libs.Flyouts;
 using YAP.Libs.Interfaces;
 using YAP.Libs.Logger;
 using YAP.Libs.Models;
@@ -13,8 +15,9 @@ namespace MAUIMiniApp
 {
     public partial class App : Application
     {
-        public static IAlertService AlertSvc;
+        public static IAlertService AlertSvc { get; set; }
         private static RootItem RootItem { get; set; }
+        public static Dictionary<string, string> InfoList { get; set; }
 
         public App(IServiceProvider provider)
         {
@@ -32,12 +35,11 @@ namespace MAUIMiniApp
 
                 RootItem.MenuItemList = new List<FlyoutPageItem>
                 {
-                    new FlyoutPageItem { Title = "Home", IconSource = "contacts.png", TargetType = typeof(HomePage) },
-                    new FlyoutPageItem { Title = "OTP", IconSource = "reminders.png", TargetType = typeof(OTPPage) },
-                    new FlyoutPageItem { Title = "Settings", IconSource = "todo.png", TargetType = typeof(SettingsPage) },
+                    new FlyoutPageItem { Title = "OTP", IconSource = "reminders.png", TargetType = typeof(OTPPage), TargetPage = new OTPPage() },
+                    new FlyoutPageItem { Title = "Settings", IconSource = "todo.png", TargetType = typeof(SettingsPage), TargetPage = new SettingsPage() },
                 };
 
-                RootItem.SelectedMenuIndex = 1;
+                //RootItem.SelectedMenuIndex = 1;
 
                 //MainPage = new AppFlyout(MenuItemList);
                 MainPage = new LoadingPage(RootItem);
@@ -48,6 +50,22 @@ namespace MAUIMiniApp
 #if __ANDROID__
                 (handler.PlatformView as Android.Views.View).SetBackgroundColor(Microsoft.Maui.Graphics.Colors.Transparent.ToAndroid());
 #endif
+                });
+
+                WeakReferenceMessenger.Default.Register<MyMessage>(this, async (r, m) =>
+                {
+                    if (m.Value == "hasAcceptToS")
+                    {
+                        var hasAcceptToS = await SecureStorage.GetAsync("hasAcceptToS");
+                        if (string.IsNullOrEmpty(hasAcceptToS))
+                        {
+                            Current.MainPage = new HomePage();
+                        }
+                        else
+                        {
+                            Current.MainPage = new AppFlyout(RootItem);
+                        }
+                    }
                 });
             }
             catch (Exception ex)
@@ -61,6 +79,7 @@ namespace MAUIMiniApp
             try
             {
                 base.OnStart();
+
                 var versionInfo = await GetVersionInfoList();
                 if (versionInfo != null)
                 {
@@ -75,42 +94,50 @@ namespace MAUIMiniApp
 
         public static async Task<Dictionary<string, string>> GetVersionInfoList()
         {
-            Dictionary<string, string> infoList = new Dictionary<string, string>();
 
             try
             {
-                await Task.Delay(2000);
+                InfoList = new Dictionary<string, string>();
 
                 var IsFirst = VersionTracking.Default.IsFirstLaunchEver.ToString();
-                infoList.Add("IsFirst", IsFirst);
+                InfoList.Add("IsFirst", IsFirst);
+
                 var CurrentVersionIsFirst = VersionTracking.Default.IsFirstLaunchForCurrentVersion.ToString();
-                infoList.Add("CurrentVersionIsFirst", CurrentVersionIsFirst);
+                InfoList.Add("CurrentVersionIsFirst", CurrentVersionIsFirst);
+
                 var CurrentBuildIsFirst = VersionTracking.Default.IsFirstLaunchForCurrentBuild.ToString();
-                infoList.Add("CurrentBuildIsFirst", CurrentBuildIsFirst);
+                InfoList.Add("CurrentBuildIsFirst", CurrentBuildIsFirst);
+
                 var CurrentVersion = VersionTracking.Default.CurrentVersion.ToString();
-                infoList.Add("CurrentVersion", CurrentVersion);
+                InfoList.Add("CurrentVersion", CurrentVersion);
+
                 var CurrentBuild = VersionTracking.Default.CurrentBuild.ToString();
-                infoList.Add("CurrentBuild", CurrentBuild);
+                InfoList.Add("CurrentBuild", CurrentBuild);
+
                 var FirstInstalledVer = VersionTracking.Default.FirstInstalledVersion.ToString();
-                infoList.Add("FirstInstalledVer", FirstInstalledVer);
+                InfoList.Add("FirstInstalledVer", FirstInstalledVer);
+
                 var FirstInstalledBuild = VersionTracking.Default.FirstInstalledBuild.ToString();
-                infoList.Add("FirstInstalledBuild", FirstInstalledBuild);
+                InfoList.Add("FirstInstalledBuild", FirstInstalledBuild);
+
                 var VersionHistory = String.Join(',', VersionTracking.Default.VersionHistory);
-                infoList.Add("VersionHistory", VersionHistory);
+                InfoList.Add("VersionHistory", VersionHistory);
+
                 var BuildHistory = String.Join(',', VersionTracking.Default.BuildHistory);
-                infoList.Add("BuildHistory", BuildHistory);
+                InfoList.Add("BuildHistory", BuildHistory);
 
                 // These two properties may be null if this is the first version
                 var PreviousVersion = VersionTracking.Default.PreviousVersion?.ToString() ?? "none";
-                infoList.Add("PreviousVersion", PreviousVersion);
+                InfoList.Add("PreviousVersion", PreviousVersion);
+
                 var PreviousBuild = VersionTracking.Default.PreviousBuild?.ToString() ?? "none";
-                infoList.Add("PreviousBuild", PreviousBuild);
+                InfoList.Add("PreviousBuild", PreviousBuild);
             }
             catch (Exception ex)
             {
                 Log.Write(Log.LogEnum.Error, nameof(GetVersionInfoList) + " - " + ex.Message);
             }
-            return infoList;
+            return InfoList;
         }
     }
 }

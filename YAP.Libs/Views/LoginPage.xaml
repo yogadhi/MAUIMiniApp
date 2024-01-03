@@ -15,13 +15,17 @@
           VerticalOptions="FillAndExpand" 
           RowDefinitions="*" 
           ColumnDefinitions="*">
-        <VerticalStackLayout VerticalOptions="CenterAndExpand" 
-                             HorizontalOptions="CenterAndExpand"
-                             Padding="15">
+        <Grid VerticalOptions="FillAndExpand"
+              HorizontalOptions="FillAndExpand"
+              RowDefinitions="*"
+              ColumnDefinitions="*"
+              Padding="15">
             <Frame CornerRadius="10"
                    HasShadow="True"
-                   HorizontalOptions="FillAndExpand"
-                   VerticalOptions="FillAndExpand"
+                   Grid.Column="0"
+                   Grid.Row="0"
+                   HorizontalOptions="CenterAndExpand"
+                   VerticalOptions="CenterAndExpand"
                    ZIndex="0"
                    Padding="5">
                 <Frame.Shadow>
@@ -37,19 +41,11 @@
                                FontAttributes="Bold"/>
                     </VerticalStackLayout>
 
-                    <Grid Padding="10" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
+                    <Grid Padding="10" 
+                          HorizontalOptions="FillAndExpand" 
+                          VerticalOptions="FillAndExpand"
+                          RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+                          ColumnDefinitions="*">
 
                         <Label FontFamily="Consolas" Grid.Row="0" Text="Username" />
                         <Frame CornerRadius="10" Padding="5" Grid.Row="1" HorizontalOptions="FillAndExpand">
@@ -83,27 +79,19 @@
                                  Grid.Row="5"
                                  HeightRequest="2"
                                  HorizontalOptions="FillAndExpand" />
-
-                        <VerticalStackLayout Padding="5" Margin="0,10,0,0" Grid.Row="6">
-                            <Label >
-                                <Label.FormattedText>
-                                    <FormattedString>
-                                        <Span Text="Don't have an account?" />
-                                        <Span Text=" Sign Up"
-                                              TextColor="{StaticResource Primary}"
-                                              TextDecorations="Underline">
-                                            <Span.GestureRecognizers>
-                                                <TapGestureRecognizer Command="{Binding ValidateCommand}"
-                                                                      CommandParameter="https://learn.microsoft.com/dotnet/maui/" />
-                                            </Span.GestureRecognizers>
-                                        </Span>
-                                    </FormattedString>
-                                </Label.FormattedText>
+                        
+                        <HorizontalStackLayout Margin="0,10,0,0" Grid.Row="6" Spacing="3">
+                            <Label HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Start" Text="Don't have an account?"/>
+                            <Label HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Start" Text="Sign Up" TextColor="{StaticResource Primary}">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding OpenWebCommand}"
+                                                          CommandParameter="https://learn.microsoft.com/dotnet/maui/" />
+                                </Label.GestureRecognizers>
                             </Label>
-                        </VerticalStackLayout>
+                        </HorizontalStackLayout>
                     </Grid>
                 </StackLayout>
             </Frame>
-        </VerticalStackLayout>
+        </Grid>
     </Grid>
 </ContentPage>

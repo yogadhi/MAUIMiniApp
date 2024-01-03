@@ -32,7 +32,6 @@ public partial class AppFlyout : FlyoutPage
                         obj = RootItem.MenuItemList[RootItem.SelectedMenuIndex];
                     }
 
-                    //mainFlyout.Detail = new NavigationPage((Page)Activator.CreateInstance(obj.TargetType));
                     menuFlyout.collectionView.SelectionChanged += OnSelectionChanged;
                     menuFlyout.collectionView.SelectedItem = obj;
                 }
@@ -58,6 +57,18 @@ public partial class AppFlyout : FlyoutPage
         catch (Exception ex)
         {
             Logger.Log.Write(Logger.Log.LogEnum.Error, nameof(OnSelectionChanged) + " - " + ex.Message);
+        }
+    }
+
+    protected override void OnAppearing()
+    {
+        try
+        {
+            
+        }
+        catch (Exception ex)
+        {
+            Logger.Log.Write(Logger.Log.LogEnum.Error, nameof(OnAppearing) + " - " + ex.Message);
         }
     }
 }

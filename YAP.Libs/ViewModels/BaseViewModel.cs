@@ -5,6 +5,8 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
+using YAP.Libs.Logger;
 
 namespace YAP.Libs.ViewModels
 {
@@ -22,6 +24,20 @@ namespace YAP.Libs.ViewModels
         {
             get { return title; }
             set { SetProperty(ref title, value); }
+        }
+
+        ICommand _OpenWebCommand;
+        public ICommand OpenWebCommand => _OpenWebCommand ?? (_OpenWebCommand = new Command<string>(async (x) => await ExecuteOpenWebCommand(x)));
+        async Task ExecuteOpenWebCommand(string url)
+        {
+            try
+            {
+                await Browser.OpenAsync(url);
+            }
+            catch (Exception ex)
+            {
+                Log.Write(Log.LogEnum.Error, nameof(ExecuteOpenWebCommand) + " - " + ex.Message);
+            }
         }
 
         protected bool SetProperty<T>(ref T backingStore, T value,
