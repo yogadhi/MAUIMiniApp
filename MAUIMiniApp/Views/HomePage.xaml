@@ -20,8 +20,8 @@
                       ColumnSpacing="5"
                       RowDefinitions="*"
                       ColumnDefinitions="*,*">
-                    <Button x:Name="btnReject" Grid.Column="0" Text="Reject" BackgroundColor="Red" HorizontalOptions="FillAndExpand" Clicked="btnReject_Clicked"/>
-                    <Button x:Name="btnAccept" Grid.Column="1" Text="Accept" BackgroundColor="Green" HorizontalOptions="FillAndExpand" Clicked="btnAccept_Clicked"/>
+                    <Button x:Name="btnReject" Grid.Column="0" Text="Reject" BackgroundColor="Red" HorizontalOptions="EndAndExpand" Clicked="btnReject_Clicked"/>
+                    <Button x:Name="btnAccept" Grid.Column="1" Text="Accept" BackgroundColor="Green" HorizontalOptions="StartAndExpand" Clicked="btnAccept_Clicked"/>
                 </Grid>
             </Grid>
         </Frame>

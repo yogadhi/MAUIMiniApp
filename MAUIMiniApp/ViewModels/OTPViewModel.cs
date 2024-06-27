@@ -120,6 +120,20 @@ namespace MAUIMiniApp.ViewModels
             }
         }
 
+        OTPItem _SelectedOTP;
+        public OTPItem SelectedOTP
+        {
+            get { return _SelectedOTP; }
+            set
+            {
+                if (_SelectedOTP != value)
+                {
+                    _SelectedOTP = value;
+                    OnPropertyChanged("SelectedOTP");
+                }
+            }
+        }
+
         public OTPViewModel()
         {
             try
@@ -176,12 +190,28 @@ namespace MAUIMiniApp.ViewModels
         {
             try
             {
-                await Clipboard.Default.SetTextAsync(obj.OTP);
-                Toasts.Show(obj.OTP + " copied");
+                var objOTPItemSeelcted = SelectedOTP;
+                if (objOTPItemSeelcted != null)
+                {
+                    string action = await App.Current.MainPage.DisplayActionSheet(objOTPItemSeelcted.Account, "Cancel", null, new string[] { "Copy", "Rename", "Remove", "Unbind" });
+                    if (!string.IsNullOrEmpty(action))
+                    {
+                        if (action == "Copy")
+                        {
+                            await Clipboard.Default.SetTextAsync(objOTPItemSeelcted.OTP);
+                            Toasts.Show(objOTPItemSeelcted.OTP + " copied");
+                        }
+                    }
+                }
+                
             }
             catch (Exception ex)
             {
                 Log.Write(Log.LogEnum.Error, nameof(ExecuteSelectionCommand) + " - " + ex.Message);
+            }
+            finally
+            {
+                SelectedOTP = null;
             }
         }
 
