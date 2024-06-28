@@ -25,6 +25,8 @@ namespace MAUIMiniApp
             {
                 InitializeComponent();
 
+                Application.Current.UserAppTheme = AppTheme.Light;
+
                 RootItem = new RootItem
                 {
                     Provider = provider,

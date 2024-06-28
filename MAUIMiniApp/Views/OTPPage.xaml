@@ -49,12 +49,12 @@
                         SelectionMode="Single">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Grid HorizontalOptions="Fill"
+                    <Grid HorizontalOptions="CenterAndExpand"
                           VerticalOptions="Fill"
-                          RowDefinitions="*"
-                          ColumnDefinitions="*">
-                        <Grid RowDefinitions="*,*" Grid.Row="0" Grid.Column="0" Padding="10,10" VerticalOptions="CenterAndExpand" HorizontalOptions="Center">
-                            <HorizontalStackLayout Spacing="3" Grid.Row="0">
+                          RowDefinitions="Auto"
+                          ColumnDefinitions="Auto">
+                        <Grid RowDefinitions="*,*" ColumnDefinitions="*,Auto" Grid.Row="0" Grid.Column="0" Padding="10,10" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
+                            <HorizontalStackLayout Spacing="3" Grid.Row="0" Grid.Column="0">
                                 <Label Text="Account :" FontSize="16" HorizontalOptions="StartAndExpand" />
                                 <Label Text="{Binding Account}" FontSize="16" HorizontalOptions="StartAndExpand" />
                             </HorizontalStackLayout>
@@ -66,9 +66,13 @@
                                              IsPassword="False"
                                              HorizontalOptions="CenterAndExpand"
                                              IsEnabled="False"
+                                             Grid.Column="0"
                                              Grid.Row="1"
                                              PINLength="6"/>
-                            <Frame BackgroundColor="Transparent" BorderColor="Transparent" Grid.Row="0" Grid.RowSpan="2">
+
+                            <Label Text="{Binding TimerClock}" Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" FontSize="16" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" />
+
+                            <Frame BackgroundColor="Transparent" BorderColor="Transparent" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="2">
                                 <Frame.GestureRecognizers>
                                     <TapGestureRecognizer Command="{Binding SelectionCommand}"/>
                                 </Frame.GestureRecognizers>

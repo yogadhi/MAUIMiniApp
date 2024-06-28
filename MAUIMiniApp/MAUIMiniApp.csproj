@@ -31,39 +31,39 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-ios|AnyCPU'">
-	  <ApplicationDisplayVersion>1.0.0</ApplicationDisplayVersion>
-	  <ApplicationId>com.yap.mauiminiapp</ApplicationId>
+		<ApplicationDisplayVersion>1.0.0</ApplicationDisplayVersion>
+		<ApplicationId>com.yap.mauiminiapp</ApplicationId>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-maccatalyst|AnyCPU'">
-	  <ApplicationDisplayVersion>1.0.0</ApplicationDisplayVersion>
-	  <ApplicationId>com.yap.mauiminiapp</ApplicationId>
+		<ApplicationDisplayVersion>1.0.0</ApplicationDisplayVersion>
+		<ApplicationId>com.yap.mauiminiapp</ApplicationId>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-android33.0|AnyCPU'">
-	  <ApplicationDisplayVersion>1.0.0</ApplicationDisplayVersion>
-	  <ApplicationId>com.yap.mauiminiapp</ApplicationId>
+		<ApplicationDisplayVersion>1.0.0</ApplicationDisplayVersion>
+		<ApplicationId>com.yap.mauiminiapp</ApplicationId>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-ios|AnyCPU'">
-	  <ApplicationDisplayVersion>1.0.0</ApplicationDisplayVersion>
-	  <ApplicationId>com.yap.mauiminiapp</ApplicationId>
+		<ApplicationDisplayVersion>1.0.0</ApplicationDisplayVersion>
+		<ApplicationId>com.yap.mauiminiapp</ApplicationId>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-maccatalyst|AnyCPU'">
-	  <ApplicationDisplayVersion>1.0.0</ApplicationDisplayVersion>
-	  <ApplicationId>com.yap.mauiminiapp</ApplicationId>
+		<ApplicationDisplayVersion>1.0.0</ApplicationDisplayVersion>
+		<ApplicationId>com.yap.mauiminiapp</ApplicationId>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-android33.0|AnyCPU'">
-	  <ApplicationDisplayVersion>1.0.0</ApplicationDisplayVersion>
-	  <AndroidPackageFormat>apk</AndroidPackageFormat>
-	  <AndroidLinkTool>r8</AndroidLinkTool>
-	  <ApplicationId>com.yap.mauiminiapp</ApplicationId>
+		<ApplicationDisplayVersion>1.0.0</ApplicationDisplayVersion>
+		<AndroidPackageFormat>apk</AndroidPackageFormat>
+		<AndroidLinkTool>r8</AndroidLinkTool>
+		<ApplicationId>com.yap.mauiminiapp</ApplicationId>
 	</PropertyGroup>
 
 	<PropertyGroup>
-	  <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net7.0-windows10.0.22621.0</TargetFrameworks>
+		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net7.0-windows10.0.22621.0</TargetFrameworks>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -71,7 +71,8 @@
 		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
 
 		<!-- Splash Screen -->
-		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
+		<!--<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />-->
+		<MauiSplashScreen Include="Resources\Splash\splashscreen_logo.svg" Color="#512BD4" BaseSize="128,128" />
 
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
@@ -85,18 +86,18 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Remove="Resources\Images\account_plus_outline.png" />
-	  <None Remove="Resources\Images\account_plus_outline.svg" />
-	  <None Remove="Resources\Images\contacts.png" />
-	  <None Remove="Resources\Images\gear_fill.svg" />
-	  <None Remove="Resources\Images\heart_fill.svg" />
-	  <None Remove="Resources\Images\house_door_fill.svg" />
-	  <None Remove="Resources\Images\journal_check.svg" />
-	  <None Remove="Resources\Images\plus_square_fill.svg" />
-	  <None Remove="Resources\Images\reminders.png" />
-	  <None Remove="Resources\Images\search.svg" />
-	  <None Remove="Resources\Images\todo.png" />
-	  <None Remove="Resources\Images\trash_fill.svg" />
+		<None Remove="Resources\Images\account_plus_outline.png" />
+		<None Remove="Resources\Images\account_plus_outline.svg" />
+		<None Remove="Resources\Images\contacts.png" />
+		<None Remove="Resources\Images\gear_fill.svg" />
+		<None Remove="Resources\Images\heart_fill.svg" />
+		<None Remove="Resources\Images\house_door_fill.svg" />
+		<None Remove="Resources\Images\journal_check.svg" />
+		<None Remove="Resources\Images\plus_square_fill.svg" />
+		<None Remove="Resources\Images\reminders.png" />
+		<None Remove="Resources\Images\search.svg" />
+		<None Remove="Resources\Images\todo.png" />
+		<None Remove="Resources\Images\trash_fill.svg" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -107,22 +108,22 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\YAP.Libs\YAP.Libs.csproj" />
+		<ProjectReference Include="..\YAP.Libs\YAP.Libs.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="AppTabbed.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\HomePage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\OTPPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\SettingsPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
+		<MauiXaml Update="AppTabbed.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Views\HomePage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Views\OTPPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Views\SettingsPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 	</ItemGroup>
 
 </Project>

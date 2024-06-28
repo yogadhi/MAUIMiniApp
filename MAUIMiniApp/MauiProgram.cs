@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using CommunityToolkit.Maui;
 using YAP.Libs.Interfaces;
-using YAP.Libs.Alerts; 
+using YAP.Libs.Alerts;
 
 namespace MAUIMiniApp
 {
@@ -15,21 +15,23 @@ namespace MAUIMiniApp
             {
                 essentials.UseVersionTracking();
             });
+
             builder.UseMauiApp<App>().ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             }).UseMauiCommunityToolkit();
+
 #if DEBUG
             builder.Logging.AddDebug();
 #endif
 
-            //            Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping(nameof(Entry), (handler, view) =>
-            //            {
-            //#if ANDROID
-            //            handler.PlatformView.SetBackgroundColor(Android.Graphics.Color.Transparent);
-            //#endif
-            //            });
+//            Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping(nameof(Entry), (handler, view) =>
+//            {
+//#if ANDROID
+//                handler.PlatformView.SetBackgroundColor(Android.Graphics.Color.Transparent);
+//#endif
+//            });
 
             return builder.Build();
         }

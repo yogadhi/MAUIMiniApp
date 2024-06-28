@@ -203,7 +203,7 @@ namespace MAUIMiniApp.ViewModels
                         }
                     }
                 }
-                
+
             }
             catch (Exception ex)
             {
@@ -233,6 +233,13 @@ namespace MAUIMiniApp.ViewModels
                     endTime = DateTime.Now.AddSeconds(30);
 
                     LoadCommand.Execute(null);
+                }
+                else
+                {
+                    List<OTPItem> xList = new List<OTPItem>();
+                    xList.AddRange(OTPItemList);
+                    OTPItemList = new List<OTPItem>();
+                    OTPItemList.AddRange(xList);
                 }
             }
             catch (Exception ex)
