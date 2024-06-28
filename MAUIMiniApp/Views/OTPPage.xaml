@@ -25,6 +25,7 @@
 
     <Grid HorizontalOptions="FillAndExpand"
           VerticalOptions="FillAndExpand"
+          Padding="10"
           RowDefinitions="Auto,*">
 
         <Grid HorizontalOptions="CenterAndExpand"
@@ -38,8 +39,8 @@
         </Grid>
 
         <CollectionView x:Name="collectionView"
-                        HorizontalOptions="Fill"
-                        VerticalOptions="Fill"
+                        HorizontalOptions="FillAndExpand"
+                        VerticalOptions="FillAndExpand"
                         Grid.Row="1"
                         SelectedItem="{Binding SelectedOTP, Mode=TwoWay}"
                         SelectionChangedCommand="{Binding SelectionCommand}"
@@ -49,28 +50,37 @@
                         SelectionMode="Single">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Grid HorizontalOptions="CenterAndExpand"
-                          VerticalOptions="Fill"
-                          RowDefinitions="Auto"
-                          ColumnDefinitions="Auto">
-                        <Grid RowDefinitions="*,*" ColumnDefinitions="*,Auto" Grid.Row="0" Grid.Column="0" Padding="10,10" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
-                            <HorizontalStackLayout Spacing="3" Grid.Row="0" Grid.Column="0">
+                    <Grid HorizontalOptions="FillAndExpand"
+                          VerticalOptions="FillAndExpand"
+                          RowDefinitions="Auto"                          
+                          ColumnDefinitions="*">
+                        <Grid RowDefinitions="*,*" ColumnDefinitions="Auto,Auto" Grid.Row="0" Grid.Column="0" Padding="10,10" VerticalOptions="FillAndExpand" HorizontalOptions="CenterAndExpand" RowSpacing="5">
+                            <HorizontalStackLayout Spacing="3" Grid.Row="0" Grid.Column="0" HorizontalOptions="StartAndExpand">
                                 <Label Text="Account :" FontSize="16" HorizontalOptions="StartAndExpand" />
                                 <Label Text="{Binding Account}" FontSize="16" HorizontalOptions="StartAndExpand" />
                             </HorizontalStackLayout>
+
                             <pinview:PINView x:Name="existingPINView"
-                                             BoxFocusAnimation="ZoomInOut"
+                                             HorizontalOptions="CenterAndExpand"
+                                             Grid.Column="0"
+                                             Grid.Row="1"
                                              PINValue="{Binding OTP}"
                                              Color="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
                                              BoxShape="Squere"
                                              IsPassword="False"
-                                             HorizontalOptions="CenterAndExpand"
                                              IsEnabled="False"
-                                             Grid.Column="0"
-                                             Grid.Row="1"
                                              PINLength="6"/>
 
-                            <Label Text="{Binding TimerClock}" Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" FontSize="16" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" />
+                            <Grid HorizontalOptions="CenterAndExpand"
+                                  VerticalOptions="CenterAndExpand"
+                                  Grid.Row="1"
+                                  Grid.Column="1"
+                                  Margin="5"
+                                  RowDefinitions="Auto"
+                                  ColumnDefinitions="Auto">
+                                <Label Grid.Row="0" Grid.Column="0" HorizontalOptions="Center" VerticalOptions="Center" Text="{Binding TimerClock}" FontSize="20"/>
+                                <ActivityIndicator IsRunning="True" Grid.Row="0" Grid.Column="0" HeightRequest="50" WidthRequest="50" Color="{Binding TimerColor}" />
+                            </Grid>
 
                             <Frame BackgroundColor="Transparent" BorderColor="Transparent" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="2">
                                 <Frame.GestureRecognizers>

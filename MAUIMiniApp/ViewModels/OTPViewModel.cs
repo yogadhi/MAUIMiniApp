@@ -6,6 +6,7 @@ using YAP.Libs.Alerts;
 using MAUIMiniApp.Views;
 using CommunityToolkit.Mvvm.Messaging;
 using YAP.Libs.Models;
+using System.Collections.ObjectModel;
 
 namespace MAUIMiniApp.ViewModels
 {
@@ -106,8 +107,8 @@ namespace MAUIMiniApp.ViewModels
             }
         }
 
-        List<OTPItem> _OTPItemList;
-        public List<OTPItem> OTPItemList
+        ObservableCollection<OTPItem> _OTPItemList;
+        public ObservableCollection<OTPItem> OTPItemList
         {
             get { return _OTPItemList; }
             set
@@ -140,6 +141,12 @@ namespace MAUIMiniApp.ViewModels
             {
                 Title = "One-Time Password";
 
+                timer = new System.Timers.Timer
+                {
+                    Interval = 1000
+                };
+                timer.Elapsed += t_Tick;
+
                 //OpenWebCommand.Execute("https://aka.ms/xamarin-quickstart");
                 LoadCommand.Execute(null);
             }
@@ -159,17 +166,12 @@ namespace MAUIMiniApp.ViewModels
             {
                 Random generator = new Random();
 
-                OTPItemList = new List<OTPItem>()
+                OTPItemList = new ObservableCollection<OTPItem>()
                 {
                     new OTPItem() { Account = "yogadhiprananda@gmail.com", OTP = generator.Next(0, 1000000).ToString("D6") },
                     new OTPItem() { Account = "yogadhipra93@gmail.com", OTP = generator.Next(0, 1000000).ToString("D6") },
                 };
 
-                timer = new System.Timers.Timer
-                {
-                    Interval = 1000
-                };
-                timer.Elapsed += t_Tick;
                 TimeSpan ts = endTime - DateTime.Now;
                 cTimerInt = ts.Seconds;
                 timer.Start();
@@ -228,18 +230,24 @@ namespace MAUIMiniApp.ViewModels
 
                     Random generator = new Random();
 
-                    OTPItemList.Select(c => { c.OTP = generator.Next(0, 1000000).ToString("D6"); return c; }).ToList();
+                    OTPItemList.Select(c => { 
+                        c.OTP = generator.Next(0, 1000000).ToString("D6"); 
+                        return c; 
+                    }).ToList();
 
                     endTime = DateTime.Now.AddSeconds(30);
 
-                    LoadCommand.Execute(null);
+                    timer.Start();
+
+                    //LoadCommand.Execute(null);
                 }
                 else
                 {
-                    List<OTPItem> xList = new List<OTPItem>();
-                    xList.AddRange(OTPItemList);
-                    OTPItemList = new List<OTPItem>();
-                    OTPItemList.AddRange(xList);
+                    OTPItemList.Select(c => { 
+                        c.TimerClock = cTimerInt;
+                        c.TimerColor = ProgressColor;
+                        return c; 
+                    }).ToList();
                 }
             }
             catch (Exception ex)
