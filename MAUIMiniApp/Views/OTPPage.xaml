@@ -7,11 +7,13 @@
              x:Class="MAUIMiniApp.Views.OTPPage"
              Title="{Binding Title}">
 
-    <!--<ContentPage.ToolbarItems>
+    <ContentPage.ToolbarItems>
         <ToolbarItem Text="Add account"
                      Order="Primary"
-                     IconImageSource="account_plus_outline.svg"/>
-    </ContentPage.ToolbarItems>-->
+                     x:Name="btnAddAccount"
+                     Clicked="btnAddAccount_Clicked"
+                     IconImageSource="add_unpressed.png"/>
+    </ContentPage.ToolbarItems>
 
     <ContentPage.BindingContext>
         <vm:OTPViewModel />

@@ -88,6 +88,7 @@
 	<ItemGroup>
 		<None Remove="Resources\Images\account_plus_outline.png" />
 		<None Remove="Resources\Images\account_plus_outline.svg" />
+		<None Remove="Resources\Images\add_unpressed.png" />
 		<None Remove="Resources\Images\contacts.png" />
 		<None Remove="Resources\Images\gear_fill.svg" />
 		<None Remove="Resources\Images\heart_fill.svg" />
@@ -104,7 +105,8 @@
 		<PackageReference Include="CommunityToolkit.Maui" Version="6.0.0" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
-		<PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
+		<PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
+		<PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.8" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -117,6 +119,9 @@
 		</MauiXaml>
 		<MauiXaml Update="Views\HomePage.xaml">
 			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Views\NewAccountPage.xaml">
+		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="Views\OTPPage.xaml">
 			<Generator>MSBuild:Compile</Generator>

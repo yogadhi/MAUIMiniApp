@@ -36,4 +36,9 @@ public partial class OTPPage : ContentPage
             Log.Write(Log.LogEnum.Error, nameof(OTPPage) + " - " + ex.Message);
         }
     }
+
+    private async void btnAddAccount_Clicked(object sender, EventArgs e)
+    {
+        await Navigation.PushAsync(new NewAccountPage());
+    }
 }
