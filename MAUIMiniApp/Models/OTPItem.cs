@@ -1,30 +1,37 @@
-﻿using System.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace MAUIMiniApp.Models
 {
-    public class OTPItem
+    public class OTPItem : ObservableObject
     {
-        public string OTP { get; set; }
-        public string Account { get; set; }
-
-        public int TimerClock
+        string _OTP;
+        public string OTP
         {
-            get
-            {
-                TimeSpan ts = new DateTime(2024, 6, 28, 19, 0, 0) - DateTime.Now;
-                return ts.Seconds;
-            }
+            get => _OTP;
+            set => SetProperty(ref _OTP, value);
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        string _Account;
+        public string Account
         {
-            var changed = PropertyChanged;
-            if (changed == null)
-                return;
+            get => _Account;
+            set => SetProperty(ref _Account, value);
+        }
 
-            changed.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        int _TimerClock;
+        public int TimerClock
+        {
+            get => _TimerClock;
+            set => SetProperty(ref _TimerClock, value);
+        }
+
+        Color _TimerColor = Colors.Green;
+        public Color TimerColor
+        {
+            get => _TimerColor;
+            set => SetProperty(ref _TimerColor, value);
         }
     }
 }
