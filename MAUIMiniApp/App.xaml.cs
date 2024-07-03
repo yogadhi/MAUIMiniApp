@@ -25,13 +25,6 @@ namespace MAUIMiniApp
             {
                 InitializeComponent();
 
-#if DEBUG
-                SecureStorage.RemoveAll();
-#endif
-
-                //hardcoded because CQ Auth no need login page
-                SecureStorage.SetAsync("hasAuth", "true");
-
                 RootItem = new RootItem
                 {
                     Provider = provider,
@@ -62,7 +55,7 @@ namespace MAUIMiniApp
                     {
                         if (m.Value.Key == "hasAcceptedToS")
                         {
-                            if((bool)m.Value.CustomObject)
+                            if ((bool)m.Value.CustomObject)
                             {
                                 var page = RootItem.MenuItemList[0].TargetPage;
                                 MainPage = new NavigationPage(page);

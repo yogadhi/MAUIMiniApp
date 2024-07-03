@@ -90,6 +90,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<None Remove="Platforms\Android\Resources\xml\auto_backup_rules.xml" />
 		<None Remove="Resources\Images\account_plus_outline.png" />
 		<None Remove="Resources\Images\account_plus_outline.svg" />
 		<None Remove="Resources\Images\add_unpressed.png" />
@@ -116,6 +117,10 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\YAP.Libs\YAP.Libs.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Resource Include="Platforms\Android\Resources\xml\auto_backup_rules.xml" />
 	</ItemGroup>
 
 	<ItemGroup>

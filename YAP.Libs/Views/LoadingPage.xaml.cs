@@ -31,42 +31,46 @@ public partial class LoadingPage : ContentPage
     {
         try
         {
-            //if (await isAuthenticated())
-            //{
-            //await Shell.Current.GoToAsync("otp");
-            if (RootItem != null)
-            {
-                if (RootItem.MenuItemList != null)
-                {
-                    if (RootItem.MenuItemList.Count > 1)
-                    {
-                        Application.Current.MainPage = new AppFlyout(RootItem);
-                    }
-                    else
-                    {
-                        //var hasAuth = await SecureStorage.GetAsync("hasAuth");
-                        var hasAuth = "true";
-                        //var hasAcceptToS = await SecureStorage.GetAsync("hasAcceptToS");
-                        var hasAcceptToS = string.Empty;
+#if DEBUG
+            SecureStorage.RemoveAll();
+#endif
+            //hardcoded because CQ Auth no need login page
+            await SecureStorage.SetAsync("hasAuth", "true");
 
-                        if (!string.IsNullOrEmpty(hasAuth) && string.IsNullOrEmpty(hasAcceptToS))
+            if (await isAuthenticated())
+            {
+                //await Shell.Current.GoToAsync("otp");
+                if (RootItem != null)
+                {
+                    if (RootItem.MenuItemList != null)
+                    {
+                        if (RootItem.MenuItemList.Count > 1)
                         {
-                            WeakReferenceMessenger.Default.Send(new MyMessage(new MessageContainer { Key = "hasAcceptedToS", CustomObject = false }));
+                            Application.Current.MainPage = new AppFlyout(RootItem);
                         }
                         else
                         {
-                            var page = RootItem.MenuItemList[0].TargetPage;
-                            Application.Current.MainPage = new NavigationPage(page);
+                            var hasAuth = await SecureStorage.GetAsync("hasAuth");
+                            var hasAcceptToS = await SecureStorage.GetAsync("hasAcceptToS");
+
+                            if (!string.IsNullOrEmpty(hasAuth) && string.IsNullOrEmpty(hasAcceptToS))
+                            {
+                                WeakReferenceMessenger.Default.Send(new MyMessage(new MessageContainer { Key = "hasAcceptedToS", CustomObject = false }));
+                            }
+                            else
+                            {
+                                var page = RootItem.MenuItemList[0].TargetPage;
+                                Application.Current.MainPage = new NavigationPage(page);
+                            }
                         }
                     }
                 }
             }
-            //}
-            //else
-            //{
-            //    //await Shell.Current.GoToAsync("login");
-            //    Application.Current.MainPage = new LoginPage(RootItem);
-            //}
+            else
+            {
+                //await Shell.Current.GoToAsync("login");
+                Application.Current.MainPage = new LoginPage(RootItem);
+            }
         }
         catch (Exception ex)
         {

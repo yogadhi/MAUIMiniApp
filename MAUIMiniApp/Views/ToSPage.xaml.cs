@@ -16,6 +16,11 @@ public partial class ToSPage : ContentPage
 
     private async void btnAccept_Clicked(object sender, EventArgs e)
     {
+        var resPermission = await YAP.Libs.Helpers.Permission.CheckAndRequestCamera();
+        if (resPermission == PermissionStatus.Granted)
+        {
+        }
+
         await SecureStorage.SetAsync("hasAcceptToS", "true");
         WeakReferenceMessenger.Default.Send(new MyMessage(new MessageContainer { Key = "hasAcceptedToS", CustomObject = true }));
     }
