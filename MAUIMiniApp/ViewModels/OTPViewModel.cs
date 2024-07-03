@@ -59,20 +59,6 @@ namespace MAUIMiniApp.ViewModels
                         _ProgressColor = Colors.Red;
                     }
                     OnPropertyChanged("ProgressColor");
-
-                    var x = (decimal)_cTimerInt / (decimal)maxInterval;
-                    var y = Math.Round(x, 2, MidpointRounding.AwayFromZero);
-
-                    if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
-                    {
-                        _Progress = 1 - y;
-                    }
-                    else
-                    {
-                        _Progress = (int)(y * 100);
-                    }
-                    OnPropertyChanged("Progress");
-
                 }
             }
         }
@@ -90,17 +76,11 @@ namespace MAUIMiniApp.ViewModels
             }
         }
 
-        decimal _Progress;
-        public decimal Progress
+        int _Progress;
+        public int Progress
         {
-            get { return _Progress; }
-            set
-            {
-                if (_Progress != value)
-                {
-                    _Progress = value;
-                }
-            }
+            get => _Progress;
+            set => SetProperty(ref _Progress, value);
         }
 
         Color _ProgressColor = Colors.Green;
@@ -256,10 +236,13 @@ namespace MAUIMiniApp.ViewModels
                 }
                 else
                 {
+                    var xy = ((decimal)cTimerInt / 30);
+                    var z = 1 - xy;
                     OTPItemList.Select(c =>
                     {
                         c.TimerClock = cTimerInt;
                         c.TimerColor = ProgressColor;
+                        c.TimerPercent = z;
                         return c;
                     }).ToList();
                 }

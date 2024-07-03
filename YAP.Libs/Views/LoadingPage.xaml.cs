@@ -31,40 +31,42 @@ public partial class LoadingPage : ContentPage
     {
         try
         {
-            if (await isAuthenticated())
+            //if (await isAuthenticated())
+            //{
+            //await Shell.Current.GoToAsync("otp");
+            if (RootItem != null)
             {
-                //await Shell.Current.GoToAsync("otp");
-                if (RootItem != null)
+                if (RootItem.MenuItemList != null)
                 {
-                    if (RootItem.MenuItemList != null)
+                    if (RootItem.MenuItemList.Count > 1)
                     {
-                        if (RootItem.MenuItemList.Count > 1)
+                        Application.Current.MainPage = new AppFlyout(RootItem);
+                    }
+                    else
+                    {
+                        //var hasAuth = await SecureStorage.GetAsync("hasAuth");
+                        var hasAuth = "true";
+                        //var hasAcceptToS = await SecureStorage.GetAsync("hasAcceptToS");
+                        var hasAcceptToS = string.Empty;
+
+                        if (!string.IsNullOrEmpty(hasAuth) && string.IsNullOrEmpty(hasAcceptToS))
                         {
-                            Application.Current.MainPage = new AppFlyout(RootItem);
+                            WeakReferenceMessenger.Default.Send(new MyMessage(new MessageContainer { Key = "hasAcceptedToS", CustomObject = false }));
                         }
                         else
                         {
-                            var hasAuth = await SecureStorage.GetAsync("hasAuth");
-                            var hasAcceptToS = await SecureStorage.GetAsync("hasAcceptToS");
-
-                            if (!string.IsNullOrEmpty(hasAuth) && string.IsNullOrEmpty(hasAcceptToS))
-                            {
-                                WeakReferenceMessenger.Default.Send(new MyMessage(new MessageContainer { Key = "hasAcceptedToS", CustomObject = false }));
-                            }
-                            else
-                            {
-                                var page = RootItem.MenuItemList[0].TargetPage;
-                                Application.Current.MainPage = new NavigationPage(page);
-                            }
+                            var page = RootItem.MenuItemList[0].TargetPage;
+                            Application.Current.MainPage = new NavigationPage(page);
                         }
                     }
                 }
             }
-            else
-            {
-                //await Shell.Current.GoToAsync("login");
-                Application.Current.MainPage = new LoginPage(RootItem);
-            }
+            //}
+            //else
+            //{
+            //    //await Shell.Current.GoToAsync("login");
+            //    Application.Current.MainPage = new LoginPage(RootItem);
+            //}
         }
         catch (Exception ex)
         {

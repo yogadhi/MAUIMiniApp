@@ -2,14 +2,6 @@
 {
     public static class Constants
     {
-        public const double DefaultBoxSize = 50.0;
-        public const double DefaultDotSize = 20.0;
-        public const double DefaultBoxSpacing = 5.0;
-        public const int DefaultPINLength = 4;
-
-        public static Color DefaultColor = Colors.Black;
-        public static Color DefaultBoxBackgroundColor = Colors.Transparent;
-
         public const string DatabaseFilename = "BaseSQLite.db3";
 
         public const SQLite.SQLiteOpenFlags Flags =

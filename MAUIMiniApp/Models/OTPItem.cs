@@ -33,5 +33,12 @@ namespace MAUIMiniApp.Models
             get => _TimerColor;
             set => SetProperty(ref _TimerColor, value);
         }
+
+        decimal _TimerPercent;
+        public decimal TimerPercent
+        {
+            get => _TimerPercent;
+            set => SetProperty(ref _TimerPercent, value);
+        }
     }
 }

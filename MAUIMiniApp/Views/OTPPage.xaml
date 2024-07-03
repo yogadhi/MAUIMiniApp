@@ -2,8 +2,8 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:MAUIMiniApp.ViewModels"
+             xmlns:pinview="clr-namespace:PINView.Maui;assembly=PINView.Maui"
              xmlns:control="clr-namespace:YAP.Libs.Views;assembly=YAP.Libs"
-             xmlns:pinview="clr-namespace:YAP.Libs;assembly=YAP.Libs"
              x:Class="MAUIMiniApp.Views.OTPPage"
              Title="{Binding Title}">
 
@@ -81,7 +81,8 @@
                                   RowDefinitions="Auto"
                                   ColumnDefinitions="Auto">
                                 <Label Grid.Row="0" Grid.Column="0" HorizontalOptions="Center" VerticalOptions="Center" Text="{Binding TimerClock}" FontSize="20"/>
-                                <ActivityIndicator IsRunning="True" Grid.Row="0" Grid.Column="0" HeightRequest="50" WidthRequest="50" Color="{Binding TimerColor}" />
+                                <control:CircularProgressBar Grid.Row="0" Grid.Column="0" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Size="50" ProgressColor="Red" ProgressLeftColor="Yellow" Progress="{Binding TimerPercent}" Thickness="4" TextColor="Transparent" />
+                                <!--<ActivityIndicator IsRunning="True" Grid.Row="0" Grid.Column="0" HeightRequest="50" WidthRequest="50" Color="{Binding TimerColor}" />-->
                             </Grid>
 
                             <Frame BackgroundColor="Transparent" BorderColor="Transparent" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="2">
