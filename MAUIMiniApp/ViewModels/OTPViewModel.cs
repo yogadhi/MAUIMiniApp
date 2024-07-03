@@ -7,14 +7,23 @@ using MAUIMiniApp.Views;
 using CommunityToolkit.Mvvm.Messaging;
 using YAP.Libs.Models;
 using System.Collections.ObjectModel;
+using CommunityToolkit.Maui.Views;
+using MAUIMiniApp.Data;
 
 namespace MAUIMiniApp.ViewModels
 {
     public class OTPViewModel : BaseViewModel
     {
+        #region Variables
         decimal maxInterval = 30m;
-        System.Timers.Timer timer;
         DateTime endTime = DateTime.Now.AddSeconds(30);
+
+        System.Timers.Timer _timer;
+        public System.Timers.Timer timer
+        {
+            get { return _timer; }
+            set { SetProperty(ref _timer, value); }
+        }
 
         string _CurrentOTP = string.Empty;
         public string CurrentOTP
@@ -134,12 +143,13 @@ namespace MAUIMiniApp.ViewModels
                 }
             }
         }
+        #endregion
 
         public OTPViewModel()
         {
             try
             {
-                Title = "One-Time Password";
+                Title = "CQ Authenticator";
 
                 timer = new System.Timers.Timer
                 {
@@ -156,6 +166,7 @@ namespace MAUIMiniApp.ViewModels
             }
         }
 
+        #region Commands
         ICommand _LoadCommand;
         public ICommand LoadCommand => _LoadCommand ?? (_LoadCommand = new Command(async () => await ExecuteLoadCommand()));
         async Task ExecuteLoadCommand()
@@ -164,14 +175,28 @@ namespace MAUIMiniApp.ViewModels
 
             try
             {
-                Random generator = new Random();
+                //await AccountDatabase.TruncateItemAsync();
 
-                OTPItemList = new ObservableCollection<OTPItem>()
+                var resList = await AccountDatabase.GetItemsAsync();
+                if (resList != null)
                 {
-                    new OTPItem() { Account = "yogadhiprananda@gmail.com", OTP = generator.Next(0, 1000000).ToString("D6") },
-                    new OTPItem() { Account = "yogadhipra93@gmail.com", OTP = generator.Next(0, 1000000).ToString("D6") },
-                };
+                    if (resList.Count > 0)
+                    {
+                        Random generator = new Random();
 
+                        OTPItemList = new ObservableCollection<OTPItem>();
+                        foreach (var index in resList)
+                        {
+                            OTPItemList.Add(new OTPItem
+                            {
+                                Account = index.AccountNo,
+                                OTP = generator.Next(0, 1000000).ToString("D6")
+                            });
+                        }
+                    }
+                }
+
+                endTime = DateTime.Now.AddSeconds(30);
                 TimeSpan ts = endTime - DateTime.Now;
                 cTimerInt = ts.Seconds;
                 timer.Start();
@@ -227,26 +252,15 @@ namespace MAUIMiniApp.ViewModels
                 if ((ts.TotalMilliseconds < 0) || (ts.TotalMilliseconds < 1000))
                 {
                     timer.Stop();
-
-                    Random generator = new Random();
-
-                    OTPItemList.Select(c => { 
-                        c.OTP = generator.Next(0, 1000000).ToString("D6"); 
-                        return c; 
-                    }).ToList();
-
-                    endTime = DateTime.Now.AddSeconds(30);
-
-                    timer.Start();
-
-                    //LoadCommand.Execute(null);
+                    LoadCommand.Execute(null);
                 }
                 else
                 {
-                    OTPItemList.Select(c => { 
+                    OTPItemList.Select(c =>
+                    {
                         c.TimerClock = cTimerInt;
                         c.TimerColor = ProgressColor;
-                        return c; 
+                        return c;
                     }).ToList();
                 }
             }
@@ -267,7 +281,7 @@ namespace MAUIMiniApp.ViewModels
 
                 if (!string.IsNullOrEmpty(hasAuth) && string.IsNullOrEmpty(hasAcceptToS))
                 {
-                    WeakReferenceMessenger.Default.Send(new MyMessage("hasAcceptToS"));
+                    Application.Current.MainPage = new ToSPage();
                 }
             }
             catch (Exception ex)
@@ -275,5 +289,27 @@ namespace MAUIMiniApp.ViewModels
                 Log.Write(Log.LogEnum.Error, nameof(ExecuteCheckToSCommand) + " - " + ex.Message);
             }
         }
+
+        ICommand _NewAccountCommand;
+        public ICommand NewAccountCommand => _NewAccountCommand ?? (_NewAccountCommand = new Command(async () => await ExecuteNewAccountCommand()));
+        async Task ExecuteNewAccountCommand()
+        {
+            IsBusy = true;
+
+            try
+            {
+                //await App.Current.MainPage.Navigation.PushAsync(new NewAccountPage());
+                await App.Current.MainPage.ShowPopupAsync(new NewAccountPage());
+            }
+            catch (Exception ex)
+            {
+                Log.Write(Log.LogEnum.Error, nameof(ExecuteNewAccountCommand) + " - " + ex.Message);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
+        #endregion
     }
 }

@@ -7,10 +7,17 @@ using System.Threading.Tasks;
 
 namespace YAP.Libs.Models
 {
-    public class MyMessage : ValueChangedMessage<string>
+    public class MessageContainer
     {
-        public MyMessage(string value) : base(value)
+        public string Key { get; set; }
+        public object CustomObject { get; set; }
+    }
+
+    public class MyMessage : ValueChangedMessage<MessageContainer>
+    {
+        public MyMessage(MessageContainer value) : base(value)
         {
+
         }
     }
 }

@@ -94,13 +94,11 @@ namespace YAP.Libs.ViewModels
                 {
                     Toasts.Show("Login success");
                     await SecureStorage.SetAsync("hasAuth", "true");
-                    //await Shell.Current.GoToAsync("///home");
-                    //await Navigation.PushModalAsync(new AppFlyout(RootItem));
 
                     var hasAcceptToS = await SecureStorage.GetAsync("hasAcceptToS");
                     if (string.IsNullOrEmpty(hasAcceptToS))
                     {
-                        WeakReferenceMessenger.Default.Send(new MyMessage("hasAcceptToS"));
+                        WeakReferenceMessenger.Default.Send(new MyMessage(new MessageContainer { Key = "hasAcceptToS" }));
                     }
                     else
                     {
@@ -110,7 +108,6 @@ namespace YAP.Libs.ViewModels
                 else
                 {
                     await AlertSvc.ShowAlertAsync("Login failed", "Username or password is invalid", "Try again");
-                    //await DisplayAlert("Login failed", "Username or password is invalid", "Try again");
                 }
             }
             catch (Exception ex)

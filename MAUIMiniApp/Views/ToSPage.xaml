@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="MAUIMiniApp.Views.HomePage"
+             x:Class="MAUIMiniApp.Views.ToSPage"
              NavigationPage.HasNavigationBar="False"
              NavigationPage.HasBackButton="False">
-    <Grid RowDefinitions="*" Padding="10">
-        <Frame HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" HasShadow="True">
+    <Grid RowDefinitions="*" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Padding="15">
+        <Frame HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" HasShadow="False" Padding="0">
             <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" RowDefinitions="*,Auto" ColumnDefinitions="*">
                 <WebView HorizontalOptions="FillAndExpand"
                          VerticalOptions="FillAndExpand"
@@ -20,8 +20,8 @@
                       ColumnSpacing="5"
                       RowDefinitions="*"
                       ColumnDefinitions="*,*">
-                    <Button x:Name="btnReject" Grid.Column="0" Text="Reject" BackgroundColor="Red" HorizontalOptions="EndAndExpand" Clicked="btnReject_Clicked"/>
-                    <Button x:Name="btnAccept" Grid.Column="1" Text="Accept" BackgroundColor="Green" HorizontalOptions="StartAndExpand" Clicked="btnAccept_Clicked"/>
+                    <Button x:Name="btnReject" Grid.Column="0" Text="Reject" BackgroundColor="Red" HorizontalOptions="FillAndExpand" Clicked="btnReject_Clicked"/>
+                    <Button x:Name="btnAccept" Grid.Column="1" Text="Accept" BackgroundColor="Green" HorizontalOptions="FillAndExpand" Clicked="btnAccept_Clicked"/>
                 </Grid>
             </Grid>
         </Frame>

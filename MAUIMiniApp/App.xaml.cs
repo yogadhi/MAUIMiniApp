@@ -25,7 +25,12 @@ namespace MAUIMiniApp
             {
                 InitializeComponent();
 
-                Application.Current.UserAppTheme = AppTheme.Light;
+#if DEBUG
+                SecureStorage.RemoveAll();
+#endif
+
+                //hardcoded because CQ Auth no need login page
+                SecureStorage.SetAsync("hasAuth", "true");
 
                 RootItem = new RootItem
                 {
@@ -38,14 +43,11 @@ namespace MAUIMiniApp
                 RootItem.MenuItemList = new List<FlyoutPageItem>
                 {
                     new FlyoutPageItem { Title = "OTP", IconSource = "reminders.png", TargetType = typeof(OTPPage), TargetPage = new OTPPage() },
-                    new FlyoutPageItem { Title = "Settings", IconSource = "todo.png", TargetType = typeof(SettingsPage), TargetPage = new SettingsPage() },
                 };
 
                 //RootItem.SelectedMenuIndex = 1;
 
-                //MainPage = new AppFlyout(MenuItemList);
                 MainPage = new LoadingPage(RootItem);
-                //MainPage = new AppShell();
 
                 Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping("NoUnderLine", (handler, view) =>
                 {
@@ -54,18 +56,21 @@ namespace MAUIMiniApp
 #endif
                 });
 
-                WeakReferenceMessenger.Default.Register<MyMessage>(this, async (r, m) =>
+                WeakReferenceMessenger.Default.Register<MyMessage>(this, (r, m) =>
                 {
-                    if (m.Value == "hasAcceptToS")
+                    if (m.Value != null)
                     {
-                        var hasAcceptToS = await SecureStorage.GetAsync("hasAcceptToS");
-                        if (string.IsNullOrEmpty(hasAcceptToS))
+                        if (m.Value.Key == "hasAcceptedToS")
                         {
-                            Current.MainPage = new HomePage();
-                        }
-                        else
-                        {
-                            Current.MainPage = new AppFlyout(RootItem);
+                            if((bool)m.Value.CustomObject)
+                            {
+                                var page = RootItem.MenuItemList[0].TargetPage;
+                                MainPage = new NavigationPage(page);
+                            }
+                            else
+                            {
+                                MainPage = new ToSPage();
+                            }
                         }
                     }
                 });

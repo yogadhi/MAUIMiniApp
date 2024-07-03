@@ -17,9 +17,6 @@
     <MauiXaml Update="App.xaml">
       <SubType>Designer</SubType>
     </MauiXaml>
-    <MauiXaml Update="AppShell.xaml">
-      <SubType>Designer</SubType>
-    </MauiXaml>
     <MauiXaml Update="AppTabbed.xaml">
       <SubType>Designer</SubType>
     </MauiXaml>
@@ -33,9 +30,6 @@
       <SubType>Designer</SubType>
     </MauiXaml>
     <MauiXaml Update="Resources\Styles\Styles.xaml">
-      <SubType>Designer</SubType>
-    </MauiXaml>
-    <MauiXaml Update="Views\HomePage.xaml">
       <SubType>Designer</SubType>
     </MauiXaml>
     <MauiXaml Update="Views\NewAccountPage.xaml">

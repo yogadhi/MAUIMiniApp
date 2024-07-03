@@ -1,5 +1,7 @@
 using YAP.Libs.Flyouts;
 using YAP.Libs.Models;
+using YAP.Libs.Logger;
+using CommunityToolkit.Mvvm.Messaging;
 
 namespace YAP.Libs.Views;
 
@@ -9,8 +11,15 @@ public partial class LoadingPage : ContentPage
 
     public LoadingPage(RootItem rootItem)
     {
-        InitializeComponent();
-        RootItem = rootItem;
+        try
+        {
+            InitializeComponent();
+            RootItem = rootItem;
+        }
+        catch (Exception ex)
+        {
+            Log.Write(Log.LogEnum.Error, nameof(LoadingPage) + " - " + ex.Message);
+        }
     }
 
     protected override void OnNavigatedTo(NavigatedToEventArgs args)
@@ -20,22 +29,61 @@ public partial class LoadingPage : ContentPage
 
     protected override async void OnAppearing()
     {
-        if (await isAuthenticated())
+        try
         {
-            //await Shell.Current.GoToAsync("otp");
-            Application.Current.MainPage = new AppFlyout(RootItem);
+            if (await isAuthenticated())
+            {
+                //await Shell.Current.GoToAsync("otp");
+                if (RootItem != null)
+                {
+                    if (RootItem.MenuItemList != null)
+                    {
+                        if (RootItem.MenuItemList.Count > 1)
+                        {
+                            Application.Current.MainPage = new AppFlyout(RootItem);
+                        }
+                        else
+                        {
+                            var hasAuth = await SecureStorage.GetAsync("hasAuth");
+                            var hasAcceptToS = await SecureStorage.GetAsync("hasAcceptToS");
+
+                            if (!string.IsNullOrEmpty(hasAuth) && string.IsNullOrEmpty(hasAcceptToS))
+                            {
+                                WeakReferenceMessenger.Default.Send(new MyMessage(new MessageContainer { Key = "hasAcceptedToS", CustomObject = false }));
+                            }
+                            else
+                            {
+                                var page = RootItem.MenuItemList[0].TargetPage;
+                                Application.Current.MainPage = new NavigationPage(page);
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                //await Shell.Current.GoToAsync("login");
+                Application.Current.MainPage = new LoginPage(RootItem);
+            }
         }
-        else
+        catch (Exception ex)
         {
-            //await Shell.Current.GoToAsync("login");
-            Application.Current.MainPage = new LoginPage(RootItem);
+            Log.Write(Log.LogEnum.Error, nameof(OnAppearing) + " - " + ex.Message);
         }
     }
 
     async Task<bool> isAuthenticated()
     {
-        await Task.Delay(2000);
-        var hasAuth = await SecureStorage.GetAsync("hasAuth");
-        return !(hasAuth == null);
+        try
+        {
+            await Task.Delay(1000);
+            var hasAuth = await SecureStorage.GetAsync("hasAuth");
+            return !(hasAuth == null);
+        }
+        catch (Exception ex)
+        {
+            Log.Write(Log.LogEnum.Error, nameof(isAuthenticated) + " - " + ex.Message);
+            return false;
+        }
     }
 }

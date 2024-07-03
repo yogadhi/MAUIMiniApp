@@ -1,12 +1,61 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="MAUIMiniApp.Views.NewAccountPage"
-             Title="NewAccountPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
-</ContentPage>
+<mct:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+           xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+           xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+           xmlns:vm="clr-namespace:MAUIMiniApp.ViewModels"
+           x:Class="MAUIMiniApp.Views.NewAccountPage"
+           CanBeDismissedByTappingOutsideOfPopup="True"
+           Color="White">
+
+    <mct:Popup.BindingContext>
+        <vm:NewAccountViewModel />
+    </mct:Popup.BindingContext>
+
+    <Border VerticalOptions="FillAndExpand"
+            HorizontalOptions="FillAndExpand"
+            Stroke="Black"
+            StrokeThickness="1"
+            StrokeShape="RoundRectangle 10">
+        <VerticalStackLayout VerticalOptions="FillAndExpand" 
+                             HorizontalOptions="FillAndExpand"
+                             Spacing="5">
+            <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="Start" Padding="10" BackgroundColor="Blue">
+                <Label Text="Add new account" TextColor="White"/>
+            </StackLayout>
+
+            <VerticalStackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Padding="5" Spacing="5">
+                <Entry x:Name="txtCompanyCode"
+                       Text="{Binding CompanyCode}"
+                       Placeholder="Enter company code"
+                       HorizontalOptions="FillAndExpand"/>
+
+                <Entry x:Name="txtAccountNo"
+                       Text="{Binding AccountNo}"
+                       Placeholder="Enter account no."
+                       HorizontalOptions="FillAndExpand"/>
+
+                <Entry x:Name="txtSecretKey"
+                       Text="{Binding SecretKey}"
+                       Placeholder="Enter your key"
+                       HorizontalOptions="FillAndExpand"/>
+
+                <Grid HorizontalOptions="FillAndExpand" VerticalOptions="End" ColumnDefinitions="*,*" ColumnSpacing="3">
+                    <Button Text="Scan QR Code"
+                            Grid.Column="0"
+                            BackgroundColor="White"
+                            TextColor="Blue"
+                            HorizontalOptions="FillAndExpand"
+                            x:Name="btnScanQRCode"/>
+                    
+                    <Button Text="Add"
+                            Grid.Column="1"
+                            HorizontalOptions="FillAndExpand"
+                            x:Name="btnAddAccount"
+                            Command="{Binding AddNewAccountCommand}"/>
+
+                </Grid>
+               
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+    </Border>
+</mct:Popup>

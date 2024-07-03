@@ -1,7 +1,11 @@
 using MAUIMiniApp.ViewModels;
 using YAP.Libs.Logger;
+using CommunityToolkit.Mvvm.Messaging;
+using YAP.Libs.Models;
+using MAUIMiniApp.Models;
 
 namespace MAUIMiniApp.Views;
+//https://svgtrace.com/svg-to-png
 
 public partial class OTPPage : ContentPage
 {
@@ -18,18 +22,25 @@ public partial class OTPPage : ContentPage
             {
                 Text = "Add Account",
                 Order = ToolbarItemOrder.Primary,
-                IconImageSource = ImageSource.FromFile("account_plus_outline.svg")
+                IconImageSource = ImageSource.FromFile("add_unpressed.png"),
+                Command = vm.NewAccountCommand
             };
 
-            if (DeviceInfo.Platform == DevicePlatform.WinUI)
+            ToolbarItems.Add(item);
+
+            //vm.CheckToSCommand.Execute(null);
+
+            WeakReferenceMessenger.Default.Register<MyMessage>(this, async (r, m) =>
             {
-                //https://svgtrace.com/svg-to-png
-                item.IconImageSource = ImageSource.FromFile("account_plus_outline.png");
-            }
-
-            this.ToolbarItems.Add(item);
-
-            vm.CheckToSCommand.Execute(null);
+                if (m.Value != null)
+                {
+                    if (m.Value.Key == "ClosePopUp")
+                    {
+                        vm.timer.Stop();
+                        vm.LoadCommand.Execute(null);
+                    }
+                }
+            });
         }
         catch (Exception ex)
         {
@@ -37,8 +48,15 @@ public partial class OTPPage : ContentPage
         }
     }
 
-    private async void btnAddAccount_Clicked(object sender, EventArgs e)
+    protected override void OnAppearing()
     {
-        await Navigation.PushAsync(new NewAccountPage());
+        try
+        {
+            base.OnAppearing();
+        }
+        catch (Exception ex)
+        {
+            Log.Write(Log.LogEnum.Error, nameof(OnAppearing) + " - " + ex.Message);
+        }
     }
 }

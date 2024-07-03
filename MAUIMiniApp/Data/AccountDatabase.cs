@@ -9,15 +9,11 @@ using MAUIMiniApp.Models;
 
 namespace MAUIMiniApp.Data
 {
-    public class AccountDatabase
+    public static class AccountDatabase
     {
-        SQLiteAsyncConnection Database;
-        public AccountDatabase()
-        {
+        static SQLiteAsyncConnection Database;
 
-        }
-
-        async Task Init()
+        async static Task Init()
         {
             if (Database is not null)
                 return;
@@ -26,11 +22,11 @@ namespace MAUIMiniApp.Data
             var result = await Database.CreateTableAsync<Account>();
         }
 
-        public async Task<int> SaveItemAsync(Account item)
+        public static async Task<int> SaveItemAsync(Account item)
         {
             await Init();
 
-            var res = await Database.Table<Account>().Where(x=>x.CompanyCode == item.CompanyCode && x.AccountNo == item.AccountNo).FirstOrDefaultAsync();
+            var res = await Database.Table<Account>().Where(x => x.CompanyCode == item.CompanyCode && x.AccountNo == item.AccountNo).FirstOrDefaultAsync();
             if (res != null)
             {
                 return await Database.UpdateAsync(item);
@@ -41,16 +37,33 @@ namespace MAUIMiniApp.Data
             }
         }
 
-        public async Task<int> DeleteItemAsync(Account item)
+        public static async Task<int> DeleteItemAsync(Account item)
         {
             await Init();
             return await Database.DeleteAsync(item);
         }
 
-        public async Task<List<Account>> GetItemsAsync()
+        public static async Task<List<Account>> GetItemsAsync()
         {
             await Init();
             return await Database.Table<Account>().ToListAsync();
+        }
+
+        public static async Task<int> TruncateItemAsync()
+        {
+            try
+            {
+                var resList = await GetItemsAsync();
+                foreach (var item in resList)
+                {
+                    await DeleteItemAsync(item);
+                }
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                return 0;
+            }
         }
     }
 }

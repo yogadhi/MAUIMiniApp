@@ -9,7 +9,6 @@ namespace MAUIMiniApp.Models
 {
     public class Account
     {
-        [PrimaryKey]
         public string CompanyCode { get; set; }
         [PrimaryKey]
         public string AccountNo { get; set; }

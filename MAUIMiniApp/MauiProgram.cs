@@ -2,6 +2,9 @@
 using CommunityToolkit.Maui;
 using YAP.Libs.Interfaces;
 using YAP.Libs.Alerts;
+using MAUIMiniApp.Views;
+using MAUIMiniApp.Data;
+using MAUIMiniApp.ViewModels;
 
 namespace MAUIMiniApp
 {
@@ -11,6 +14,7 @@ namespace MAUIMiniApp
         {
             var builder = MauiApp.CreateBuilder();
             builder.Services.AddSingleton<IAlertService, AlertService>();
+
             builder.ConfigureEssentials(essentials =>
             {
                 essentials.UseVersionTracking();
@@ -26,12 +30,12 @@ namespace MAUIMiniApp
             builder.Logging.AddDebug();
 #endif
 
-//            Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping(nameof(Entry), (handler, view) =>
-//            {
-//#if ANDROID
-//                handler.PlatformView.SetBackgroundColor(Android.Graphics.Color.Transparent);
-//#endif
-//            });
+            Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping(nameof(Entry), (handler, view) =>
+            {
+#if ANDROID
+                handler.PlatformView.SetBackgroundColor(Android.Graphics.Color.Transparent);
+#endif
+            });
 
             return builder.Build();
         }
