@@ -18,7 +18,7 @@ namespace MAUIMiniApp.ViewModels
         decimal maxInterval = 30m;
         DateTime endTime = DateTime.Now.AddSeconds(30);
 
-        System.Timers.Timer _timer;
+        System.Timers.Timer _timer = new System.Timers.Timer { Interval = 1000 };
         public System.Timers.Timer timer
         {
             get { return _timer; }
@@ -130,19 +130,12 @@ namespace MAUIMiniApp.ViewModels
             try
             {
                 Title = "CQ Authenticator";
-
-                timer = new System.Timers.Timer
-                {
-                    Interval = 1000
-                };
                 timer.Elapsed += t_Tick;
-
-                //OpenWebCommand.Execute("https://aka.ms/xamarin-quickstart");
                 LoadCommand.Execute(null);
             }
             catch (Exception ex)
             {
-                Log.Write(Log.LogEnum.Error, nameof(OTPViewModel) + " - " + ex.Message);
+                Log.Write(Log.LogEnum.Error, nameof(OTPViewModel), ex);
             }
         }
 
@@ -173,17 +166,17 @@ namespace MAUIMiniApp.ViewModels
                                 OTP = generator.Next(0, 1000000).ToString("D6")
                             });
                         }
+
+                        endTime = DateTime.Now.AddSeconds(30);
+                        TimeSpan ts = endTime - DateTime.Now;
+                        cTimerInt = ts.Seconds;
+                        timer.Start();
                     }
                 }
-
-                endTime = DateTime.Now.AddSeconds(30);
-                TimeSpan ts = endTime - DateTime.Now;
-                cTimerInt = ts.Seconds;
-                timer.Start();
             }
             catch (Exception ex)
             {
-                Log.Write(Log.LogEnum.Error, nameof(ExecuteLoadCommand) + " - " + ex.Message);
+                Log.Write(Log.LogEnum.Error, nameof(ExecuteLoadCommand), ex);
             }
             finally
             {
@@ -214,7 +207,7 @@ namespace MAUIMiniApp.ViewModels
             }
             catch (Exception ex)
             {
-                Log.Write(Log.LogEnum.Error, nameof(ExecuteSelectionCommand) + " - " + ex.Message);
+                Log.Write(Log.LogEnum.Error, nameof(ExecuteSelectionCommand), ex);
             }
             finally
             {
@@ -236,20 +229,17 @@ namespace MAUIMiniApp.ViewModels
                 }
                 else
                 {
-                    var xy = ((decimal)cTimerInt / 30);
-                    var z = 1 - xy;
                     OTPItemList.Select(c =>
                     {
                         c.TimerClock = cTimerInt;
                         c.TimerColor = ProgressColor;
-                        c.TimerPercent = z;
                         return c;
                     }).ToList();
                 }
             }
             catch (Exception ex)
             {
-                Log.Write(Log.LogEnum.Error, nameof(t_Tick) + " - " + ex.Message);
+                Log.Write(Log.LogEnum.Error, nameof(t_Tick), ex);
             }
         }
 
@@ -269,7 +259,7 @@ namespace MAUIMiniApp.ViewModels
             }
             catch (Exception ex)
             {
-                Log.Write(Log.LogEnum.Error, nameof(ExecuteCheckToSCommand) + " - " + ex.Message);
+                Log.Write(Log.LogEnum.Error, nameof(ExecuteCheckToSCommand), ex);
             }
         }
 
@@ -286,7 +276,7 @@ namespace MAUIMiniApp.ViewModels
             }
             catch (Exception ex)
             {
-                Log.Write(Log.LogEnum.Error, nameof(ExecuteNewAccountCommand) + " - " + ex.Message);
+                Log.Write(Log.LogEnum.Error, nameof(ExecuteNewAccountCommand), ex);
             }
             finally
             {

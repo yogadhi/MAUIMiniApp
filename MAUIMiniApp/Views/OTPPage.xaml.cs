@@ -18,18 +18,6 @@ public partial class OTPPage : ContentPage
             InitializeComponent();
             vm = BindingContext as OTPViewModel;
 
-            ToolbarItem item = new ToolbarItem
-            {
-                Text = "Add Account",
-                Order = ToolbarItemOrder.Primary,
-                IconImageSource = ImageSource.FromFile("add_unpressed.png"),
-                Command = vm.NewAccountCommand
-            };
-
-            ToolbarItems.Add(item);
-
-            //vm.CheckToSCommand.Execute(null);
-
             WeakReferenceMessenger.Default.Register<MyMessage>(this, async (r, m) =>
             {
                 if (m.Value != null)
@@ -44,7 +32,7 @@ public partial class OTPPage : ContentPage
         }
         catch (Exception ex)
         {
-            Log.Write(Log.LogEnum.Error, nameof(OTPPage) + " - " + ex.Message);
+            Log.Write(Log.LogEnum.Error, nameof(OTPPage), ex);
         }
     }
 
@@ -56,7 +44,7 @@ public partial class OTPPage : ContentPage
         }
         catch (Exception ex)
         {
-            Log.Write(Log.LogEnum.Error, nameof(OnAppearing) + " - " + ex.Message);
+            Log.Write(Log.LogEnum.Error, nameof(OnAppearing), ex);
         }
     }
 }

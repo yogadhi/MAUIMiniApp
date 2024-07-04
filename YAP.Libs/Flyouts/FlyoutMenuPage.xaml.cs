@@ -17,7 +17,7 @@ public partial class FlyoutMenuPage : ContentPage
         }
         catch (Exception ex)
         {
-            Logger.Log.Write(Logger.Log.LogEnum.Error, nameof(FlyoutMenuPage) + " - " + ex.Message);
+            Logger.Log.Write(Logger.Log.LogEnum.Error, nameof(FlyoutMenuPage), ex);
         }
     }
 
@@ -31,7 +31,7 @@ public partial class FlyoutMenuPage : ContentPage
         }
         catch (Exception ex)
         {
-            Logger.Log.Write(Logger.Log.LogEnum.Error, nameof(btnLogout_Clicked) + " - " + ex.Message);
+            Logger.Log.Write(Logger.Log.LogEnum.Error, nameof(btnLogout_Clicked), ex);
         }
     }
 }

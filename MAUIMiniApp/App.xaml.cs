@@ -70,7 +70,8 @@ namespace MAUIMiniApp
             }
             catch (Exception ex)
             {
-                Log.Write(Log.LogEnum.Error, nameof(App) + " - " + ex.Message);
+                Log.Write(Log.LogEnum.Error, nameof(App), ex);
+
             }
         }
 
@@ -88,7 +89,7 @@ namespace MAUIMiniApp
             }
             catch (Exception ex)
             {
-                Log.Write(Log.LogEnum.Error, nameof(OnStart) + " - " + ex.Message);
+                Log.Write(Log.LogEnum.Error, nameof(OnStart), ex);
             }
         }
 
@@ -135,7 +136,7 @@ namespace MAUIMiniApp
             }
             catch (Exception ex)
             {
-                Log.Write(Log.LogEnum.Error, nameof(GetVersionInfoList) + " - " + ex.Message);
+                Log.Write(Log.LogEnum.Error, nameof(GetVersionInfoList), ex);
             }
             return InfoList;
         }

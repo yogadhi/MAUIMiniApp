@@ -39,7 +39,7 @@ public partial class AppFlyout : FlyoutPage
         }
         catch (Exception ex)
         {
-            Logger.Log.Write(Logger.Log.LogEnum.Error, nameof(AppFlyout) + " - " + ex.Message);
+            Logger.Log.Write(Logger.Log.LogEnum.Error, nameof(AppFlyout), ex);
         }
     }
 
@@ -56,7 +56,7 @@ public partial class AppFlyout : FlyoutPage
         }
         catch (Exception ex)
         {
-            Logger.Log.Write(Logger.Log.LogEnum.Error, nameof(OnSelectionChanged) + " - " + ex.Message);
+            Logger.Log.Write(Logger.Log.LogEnum.Error, nameof(OnSelectionChanged), ex);
         }
     }
 
@@ -68,7 +68,7 @@ public partial class AppFlyout : FlyoutPage
         }
         catch (Exception ex)
         {
-            Logger.Log.Write(Logger.Log.LogEnum.Error, nameof(OnAppearing) + " - " + ex.Message);
+            Logger.Log.Write(Logger.Log.LogEnum.Error, nameof(OnAppearing), ex);
         }
     }
 }

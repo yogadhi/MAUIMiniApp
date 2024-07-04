@@ -5,6 +5,7 @@ using YAP.Libs.Alerts;
 using MAUIMiniApp.Views;
 using MAUIMiniApp.Data;
 using MAUIMiniApp.ViewModels;
+using ZXing.Net.Maui.Controls;
 
 namespace MAUIMiniApp
 {
@@ -20,7 +21,9 @@ namespace MAUIMiniApp
                 essentials.UseVersionTracking();
             });
 
-            builder.UseMauiApp<App>().ConfigureFonts(fonts =>
+            builder.UseMauiApp<App>()
+                .UseBarcodeReader()
+                .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");

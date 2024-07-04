@@ -6,18 +6,16 @@
              xmlns:control="clr-namespace:YAP.Libs.Views;assembly=YAP.Libs"
              x:Class="MAUIMiniApp.Views.OTPPage"
              Title="{Binding Title}">
-
-    <!--<ContentPage.ToolbarItems>
-        <ToolbarItem Text="Add account"
-                     Order="Primary"
-                     x:Name="btnAddAccount"
-                     Clicked="btnAddAccount_Clicked"
-                     IconImageSource="add_unpressed.png"/>
-    </ContentPage.ToolbarItems>-->
-
     <ContentPage.BindingContext>
         <vm:OTPViewModel />
     </ContentPage.BindingContext>
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Add account"
+                     Order="Primary"
+                     Command="{Binding NewAccountCommand}"
+                     IconImageSource="{AppThemeBinding Light=account_plus_outline.svg, Dark=account_plus_outline.svg}"/>
+    </ContentPage.ToolbarItems>
 
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -81,8 +79,7 @@
                                   RowDefinitions="Auto"
                                   ColumnDefinitions="Auto">
                                 <Label Grid.Row="0" Grid.Column="0" HorizontalOptions="Center" VerticalOptions="Center" Text="{Binding TimerClock}" FontSize="20"/>
-                                <control:CircularProgressBar Grid.Row="0" Grid.Column="0" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Size="50" ProgressColor="Red" ProgressLeftColor="Yellow" Progress="{Binding TimerPercent}" Thickness="4" TextColor="Transparent" />
-                                <!--<ActivityIndicator IsRunning="True" Grid.Row="0" Grid.Column="0" HeightRequest="50" WidthRequest="50" Color="{Binding TimerColor}" />-->
+                                <ActivityIndicator IsRunning="True" Grid.Row="0" Grid.Column="0" HeightRequest="50" WidthRequest="50" Color="{Binding TimerColor}" />
                             </Grid>
 
                             <Frame BackgroundColor="Transparent" BorderColor="Transparent" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="2">

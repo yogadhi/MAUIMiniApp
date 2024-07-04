@@ -2,28 +2,30 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MAUIMiniApp.Views.ToSPage"
+             xmlns:vm="clr-namespace:MAUIMiniApp.ViewModels"
              NavigationPage.HasNavigationBar="False"
              NavigationPage.HasBackButton="False">
-    <Grid RowDefinitions="*" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Padding="15">
-        <Frame HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" HasShadow="False" Padding="0">
-            <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" RowDefinitions="*,Auto" ColumnDefinitions="*">
-                <WebView HorizontalOptions="FillAndExpand"
-                         VerticalOptions="FillAndExpand"
-                         Grid.Column="0"
-                         Grid.Row="0"
-                         Grid.RowSpan="2"
-                         x:Name="webView"/>
-                <Grid Grid.Row="1"
-                      Grid.Column="0"
-                      HorizontalOptions="FillAndExpand" 
-                      VerticalOptions="EndAndExpand" 
-                      ColumnSpacing="5"
-                      RowDefinitions="*"
-                      ColumnDefinitions="*,*">
-                    <Button x:Name="btnReject" Grid.Column="0" Text="Reject" BackgroundColor="Red" HorizontalOptions="FillAndExpand" Clicked="btnReject_Clicked"/>
-                    <Button x:Name="btnAccept" Grid.Column="1" Text="Accept" BackgroundColor="Green" HorizontalOptions="FillAndExpand" Clicked="btnAccept_Clicked"/>
-                </Grid>
-            </Grid>
+    <ContentPage.BindingContext>
+        <vm:ToSViewModel />
+    </ContentPage.BindingContext>
+    
+    <Grid RowDefinitions="*,Auto" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Padding="10" RowSpacing="5">
+        <Frame HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" HasShadow="True" BorderColor="Transparent" Padding="0">
+            <WebView HorizontalOptions="FillAndExpand"
+                     VerticalOptions="FillAndExpand"
+                     Source="{Binding HtmlSource}"
+                     x:Name="webView"/>
         </Frame>
+
+        <Grid Grid.Row="1"
+              Grid.Column="0"
+              HorizontalOptions="FillAndExpand" 
+              VerticalOptions="EndAndExpand" 
+              ColumnSpacing="5"
+              RowDefinitions="*"
+              ColumnDefinitions="*,*">
+            <Button x:Name="btnReject" Grid.Column="0" Text="Reject" BackgroundColor="Red" HorizontalOptions="FillAndExpand" Clicked="btnReject_Clicked" />
+            <Button x:Name="btnAccept" Grid.Column="1" Text="Accept" BackgroundColor="Green" HorizontalOptions="FillAndExpand" Command="{Binding AcceptToSCommand}"/>
+        </Grid>
     </Grid>
 </ContentPage>

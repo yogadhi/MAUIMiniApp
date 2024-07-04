@@ -10,6 +10,7 @@ using MAUIMiniApp.Models;
 using MAUIMiniApp.Data;
 using CommunityToolkit.Mvvm.Messaging;
 using YAP.Libs.Models;
+using YAP.Libs.Alerts;
 
 namespace MAUIMiniApp.ViewModels
 {
@@ -46,7 +47,7 @@ namespace MAUIMiniApp.ViewModels
             }
             catch (Exception ex)
             {
-                Log.Write(Log.LogEnum.Error, nameof(NewAccountViewModel) + " - " + ex.Message);
+                Log.Write(Log.LogEnum.Error, nameof(NewAccountViewModel), ex);
             }
         }
 
@@ -64,17 +65,31 @@ namespace MAUIMiniApp.ViewModels
                     SecretKey = SecretKey
                 };
 
+                List<string> allFieldList = new List<string>();
+                allFieldList.Add(AccountNo);
+                allFieldList.Add(CompanyCode);
+                allFieldList.Add(SecretKey);
+
+                if (allFieldList.Any(x => string.IsNullOrEmpty(x)))
+                {
+                    Toasts.Show("Please fill all fields");
+                    return;
+                }
+
                 var resSave = await AccountDatabase.SaveItemAsync(obj);
                 if (resSave == 1)
                 {
+                    Toasts.Show("New account successfully added");
                     WeakReferenceMessenger.Default.Send(new MyMessage(new MessageContainer { Key = "ClosePopUp" }));
                 }
             }
             catch (Exception ex)
             {
-                Log.Write(Log.LogEnum.Error, nameof(ExecuteAddNewAccountCommand) + " - " + ex.Message);
+                Log.Write(Log.LogEnum.Error, nameof(ExecuteAddNewAccountCommand), ex);
             }
         }
+
+        
         #endregion
     }
 }

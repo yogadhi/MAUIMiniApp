@@ -7,7 +7,7 @@ namespace MAUIMiniApp.Views;
 
 public partial class NewAccountPage : Popup
 {
-    double entryWidth = 0;
+    double width = 0;
     public NewAccountPage()
     {
         try
@@ -28,7 +28,7 @@ public partial class NewAccountPage : Popup
         }
         catch (Exception ex)
         {
-            Log.Write(Log.LogEnum.Error, nameof(NewAccountPage) + " - " + ex.Message);
+            Log.Write(Log.LogEnum.Error, nameof(NewAccountPage), ex);
         }
     }
 
@@ -38,32 +38,23 @@ public partial class NewAccountPage : Popup
         {
             if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
             {
-                entryWidth = DeviceDisplay.Current.MainDisplayInfo.Width / 4;
+                width = DeviceDisplay.Current.MainDisplayInfo.Width / 4;
             }
             else
             {
-                entryWidth = DeviceDisplay.Current.MainDisplayInfo.Width / 2;
+                width = DeviceDisplay.Current.MainDisplayInfo.Width / 3;
             }
 
-            txtCompanyCode.WidthRequest = entryWidth;
-            txtAccountNo.WidthRequest = entryWidth;
-            txtSecretKey.WidthRequest = entryWidth;
+            this.Size = new Microsoft.Maui.Graphics.Size(width, 0);
         }
         catch (Exception ex)
         {
-            Log.Write(Log.LogEnum.Error, nameof(InitDisplay) + " - " + ex.Message);
+            Log.Write(Log.LogEnum.Error, nameof(InitDisplay), ex);
         }
     }
 
-    private void btnAddAccount_Clicked(object sender, EventArgs e)
+    private async void btnClose_Clicked(object sender, EventArgs e)
     {
-        try
-        {
-
-        }
-        catch (Exception ex)
-        {
-            Log.Write(Log.LogEnum.Error, nameof(InitDisplay) + " - " + ex.Message);
-        }
+        await CloseAsync();
     }
 }
