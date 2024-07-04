@@ -76,7 +76,7 @@
 
 		<!-- Splash Screen -->
 		<!--<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />-->
-		<MauiSplashScreen Include="Resources\Splash\splashscreen_logo.svg" Color="#512BD4" BaseSize="128,128" />
+		<MauiSplashScreen Include="Resources\Splash\splashscreen_logo.svg" Color="#303F9F" BaseSize="128,128" />
 
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
@@ -91,19 +91,10 @@
 
 	<ItemGroup>
 		<None Remove="Platforms\Android\Resources\xml\auto_backup_rules.xml" />
-		<None Remove="Resources\Images\account_plus_outline.png" />
+		<None Remove="Resources\Images\account_plus.svg" />
 		<None Remove="Resources\Images\account_plus_outline.svg" />
-		<None Remove="Resources\Images\add_unpressed.png" />
-		<None Remove="Resources\Images\contacts.png" />
-		<None Remove="Resources\Images\gear_fill.svg" />
-		<None Remove="Resources\Images\heart_fill.svg" />
-		<None Remove="Resources\Images\house_door_fill.svg" />
-		<None Remove="Resources\Images\journal_check.svg" />
-		<None Remove="Resources\Images\plus_square_fill.svg" />
-		<None Remove="Resources\Images\reminders.png" />
-		<None Remove="Resources\Images\search.svg" />
-		<None Remove="Resources\Images\todo.png" />
-		<None Remove="Resources\Images\trash_fill.svg" />
+		<None Remove="Resources\Images\close.svg" />
+		<None Remove="Resources\Images\qrcode_scan.svg" />
 	</ItemGroup>
 
 	<ItemGroup>

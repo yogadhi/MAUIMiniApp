@@ -112,7 +112,7 @@ namespace YAP.Libs.ViewModels
             }
             catch (Exception ex)
             {
-                Log.Write(Log.LogEnum.Error, nameof(ExecuteLoginCommand) + " - " + ex.Message);
+                Log.Write(Log.LogEnum.Error, nameof(ExecuteLoginCommand), ex);
             }
             finally
             {

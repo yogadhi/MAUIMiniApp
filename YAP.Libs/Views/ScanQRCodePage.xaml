@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
+             xmlns:vm="clr-namespace:YAP.Libs.ViewModels"
+             x:Class="YAP.Libs.Views.ScanQRCodePage"
+             Title="ScanQRCodePage">
+    <ContentPage.BindingContext>
+        <vm:BaseViewModel />
+    </ContentPage.BindingContext>
+    <Grid HorizontalOptions="FillAndExpand"
+          VerticalOptions="FillAndExpand"
+          RowDefinitions="Auto,*,Auto">
+
+        <Grid Grid.Row="0"
+              BackgroundColor="#aa000000">
+            <Label x:Name="ResultLabel" Text="CQ Authenticator" HorizontalOptions="Center" VerticalOptions="Center" TextColor="White" />
+        </Grid>
+        <zxing:CameraBarcodeReaderView	Grid.Row="0" 
+                                        Grid.RowSpan="3"
+                                        x:Name="barcodeView"
+                                        BarcodesDetected="BarcodesDetected"/>
+        <Image HorizontalOptions="CenterAndExpand" 
+               VerticalOptions="CenterAndExpand" 
+               Grid.Row="0" 
+               Grid.RowSpan="3"
+               WidthRequest="250" HeightRequest="250" Source="scan_helper.svg"/>
+
+    </Grid>
+</ContentPage>

@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using YAP.Libs.Logger;
+using YAP.Libs.Views;
 
 namespace YAP.Libs.ViewModels
 {
@@ -36,7 +37,25 @@ namespace YAP.Libs.ViewModels
             }
             catch (Exception ex)
             {
-                Log.Write(Log.LogEnum.Error, nameof(ExecuteOpenWebCommand) + " - " + ex.Message);
+                Log.Write(Log.LogEnum.Error, nameof(ExecuteOpenWebCommand), ex);
+            }
+        }
+
+        ICommand _ScanQRCodeCommand;
+        public ICommand ScanQRCodeCommand => _ScanQRCodeCommand ?? (_ScanQRCodeCommand = new Command(async () => await ExecuteScanQRCodeCommand()));
+        async Task ExecuteScanQRCodeCommand()
+        {
+            try
+            {
+                var resPermission = await YAP.Libs.Helpers.Permission.CheckAndRequestCamera();
+                if (resPermission == PermissionStatus.Granted)
+                {
+                    await Application.Current.MainPage.Navigation.PushAsync(new ScanQRCodePage());
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Write(Log.LogEnum.Error, nameof(ExecuteScanQRCodeCommand), ex);
             }
         }
 

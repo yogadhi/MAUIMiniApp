@@ -18,7 +18,7 @@ public partial class LoadingPage : ContentPage
         }
         catch (Exception ex)
         {
-            Log.Write(Log.LogEnum.Error, nameof(LoadingPage) + " - " + ex.Message);
+            Log.Write(Log.LogEnum.Error, nameof(LoadingPage), ex);
         }
     }
 
@@ -39,7 +39,6 @@ public partial class LoadingPage : ContentPage
 
             if (await isAuthenticated())
             {
-                //await Shell.Current.GoToAsync("otp");
                 if (RootItem != null)
                 {
                     if (RootItem.MenuItemList != null)
@@ -68,13 +67,12 @@ public partial class LoadingPage : ContentPage
             }
             else
             {
-                //await Shell.Current.GoToAsync("login");
                 Application.Current.MainPage = new LoginPage(RootItem);
             }
         }
         catch (Exception ex)
         {
-            Log.Write(Log.LogEnum.Error, nameof(OnAppearing) + " - " + ex.Message);
+            Log.Write(Log.LogEnum.Error, nameof(OnAppearing), ex);
         }
     }
 
@@ -88,7 +86,7 @@ public partial class LoadingPage : ContentPage
         }
         catch (Exception ex)
         {
-            Log.Write(Log.LogEnum.Error, nameof(isAuthenticated) + " - " + ex.Message);
+            Log.Write(Log.LogEnum.Error, nameof(isAuthenticated), ex);
             return false;
         }
     }
