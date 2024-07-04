@@ -10,17 +10,17 @@
         <vm:NewAccountViewModel />
     </mct:Popup.BindingContext>
 
-    <Border VerticalOptions="FillAndExpand"
-                HorizontalOptions="FillAndExpand"
-                Stroke="Transparent"
-                StrokeThickness="1"
-                StrokeShape="RoundRectangle 10">
-        <VerticalStackLayout VerticalOptions="FillAndExpand" 
-                         HorizontalOptions="FillAndExpand"
+    <Frame VerticalOptions="FillAndExpand"
+           HorizontalOptions="FillAndExpand"
+           x:Name="mainFrame"
+           Padding="0"
+           CornerRadius="10">
+        <VerticalStackLayout VerticalOptions="Fill" 
+                         HorizontalOptions="Fill"
                          Spacing="5">
             <Grid HorizontalOptions="FillAndExpand" VerticalOptions="Start" Padding="10" ColumnDefinitions="*,Auto" BackgroundColor="{StaticResource Primary}">
-                <Label Text="Add new account" Grid.Column="0" TextColor="White" FontAttributes="Bold" FontSize="20"/>
-                <Button x:Name="btnClose" Grid.Column="1" HorizontalOptions="End" VerticalOptions="CenterAndExpand" ImageSource="close.svg" CornerRadius="30" WidthRequest="30" HeightRequest="30" Clicked="btnClose_Clicked" />
+                <Label Text="Add new account" Grid.Column="0" TextColor="White" FontAttributes="Bold" FontSize="20" VerticalOptions="Center"/>
+                <Button x:Name="btnClose" Grid.Column="1" HorizontalOptions="End" VerticalOptions="Center" ImageSource="close.svg" CornerRadius="30" WidthRequest="30" HeightRequest="30" Clicked="btnClose_Clicked" />
             </Grid>
 
             <VerticalStackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Padding="5" Spacing="5">
@@ -37,29 +37,25 @@
                 <Entry x:Name="txtSecretKey"
                        Text="{Binding SecretKey}"
                        Placeholder="Enter your key"
-                       HorizontalOptions="FillAndExpand"/>
-
-                <Grid HorizontalOptions="FillAndExpand" VerticalOptions="End" ColumnDefinitions="*,*" ColumnSpacing="3">
-                    <Button Text="Scan QR Code"
-                            Grid.Column="0"
-                            BackgroundColor="White"
-                            TextColor="Blue"
-                            ImageSource="qrcode_scan.svg"
-                            HorizontalOptions="FillAndExpand"
-                            x:Name="btnScanQRCode"
-                            Command="{Binding ScanQRCodeCommand}"/>
-
-                    <Button Text="Add"
-                            Grid.Column="1"
-                            ImageSource="account_plus_outline.svg"
-                            HorizontalOptions="FillAndExpand"
-                            x:Name="btnAddAccount"
-                            Command="{Binding AddNewAccountCommand}"/>
-
-                </Grid>
+                       HorizontalOptions="FillAndExpand"/>                
             </VerticalStackLayout>
+            <Grid HorizontalOptions="FillAndExpand" VerticalOptions="End" ColumnDefinitions="*,*" ColumnSpacing="3">
+                <Button Text="Scan QR Code"
+                        Grid.Column="0"
+                        BackgroundColor="White"
+                        TextColor="Blue"
+                        ImageSource="qrcode_scan.svg"
+                        HorizontalOptions="FillAndExpand"
+                        x:Name="btnScanQRCode"
+                        Clicked="btnScanQRCode_Clicked"
+                        Command="{Binding ScanQRCodeCommand}"/>
+                <Button Text="Add"
+                        Grid.Column="1"
+                        ImageSource="account_plus_outline.svg"
+                        HorizontalOptions="FillAndExpand"
+                        x:Name="btnAddAccount"
+                        Command="{Binding AddNewAccountCommand}"/>
+            </Grid>
         </VerticalStackLayout>
-    </Border>
-
-
+    </Frame>
 </mct:Popup>

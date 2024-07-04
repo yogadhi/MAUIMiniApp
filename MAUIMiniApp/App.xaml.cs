@@ -3,9 +3,14 @@ using Android.Content.Res;
 using Microsoft.Maui.Controls.Compatibility.Platform.Android;
 #endif
 
+#if WINDOWS
+using Microsoft.UI;
+using Microsoft.UI.Windowing;
+using Windows.Graphics;
+#endif
+
 using CommunityToolkit.Mvvm.Messaging;
 using MAUIMiniApp.Views;
-using YAP.Libs.Flyouts;
 using YAP.Libs.Interfaces;
 using YAP.Libs.Logger;
 using YAP.Libs.Models;
@@ -16,14 +21,18 @@ namespace MAUIMiniApp
     public partial class App : Application
     {
         public static IAlertService AlertSvc { get; set; }
-        private static RootItem RootItem { get; set; }
+        public static RootItem RootItem { get; set; }
         public static Dictionary<string, string> InfoList { get; set; }
+        public static int WindowWidth = 800;
+        public static int WindowHeight = 400;
 
         public App(IServiceProvider provider)
         {
             try
             {
                 InitializeComponent();
+
+
 
                 RootItem = new RootItem
                 {
@@ -67,6 +76,31 @@ namespace MAUIMiniApp
                         }
                     }
                 });
+
+                if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
+                {
+                    WeakReferenceMessenger.Default.Register<MyMessage>(this, (r, m) =>
+                    {
+                        if (m.Value != null)
+                        {
+                            if (m.Value.Key == "MainScreenLoaded")
+                            {
+                                Microsoft.Maui.Handlers.WindowHandler.Mapper.AppendToMapping(nameof(IWindow), (handler, view) =>
+                                {
+#if WINDOWS
+            var mauiWindow = handler.VirtualView;
+            var nativeWindow = handler.PlatformView;
+            nativeWindow.Activate();
+            IntPtr windowHandle = WinRT.Interop.WindowNative.GetWindowHandle(nativeWindow);
+            WindowId windowId = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(windowHandle);
+            AppWindow appWindow = Microsoft.UI.Windowing.AppWindow.GetFromWindowId(windowId);
+            appWindow.Resize(new SizeInt32(WindowWidth, WindowHeight));
+#endif
+                                });
+                            }
+                        }
+                    });
+                }
             }
             catch (Exception ex)
             {

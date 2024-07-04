@@ -10,7 +10,7 @@
     </ContentPage.BindingContext>
     
     <Grid RowDefinitions="*,Auto" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Padding="10" RowSpacing="5">
-        <Frame HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" HasShadow="True" BorderColor="Transparent" Padding="0">
+        <Frame HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" HasShadow="True" Padding="0" BackgroundColor="White">
             <WebView HorizontalOptions="FillAndExpand"
                      VerticalOptions="FillAndExpand"
                      Source="{Binding HtmlSource}"

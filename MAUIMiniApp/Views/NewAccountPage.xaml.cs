@@ -39,13 +39,13 @@ public partial class NewAccountPage : Popup
             if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
             {
                 width = DeviceDisplay.Current.MainDisplayInfo.Width / 4;
+                this.mainFrame.WidthRequest = width;
             }
             else
             {
                 width = DeviceDisplay.Current.MainDisplayInfo.Width / 3;
+                this.Size = new Microsoft.Maui.Graphics.Size(width, 0);
             }
-
-            this.Size = new Microsoft.Maui.Graphics.Size(width, 0);
         }
         catch (Exception ex)
         {
@@ -54,6 +54,11 @@ public partial class NewAccountPage : Popup
     }
 
     private async void btnClose_Clicked(object sender, EventArgs e)
+    {
+        await CloseAsync();
+    }
+
+    private async void btnScanQRCode_Clicked(object sender, EventArgs e)
     {
         await CloseAsync();
     }

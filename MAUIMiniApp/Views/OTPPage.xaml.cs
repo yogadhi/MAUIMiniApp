@@ -41,6 +41,11 @@ public partial class OTPPage : ContentPage
         try
         {
             base.OnAppearing();
+
+            if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
+            {
+                WeakReferenceMessenger.Default.Send(new MyMessage(new MessageContainer { Key = "MainScreenLoaded" }));
+            }
         }
         catch (Exception ex)
         {

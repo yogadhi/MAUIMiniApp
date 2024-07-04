@@ -20,6 +20,7 @@ public partial class ToSPage : ContentPage
 
     private void btnReject_Clicked(object sender, EventArgs e)
     {
-        Application.Current.Quit();
+        int WindowWidth = (int)DeviceDisplay.Current.MainDisplayInfo.Width;
+        //Application.Current.Quit();
     }
 }
