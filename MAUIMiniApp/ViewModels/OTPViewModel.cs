@@ -148,8 +148,9 @@ namespace MAUIMiniApp.ViewModels
 
             try
             {
-                //await AccountDatabase.TruncateItemAsync();
+                //YAP.Libs.Alerts.Toasts.Show("New account successfully added");
 
+                //await AccountDatabase.TruncateItemAsync();
                 var resList = await AccountDatabase.GetItemsAsync();
                 if (resList != null)
                 {
@@ -281,6 +282,66 @@ namespace MAUIMiniApp.ViewModels
             finally
             {
                 IsBusy = false;
+            }
+        }
+
+        ICommand _DecodeScanResultCommand;
+        public ICommand DecodeScanResultCommand => _DecodeScanResultCommand ?? (_DecodeScanResultCommand = new Command<string>(async (x) => await ExecuteDecodeScanResultCommand(x)));
+        async Task ExecuteDecodeScanResultCommand(string scanResult)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(scanResult))
+                {
+                    var strSplit = scanResult.Split("~:~");
+                    if (strSplit != null)
+                    {
+                        if (strSplit.Length > 0)
+                        {
+                            if (!string.IsNullOrEmpty(strSplit[0]))
+                            {
+                                var strSplitZero = strSplit[0].Split("&");
+                                if (strSplitZero != null)
+                                {
+                                    if (strSplitZero.Length == 3)
+                                    {
+                                        var acctNo = strSplitZero[0].Split("cq2faauth://totp/")[1].Split("?")[0];
+                                        var companyCode = strSplitZero[2].Split("companycode=")[1];
+                                        var secretKey = strSplitZero[0].Split("secret=")[1];
+
+                                        var obj = new Account
+                                        {
+                                            AccountNo = acctNo.ToUpper(),
+                                            CompanyCode = companyCode,
+                                            SecretKey = secretKey
+                                        };
+
+                                        var resSave = await AccountDatabase.SaveItemAsync(obj);
+                                        if (resSave == 1)
+                                        {
+                                            await Task.Delay(1000);
+                                            WeakReferenceMessenger.Default.Send(new MyMessage(new MessageContainer { Key = "RefreshList" }));
+                                            //Toasts.Show("New account successfully added");
+                                            //timer.Stop();
+                                            //LoadCommand.Execute(null);
+                                            //MainThread.BeginInvokeOnMainThread(() =>
+                                            //{
+                                            //    Toasts.Show("New account successfully added");
+                                            //    timer.Stop();
+                                            //    LoadCommand.Execute(null);
+                                            //});
+                                        }
+                                    }
+                                }
+                                //await Application.Current.MainPage.Navigation.PopModalAsync();
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Write(Log.LogEnum.Error, nameof(ExecuteDecodeScanResultCommand), ex);
             }
         }
         #endregion

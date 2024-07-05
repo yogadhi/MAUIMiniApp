@@ -27,6 +27,24 @@ public partial class OTPPage : ContentPage
                         vm.timer.Stop();
                         vm.LoadCommand.Execute(null);
                     }
+                    else if (m.Value.Key == "ScanResult")
+                    {
+                        if (m.Value.CustomObject is string)
+                        {
+                            var scanRes = (string)m.Value.CustomObject;
+                            vm.DecodeScanResultCommand.Execute(scanRes);
+                        }
+                    }
+                    else if (m.Value.Key == "RefreshList")
+                    {
+                        MainThread.BeginInvokeOnMainThread(() =>
+                        {
+                            YAP.Libs.Alerts.Toasts.Show("New account successfully added");
+                            vm.timer.Stop();
+                            vm.LoadCommand.Execute(null);
+                        });
+
+                    }
                 }
             });
         }
@@ -41,11 +59,10 @@ public partial class OTPPage : ContentPage
         try
         {
             base.OnAppearing();
-
-            if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
-            {
-                WeakReferenceMessenger.Default.Send(new MyMessage(new MessageContainer { Key = "MainScreenLoaded" }));
-            }
+            //if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
+            //{
+            //    WeakReferenceMessenger.Default.Send(new MyMessage(new MessageContainer { Key = "MainScreenLoaded" }));
+            //}
         }
         catch (Exception ex)
         {

@@ -4,22 +4,24 @@
              xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
              xmlns:vm="clr-namespace:YAP.Libs.ViewModels"
              x:Class="YAP.Libs.Views.ScanQRCodePage"
-             Title="ScanQRCodePage">
+             Title="Scan QR Code">
     <ContentPage.BindingContext>
         <vm:BaseViewModel />
     </ContentPage.BindingContext>
     <Grid HorizontalOptions="FillAndExpand"
           VerticalOptions="FillAndExpand"
           RowDefinitions="Auto,*,Auto">
-
-        <Grid Grid.Row="0"
-              BackgroundColor="#aa000000">
-            <Label x:Name="ResultLabel" Text="CQ Authenticator" HorizontalOptions="Center" VerticalOptions="Center" TextColor="White" />
-        </Grid>
         <zxing:CameraBarcodeReaderView	Grid.Row="0" 
                                         Grid.RowSpan="3"
                                         x:Name="barcodeView"
+                                        IsDetecting="{Binding IsDetecting}"
                                         BarcodesDetected="BarcodesDetected"/>
+        <Grid Grid.Row="0"
+              BackgroundColor="{StaticResource Primary}"
+              Padding="10">
+            <Label Text="Scan QR Code" FontSize="20" HorizontalOptions="Start" VerticalOptions="Center" />
+        </Grid>
+
         <Image HorizontalOptions="CenterAndExpand" 
                VerticalOptions="CenterAndExpand" 
                Grid.Row="0" 

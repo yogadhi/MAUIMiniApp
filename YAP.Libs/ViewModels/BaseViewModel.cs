@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using YAP.Libs.Logger;
 using YAP.Libs.Views;
+using ZXing.Net.Maui;
+using CommunityToolkit.Mvvm.Messaging;
+using YAP.Libs.Models;
 
 namespace YAP.Libs.ViewModels
 {
@@ -25,6 +28,20 @@ namespace YAP.Libs.ViewModels
         {
             get { return title; }
             set { SetProperty(ref title, value); }
+        }
+
+        Boolean _IsDetecting = true;
+        public Boolean IsDetecting
+        {
+            get { return _IsDetecting; }
+            set
+            {
+                if (_IsDetecting != value)
+                {
+                    _IsDetecting = value;
+                    OnPropertyChanged("IsDetecting");
+                }
+            }
         }
 
         ICommand _OpenWebCommand;
@@ -50,12 +67,35 @@ namespace YAP.Libs.ViewModels
                 var resPermission = await YAP.Libs.Helpers.Permission.CheckAndRequestCamera();
                 if (resPermission == PermissionStatus.Granted)
                 {
-                    await Application.Current.MainPage.Navigation.PushAsync(new ScanQRCodePage());
+                    await Application.Current.MainPage.Navigation.PushModalAsync(new ScanQRCodePage());
                 }
             }
             catch (Exception ex)
             {
                 Log.Write(Log.LogEnum.Error, nameof(ExecuteScanQRCodeCommand), ex);
+            }
+        }
+
+        ICommand _ProcessScanQRCodeCommand;
+        public ICommand ProcessScanQRCodeCommand => _ProcessScanQRCodeCommand ?? (_ProcessScanQRCodeCommand = new Command<BarcodeResult>(async (x) => await ExecuteProcessScanQRCode(x)));
+        async Task ExecuteProcessScanQRCode(BarcodeResult scanResult)
+        {
+            try
+            {
+                if (scanResult != null)
+                {
+                    var format = scanResult.Format;
+                    var val = scanResult.Value;
+                    if (!string.IsNullOrWhiteSpace(val))
+                    {
+                        //await Application.Current.MainPage.Navigation.PopModalAsync();
+                        WeakReferenceMessenger.Default.Send(new MyMessage(new MessageContainer { Key = "ScanResult", CustomObject = val }));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Write(Log.LogEnum.Error, nameof(ExecuteProcessScanQRCode), ex);
             }
         }
 

@@ -9,7 +9,7 @@
         <vm:ToSViewModel />
     </ContentPage.BindingContext>
     
-    <Grid RowDefinitions="*,Auto" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Padding="10" RowSpacing="5">
+    <Grid RowDefinitions="*,Auto" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Padding="20" RowSpacing="5">
         <Frame HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" HasShadow="True" Padding="0" BackgroundColor="White">
             <WebView HorizontalOptions="FillAndExpand"
                      VerticalOptions="FillAndExpand"
@@ -25,7 +25,7 @@
               RowDefinitions="*"
               ColumnDefinitions="*,*">
             <Button x:Name="btnReject" Grid.Column="0" Text="Reject" BackgroundColor="Red" HorizontalOptions="FillAndExpand" Clicked="btnReject_Clicked" />
-            <Button x:Name="btnAccept" Grid.Column="1" Text="Accept" BackgroundColor="Green" HorizontalOptions="FillAndExpand" Command="{Binding AcceptToSCommand}"/>
+            <Button x:Name="btnAccept" Grid.Column="1" Text="Accept" BackgroundColor="#009e42" HorizontalOptions="FillAndExpand" Command="{Binding AcceptToSCommand}"/>
         </Grid>
     </Grid>
 </ContentPage>
