@@ -45,7 +45,10 @@ public partial class LoadingPage : ContentPage
                     {
                         if (RootItem.MenuItemList.Count > 1)
                         {
-                            Application.Current.MainPage = new AppFlyout(RootItem);
+                            MainThread.BeginInvokeOnMainThread(() =>
+                            {
+                                Application.Current.MainPage = new AppFlyout(RootItem);
+                            });
                         }
                         else
                         {
@@ -59,7 +62,11 @@ public partial class LoadingPage : ContentPage
                             else
                             {
                                 var page = RootItem.MenuItemList[0].TargetPage;
-                                Application.Current.MainPage = new NavigationPage(page);
+
+                                MainThread.BeginInvokeOnMainThread(() =>
+                                {
+                                    Application.Current.MainPage = new NavigationPage(page);
+                                });
                             }
                         }
                     }

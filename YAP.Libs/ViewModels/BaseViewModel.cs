@@ -88,7 +88,7 @@ namespace YAP.Libs.ViewModels
                     var val = scanResult.Value;
                     if (!string.IsNullOrWhiteSpace(val))
                     {
-                        //await Application.Current.MainPage.Navigation.PopModalAsync();
+                        await Application.Current.MainPage.Navigation.PopModalAsync();
                         WeakReferenceMessenger.Default.Send(new MyMessage(new MessageContainer { Key = "ScanResult", CustomObject = val }));
                     }
                 }

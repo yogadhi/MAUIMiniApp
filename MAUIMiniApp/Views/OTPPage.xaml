@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:MAUIMiniApp.ViewModels"
+             xmlns:converter="clr-namespace:YAP.Libs.Converters;assembly=YAP.Libs"
              xmlns:pinview="clr-namespace:PINView.Maui;assembly=PINView.Maui"
              xmlns:control="clr-namespace:YAP.Libs.Views;assembly=YAP.Libs"
              x:Class="MAUIMiniApp.Views.OTPPage"
@@ -13,7 +14,8 @@
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Add account"
                      Order="Primary"
-                     Command="{Binding NewAccountCommand}"
+                     x:Name="btnAddAccount"
+                     Clicked="btnAddAccount_Clicked"
                      IconImageSource="{AppThemeBinding Light=account_plus_outline.svg, Dark=account_plus_outline.svg}"/>
     </ContentPage.ToolbarItems>
 
@@ -26,7 +28,7 @@
     <Grid HorizontalOptions="FillAndExpand"
           VerticalOptions="FillAndExpand"
           Padding="10"
-          RowDefinitions="Auto,*">
+          RowDefinitions="*">
 
         <!--<Grid HorizontalOptions="CenterAndExpand"
               VerticalOptions="Start"
@@ -41,7 +43,8 @@
         <CollectionView x:Name="collectionView"
                         HorizontalOptions="FillAndExpand"
                         VerticalOptions="FillAndExpand"
-                        Grid.Row="1"
+                        IsVisible="{Binding IsBusy,Converter={converter:InverseBoolConverter}}"
+                        Grid.Row="0"
                         SelectedItem="{Binding SelectedOTP, Mode=TwoWay}"
                         SelectionChangedCommand="{Binding SelectionCommand}"
                         SelectionChangedCommandParameter="{Binding Path=SelectedItem, Source={x:Reference collectionView}}"
@@ -57,7 +60,7 @@
                         <Grid RowDefinitions="*,*" ColumnDefinitions="Auto,Auto" Grid.Row="0" Grid.Column="0" Padding="10,10" VerticalOptions="FillAndExpand" HorizontalOptions="CenterAndExpand" RowSpacing="5">
                             <HorizontalStackLayout Spacing="3" Grid.Row="0" Grid.Column="0" HorizontalOptions="StartAndExpand">
                                 <Label Text="Account :" FontSize="16" HorizontalOptions="StartAndExpand" />
-                                <Label Text="{Binding Account}" FontSize="16" HorizontalOptions="StartAndExpand" />
+                                <Label x:Name="lblAccount" Text="{Binding Account}" FontSize="16" HorizontalOptions="StartAndExpand" />
                             </HorizontalStackLayout>
 
                             <pinview:PINView x:Name="existingPINView"
@@ -67,9 +70,9 @@
                                              PINValue="{Binding OTP}"
                                              Color="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
                                              BoxShape="Squere"
-                                             IsPassword="False"
-                                             IsEnabled="False"
                                              PINLength="6"/>
+
+                            <Frame BackgroundColor="Transparent" BorderColor="Transparent" Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" />
 
                             <Grid HorizontalOptions="CenterAndExpand"
                                   VerticalOptions="CenterAndExpand"
@@ -81,16 +84,17 @@
                                 <Label Grid.Row="0" Grid.Column="0" HorizontalOptions="Center" VerticalOptions="Center" Text="{Binding TimerClock}" FontSize="20"/>
                                 <ActivityIndicator IsRunning="True" Grid.Row="0" Grid.Column="0" HeightRequest="50" WidthRequest="50" Color="{Binding TimerColor}" />
                             </Grid>
-
-                            <Frame BackgroundColor="Transparent" BorderColor="Transparent" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="2">
-                                <Frame.GestureRecognizers>
-                                    <TapGestureRecognizer Command="{Binding SelectionCommand}"/>
-                                </Frame.GestureRecognizers>
-                            </Frame>
                         </Grid>
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
+
+        <VerticalStackLayout VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" Grid.Column="0" Grid.Row="0" IsVisible="{Binding IsBusy}">
+            <ActivityIndicator Color="{StaticResource Primary}"
+                       IsRunning="{Binding IsBusy}" HeightRequest="50" WidthRequest="50"
+                       IsVisible="True" />
+            <Label x:Name="lblLoadingMsg" Text="Loading..." HorizontalOptions="Center" TextColor="{StaticResource Primary}" />
+        </VerticalStackLayout>
     </Grid>
 </ContentPage>

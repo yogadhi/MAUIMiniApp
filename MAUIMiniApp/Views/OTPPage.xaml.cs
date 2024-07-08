@@ -3,6 +3,7 @@ using YAP.Libs.Logger;
 using CommunityToolkit.Mvvm.Messaging;
 using YAP.Libs.Models;
 using MAUIMiniApp.Models;
+using CommunityToolkit.Maui.Views;
 
 namespace MAUIMiniApp.Views;
 //https://svgtrace.com/svg-to-png
@@ -24,8 +25,8 @@ public partial class OTPPage : ContentPage
                 {
                     if (m.Value.Key == "ClosePopUp")
                     {
-                        vm.timer.Stop();
-                        vm.LoadCommand.Execute(null);
+                        vm.endTime = DateTime.Now;
+                        //vm.LoadCommand.Execute(null);
                     }
                     else if (m.Value.Key == "ScanResult")
                     {
@@ -39,11 +40,21 @@ public partial class OTPPage : ContentPage
                     {
                         MainThread.BeginInvokeOnMainThread(() =>
                         {
+                            vm.endTime = DateTime.Now;
                             YAP.Libs.Alerts.Toasts.Show("New account successfully added");
-                            vm.timer.Stop();
-                            vm.LoadCommand.Execute(null);
                         });
 
+                    }
+                    else if (m.Value.Key == "InitScan")
+                    {
+                        var resPermission = await YAP.Libs.Helpers.Permission.CheckAndRequestCamera();
+                        if (resPermission == PermissionStatus.Granted)
+                        {
+                            MainThread.BeginInvokeOnMainThread(async () =>
+                            {
+                                await Navigation.PushModalAsync(new YAP.Libs.Views.ScanQRCodePage());
+                            });
+                        }
                     }
                 }
             });
@@ -54,19 +65,23 @@ public partial class OTPPage : ContentPage
         }
     }
 
-    protected override void OnAppearing()
+    protected override async void OnAppearing()
     {
         try
         {
             base.OnAppearing();
-            //if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
-            //{
-            //    WeakReferenceMessenger.Default.Send(new MyMessage(new MessageContainer { Key = "MainScreenLoaded" }));
-            //}
         }
         catch (Exception ex)
         {
             Log.Write(Log.LogEnum.Error, nameof(OnAppearing), ex);
         }
+    }
+
+    private void btnAddAccount_Clicked(object sender, EventArgs e)
+    {
+        MainThread.BeginInvokeOnMainThread(async () =>
+        {
+            await Navigation.ShowPopupAsync(new NewAccountPage());
+        });
     }
 }

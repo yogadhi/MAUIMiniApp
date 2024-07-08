@@ -31,23 +31,24 @@ namespace MAUIMiniApp
             try
             {
                 InitializeComponent();
+                Current.UserAppTheme = AppTheme.Light;
 
                 RootItem = new RootItem
                 {
                     Provider = provider,
                     MenuItemList = new List<FlyoutPageItem>()
+                    {
+                        new FlyoutPageItem { Title = "OTP", IconSource = "reminders.png", TargetType = typeof(OTPPage), TargetPage = new OTPPage() },
+                    }
                 };
+                //RootItem.SelectedMenuIndex = 1;
 
                 AlertSvc = RootItem.Provider.GetService<IAlertService>();
 
-                RootItem.MenuItemList = new List<FlyoutPageItem>
+                MainThread.BeginInvokeOnMainThread(() =>
                 {
-                    new FlyoutPageItem { Title = "OTP", IconSource = "reminders.png", TargetType = typeof(OTPPage), TargetPage = new OTPPage() },
-                };
-
-                //RootItem.SelectedMenuIndex = 1;
-
-                MainPage = new LoadingPage(RootItem);
+                    MainPage = new LoadingPage(RootItem);
+                });
 
                 Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping("NoUnderLine", (handler, view) =>
                 {
@@ -65,40 +66,47 @@ namespace MAUIMiniApp
                             if ((bool)m.Value.CustomObject)
                             {
                                 var page = RootItem.MenuItemList[0].TargetPage;
-                                MainPage = new NavigationPage(page);
+
+                                MainThread.BeginInvokeOnMainThread(() =>
+                                {
+                                    MainPage = new NavigationPage(page);
+                                });
                             }
                             else
                             {
-                                MainPage = new ToSPage();
+                                MainThread.BeginInvokeOnMainThread(() =>
+                                {
+                                    MainPage = new ToSPage();
+                                });
                             }
                         }
                     }
                 });
 
-//                if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
-//                {
-//                    WeakReferenceMessenger.Default.Register<MyMessage>(this, (r, m) =>
-//                    {
-//                        if (m.Value != null)
-//                        {
-//                            if (m.Value.Key == "MainScreenLoaded")
-//                            {
-//                                Microsoft.Maui.Handlers.WindowHandler.Mapper.AppendToMapping(nameof(IWindow), (handler, view) =>
-//                                {
-//#if WINDOWS
-//            var mauiWindow = handler.VirtualView;
-//            var nativeWindow = handler.PlatformView;
-//            nativeWindow.Activate();
-//            IntPtr windowHandle = WinRT.Interop.WindowNative.GetWindowHandle(nativeWindow);
-//            WindowId windowId = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(windowHandle);
-//            AppWindow appWindow = Microsoft.UI.Windowing.AppWindow.GetFromWindowId(windowId);
-//            appWindow.Resize(new SizeInt32(WindowWidth, WindowHeight));
-//#endif
-//                                });
-//                            }
-//                        }
-//                    });
-//                }
+                //                if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
+                //                {
+                //                    WeakReferenceMessenger.Default.Register<MyMessage>(this, (r, m) =>
+                //                    {
+                //                        if (m.Value != null)
+                //                        {
+                //                            if (m.Value.Key == "MainScreenLoaded")
+                //                            {
+                //                                Microsoft.Maui.Handlers.WindowHandler.Mapper.AppendToMapping(nameof(IWindow), (handler, view) =>
+                //                                {
+                //#if WINDOWS
+                //            var mauiWindow = handler.VirtualView;
+                //            var nativeWindow = handler.PlatformView;
+                //            nativeWindow.Activate();
+                //            IntPtr windowHandle = WinRT.Interop.WindowNative.GetWindowHandle(nativeWindow);
+                //            WindowId windowId = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(windowHandle);
+                //            AppWindow appWindow = Microsoft.UI.Windowing.AppWindow.GetFromWindowId(windowId);
+                //            appWindow.Resize(new SizeInt32(WindowWidth, WindowHeight));
+                //#endif
+                //                                });
+                //                            }
+                //                        }
+                //                    });
+                //                }
             }
             catch (Exception ex)
             {

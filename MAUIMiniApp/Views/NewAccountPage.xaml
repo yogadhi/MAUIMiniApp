@@ -48,8 +48,7 @@
                         ImageSource="qrcode_scan.svg"
                         HorizontalOptions="FillAndExpand"
                         x:Name="btnScanQRCode"
-                        Clicked="btnScanQRCode_Clicked"
-                        Command="{Binding ScanQRCodeCommand}"/>
+                        Clicked="btnScanQRCode_Clicked"/>
                 <Button Text="Add"
                         Grid.Column="1"
                         ImageSource="account_plus_outline.svg"

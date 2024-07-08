@@ -2,26 +2,33 @@ using CommunityToolkit.Maui.Views;
 using YAP.Libs.Logger;
 using CommunityToolkit.Mvvm.Messaging;
 using YAP.Libs.Models;
+using MAUIMiniApp.ViewModels;
 
 namespace MAUIMiniApp.Views;
 
 public partial class NewAccountPage : Popup
 {
     double width = 0;
+    NewAccountViewModel vm;
     public NewAccountPage()
     {
         try
         {
             InitializeComponent();
+            vm = BindingContext as NewAccountViewModel;
+
             InitDisplay();
 
-            WeakReferenceMessenger.Default.Register<MyMessage>(this, async (r, m) =>
+            WeakReferenceMessenger.Default.Register<MyMessage>(this, (r, m) =>
             {
                 if (m.Value as MessageContainer != null)
                 {
                     if (m.Value.Key == "ClosePopUp")
                     {
-                        await CloseAsync();
+                        MainThread.BeginInvokeOnMainThread(async () =>
+                        {
+                            await CloseAsync();
+                        });
                     }
                 }
             });
@@ -53,13 +60,20 @@ public partial class NewAccountPage : Popup
         }
     }
 
-    private async void btnClose_Clicked(object sender, EventArgs e)
+    private void btnClose_Clicked(object sender, EventArgs e)
     {
-        await CloseAsync();
+        MainThread.BeginInvokeOnMainThread(async () =>
+        {
+            await CloseAsync();
+        });
     }
 
-    private async void btnScanQRCode_Clicked(object sender, EventArgs e)
+    private void btnScanQRCode_Clicked(object sender, EventArgs e)
     {
-        await CloseAsync();
+        MainThread.BeginInvokeOnMainThread(async () =>
+        {
+            await CloseAsync();
+        });
+        WeakReferenceMessenger.Default.Send(new MyMessage(new MessageContainer { Key = "InitScan" }));
     }
 }

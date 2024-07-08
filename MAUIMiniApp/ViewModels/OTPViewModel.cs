@@ -16,7 +16,13 @@ namespace MAUIMiniApp.ViewModels
     {
         #region Variables
         decimal maxInterval = 30m;
-        DateTime endTime = DateTime.Now.AddSeconds(30);
+
+        DateTime _endTime = DateTime.Now.AddSeconds(30);
+        public DateTime endTime
+        {
+            get { return _endTime; }
+            set { SetProperty(ref _endTime, value); }
+        }
 
         System.Timers.Timer _timer = new System.Timers.Timer { Interval = 1000 };
         public System.Timers.Timer timer
@@ -96,7 +102,7 @@ namespace MAUIMiniApp.ViewModels
             }
         }
 
-        ObservableCollection<OTPItem> _OTPItemList;
+        ObservableCollection<OTPItem> _OTPItemList = new ObservableCollection<OTPItem>();
         public ObservableCollection<OTPItem> OTPItemList
         {
             get { return _OTPItemList; }
@@ -131,7 +137,9 @@ namespace MAUIMiniApp.ViewModels
             {
                 Title = "CQ Authenticator";
                 timer.Elapsed += t_Tick;
-                LoadCommand.Execute(null);
+                endTime = DateTime.Now;
+                timer.Start();
+                //LoadCommand.Execute(null);
             }
             catch (Exception ex)
             {
@@ -144,11 +152,20 @@ namespace MAUIMiniApp.ViewModels
         public ICommand LoadCommand => _LoadCommand ?? (_LoadCommand = new Command(async () => await ExecuteLoadCommand()));
         async Task ExecuteLoadCommand()
         {
-            IsBusy = true;
-
             try
             {
-                //YAP.Libs.Alerts.Toasts.Show("New account successfully added");
+                if (IsBusy)
+                {
+                    return;
+                }
+
+                var hasAcceptToS = await SecureStorage.GetAsync("hasAcceptToS");
+                if (string.IsNullOrEmpty(hasAcceptToS))
+                {
+                    return;
+                }
+
+                IsBusy = true;
 
                 //await AccountDatabase.TruncateItemAsync();
                 var resList = await AccountDatabase.GetItemsAsync();
@@ -157,8 +174,8 @@ namespace MAUIMiniApp.ViewModels
                     if (resList.Count > 0)
                     {
                         Random generator = new Random();
-
                         OTPItemList = new ObservableCollection<OTPItem>();
+
                         foreach (var index in resList)
                         {
                             OTPItemList.Add(new OTPItem
@@ -171,17 +188,14 @@ namespace MAUIMiniApp.ViewModels
                         endTime = DateTime.Now.AddSeconds(30);
                         TimeSpan ts = endTime - DateTime.Now;
                         cTimerInt = ts.Seconds;
-                        timer.Start();
                     }
                 }
+                IsBusy = false;
             }
             catch (Exception ex)
             {
-                Log.Write(Log.LogEnum.Error, nameof(ExecuteLoadCommand), ex);
-            }
-            finally
-            {
                 IsBusy = false;
+                Log.Write(Log.LogEnum.Error, nameof(ExecuteLoadCommand), ex);
             }
         }
 
@@ -191,16 +205,15 @@ namespace MAUIMiniApp.ViewModels
         {
             try
             {
-                var objOTPItemSeelcted = SelectedOTP;
-                if (objOTPItemSeelcted != null)
+                if (obj != null)
                 {
-                    string action = await App.Current.MainPage.DisplayActionSheet(objOTPItemSeelcted.Account, "Cancel", null, new string[] { "Copy", "Rename", "Remove", "Unbind" });
+                    string action = await Application.Current.MainPage.DisplayActionSheet((string)obj.Account, "Cancel", null, new string[] { "Copy", "Rename", "Remove", "Unbind" });
                     if (!string.IsNullOrEmpty(action))
                     {
                         if (action == "Copy")
                         {
-                            await Clipboard.Default.SetTextAsync(objOTPItemSeelcted.OTP);
-                            Toasts.Show(objOTPItemSeelcted.OTP + " copied");
+                            await Clipboard.Default.SetTextAsync((string)obj.OTP);
+                            Toasts.Show((string)(obj.OTP + " copied"));
                         }
                     }
                 }
@@ -225,17 +238,23 @@ namespace MAUIMiniApp.ViewModels
 
                 if ((ts.TotalMilliseconds < 0) || (ts.TotalMilliseconds < 1000))
                 {
-                    timer.Stop();
+                    endTime = DateTime.Now;
                     LoadCommand.Execute(null);
                 }
                 else
                 {
-                    OTPItemList.Select(c =>
+                    if (OTPItemList != null)
                     {
-                        c.TimerClock = cTimerInt;
-                        c.TimerColor = ProgressColor;
-                        return c;
-                    }).ToList();
+                        if (OTPItemList.Count > 0)
+                        {
+                            OTPItemList.Select(c =>
+                            {
+                                c.TimerClock = cTimerInt;
+                                c.TimerColor = ProgressColor;
+                                return c;
+                            }).ToList();
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -268,20 +287,16 @@ namespace MAUIMiniApp.ViewModels
         public ICommand NewAccountCommand => _NewAccountCommand ?? (_NewAccountCommand = new Command(async () => await ExecuteNewAccountCommand()));
         async Task ExecuteNewAccountCommand()
         {
-            IsBusy = true;
-
             try
             {
-                //await App.Current.MainPage.Navigation.PushAsync(new NewAccountPage());
-                await App.Current.MainPage.ShowPopupAsync(new NewAccountPage());
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    await Application.Current.MainPage.ShowPopupAsync(new NewAccountPage());
+                });
             }
             catch (Exception ex)
             {
                 Log.Write(Log.LogEnum.Error, nameof(ExecuteNewAccountCommand), ex);
-            }
-            finally
-            {
-                IsBusy = false;
             }
         }
 
@@ -319,17 +334,7 @@ namespace MAUIMiniApp.ViewModels
                                         var resSave = await AccountDatabase.SaveItemAsync(obj);
                                         if (resSave == 1)
                                         {
-                                            await Task.Delay(1000);
                                             WeakReferenceMessenger.Default.Send(new MyMessage(new MessageContainer { Key = "RefreshList" }));
-                                            //Toasts.Show("New account successfully added");
-                                            //timer.Stop();
-                                            //LoadCommand.Execute(null);
-                                            //MainThread.BeginInvokeOnMainThread(() =>
-                                            //{
-                                            //    Toasts.Show("New account successfully added");
-                                            //    timer.Stop();
-                                            //    LoadCommand.Execute(null);
-                                            //});
                                         }
                                     }
                                 }
