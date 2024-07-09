@@ -1,7 +1,9 @@
 using CommunityToolkit.Maui.Views;
-using YAP.Libs.Logger;
 using CommunityToolkit.Mvvm.Messaging;
+using YAP.Libs.Logger;
 using YAP.Libs.Models;
+using YAP.Libs.Views;
+using YAP.Libs.Helpers;
 using MAUIMiniApp.ViewModels;
 
 namespace MAUIMiniApp.Views;
@@ -62,18 +64,38 @@ public partial class NewAccountPage : Popup
 
     private void btnClose_Clicked(object sender, EventArgs e)
     {
-        MainThread.BeginInvokeOnMainThread(async () =>
+        try
         {
-            await CloseAsync();
-        });
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                await CloseAsync();
+            });
+        }
+        catch (Exception ex)
+        {
+            Log.Write(Log.LogEnum.Error, nameof(btnClose_Clicked), ex);
+        }
     }
 
     private void btnScanQRCode_Clicked(object sender, EventArgs e)
     {
-        MainThread.BeginInvokeOnMainThread(async () =>
+        try
         {
-            await CloseAsync();
-        });
-        WeakReferenceMessenger.Default.Send(new MyMessage(new MessageContainer { Key = "InitScan" }));
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                await CloseAsync();
+            });
+
+            //WeakReferenceMessenger.Default.Send(new MyMessage(new MessageContainer { Key = "InitScan" }));
+
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                await Application.Current.MainPage.Navigation.PushModalAsync(new ScanQRCodePage());
+            });
+        }
+        catch (Exception ex)
+        {
+            Log.Write(Log.LogEnum.Error, nameof(btnScanQRCode_Clicked), ex);
+        }
     }
 }

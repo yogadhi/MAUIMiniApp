@@ -13,11 +13,21 @@ namespace MAUIMiniApp.Models
             set => SetProperty(ref _OTP, value);
         }
 
-        string _Account;
+        string _Account = string.Empty;
         public string Account
         {
-            get => _Account;
-            set => SetProperty(ref _Account, value);
+            get { return _Account; }
+            set
+            {
+                if (_Account != value)
+                {
+                    _Account = value;
+                    OnPropertyChanged("Account");
+
+                    _MaskAccount = YAP.Libs.Helpers.Global.MaskString(_Account);
+                    OnPropertyChanged("MaskAccount");
+                }
+            }
         }
 
         int _TimerClock;
@@ -32,6 +42,26 @@ namespace MAUIMiniApp.Models
         {
             get => _TimerColor;
             set => SetProperty(ref _TimerColor, value);
+        }
+
+        string _MaskAccount = string.Empty;
+        public string MaskAccount
+        {
+            get { return _MaskAccount; }
+            set
+            {
+                if (_MaskAccount != value)
+                {
+                    _MaskAccount = value;
+                }
+            }
+        }
+
+        string _SecretKey;
+        public string SecretKey
+        {
+            get => _SecretKey;
+            set => SetProperty(ref _SecretKey, value);
         }
     }
 }

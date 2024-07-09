@@ -139,7 +139,6 @@ namespace MAUIMiniApp.ViewModels
                 timer.Elapsed += t_Tick;
                 endTime = DateTime.Now;
                 timer.Start();
-                //LoadCommand.Execute(null);
             }
             catch (Exception ex)
             {
@@ -180,8 +179,9 @@ namespace MAUIMiniApp.ViewModels
                         {
                             OTPItemList.Add(new OTPItem
                             {
-                                Account = index.AccountNo,
-                                OTP = generator.Next(0, 1000000).ToString("D6")
+                                Account = index.Accode,
+                                SecretKey = index.SecretKey,
+                                OTP = Helpers.Global.GetFuturePIN(index.SecretKey),
                             });
                         }
 
@@ -194,8 +194,8 @@ namespace MAUIMiniApp.ViewModels
             }
             catch (Exception ex)
             {
-                IsBusy = false;
                 Log.Write(Log.LogEnum.Error, nameof(ExecuteLoadCommand), ex);
+                IsBusy = false;
             }
         }
 
@@ -205,6 +205,7 @@ namespace MAUIMiniApp.ViewModels
         {
             try
             {
+                SelectedOTP = obj;
                 if (obj != null)
                 {
                     string action = await Application.Current.MainPage.DisplayActionSheet((string)obj.Account, "Cancel", null, new string[] { "Copy", "Rename", "Remove", "Unbind" });
@@ -213,19 +214,15 @@ namespace MAUIMiniApp.ViewModels
                         if (action == "Copy")
                         {
                             await Clipboard.Default.SetTextAsync((string)obj.OTP);
-                            Toasts.Show((string)(obj.OTP + " copied"));
+                            Toasts.Show(obj.OTP + " copied");
                         }
                     }
                 }
-
+                SelectedOTP = null;
             }
             catch (Exception ex)
             {
                 Log.Write(Log.LogEnum.Error, nameof(ExecuteSelectionCommand), ex);
-            }
-            finally
-            {
-                SelectedOTP = null;
             }
         }
 
@@ -263,82 +260,59 @@ namespace MAUIMiniApp.ViewModels
             }
         }
 
-        ICommand _CheckToSCommand;
-        public ICommand CheckToSCommand => _CheckToSCommand ?? (_CheckToSCommand = new Command(async () => await ExecuteCheckToSCommand()));
-        async Task ExecuteCheckToSCommand()
-        {
-            try
-            {
-                var hasAuth = await SecureStorage.GetAsync("hasAuth");
-                var hasAcceptToS = await SecureStorage.GetAsync("hasAcceptToS");
-
-                if (!string.IsNullOrEmpty(hasAuth) && string.IsNullOrEmpty(hasAcceptToS))
-                {
-                    Application.Current.MainPage = new ToSPage();
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Write(Log.LogEnum.Error, nameof(ExecuteCheckToSCommand), ex);
-            }
-        }
-
-        ICommand _NewAccountCommand;
-        public ICommand NewAccountCommand => _NewAccountCommand ?? (_NewAccountCommand = new Command(async () => await ExecuteNewAccountCommand()));
-        async Task ExecuteNewAccountCommand()
-        {
-            try
-            {
-                MainThread.BeginInvokeOnMainThread(async () =>
-                {
-                    await Application.Current.MainPage.ShowPopupAsync(new NewAccountPage());
-                });
-            }
-            catch (Exception ex)
-            {
-                Log.Write(Log.LogEnum.Error, nameof(ExecuteNewAccountCommand), ex);
-            }
-        }
-
         ICommand _DecodeScanResultCommand;
         public ICommand DecodeScanResultCommand => _DecodeScanResultCommand ?? (_DecodeScanResultCommand = new Command<string>(async (x) => await ExecuteDecodeScanResultCommand(x)));
         async Task ExecuteDecodeScanResultCommand(string scanResult)
         {
             try
             {
-                if (!string.IsNullOrEmpty(scanResult))
+                if (string.IsNullOrEmpty(scanResult))
                 {
-                    var strSplit = scanResult.Split("~:~");
-                    if (strSplit != null)
+                    MainThread.BeginInvokeOnMainThread(() => { Toasts.Show("No scan result to process"); });
+                    return;
+                }
+
+                var strSplit = scanResult.Split("~:~");
+                if (strSplit == null)
+                {
+                    MainThread.BeginInvokeOnMainThread(() => { Toasts.Show("Wrong QR Code format"); });
+                    return;
+                }
+
+                if (strSplit.Length == 0)
+                {
+                    MainThread.BeginInvokeOnMainThread(() => { Toasts.Show("Wrong QR Code format"); });
+                    return;
+                }
+
+                if (!string.IsNullOrEmpty(strSplit[0]))
+                {
+                    var strSplitZero = strSplit[0].Split("&");
+                    if (strSplitZero != null)
                     {
-                        if (strSplit.Length > 0)
+                        if (strSplitZero.Length == 3)
                         {
-                            if (!string.IsNullOrEmpty(strSplit[0]))
+                            var acCode = strSplitZero[0].Split("cq2faauth://totp/")[1].Split("?")[0];
+                            var companyCode = strSplitZero[2].Split("companycode=")[1];
+
+                            var secretKey = strSplitZero[0].Split("secret=")[1];
+                            if (String.IsNullOrEmpty(YAP.Libs.Helpers.Global.Base32Decode(secretKey)))
                             {
-                                var strSplitZero = strSplit[0].Split("&");
-                                if (strSplitZero != null)
-                                {
-                                    if (strSplitZero.Length == 3)
-                                    {
-                                        var acctNo = strSplitZero[0].Split("cq2faauth://totp/")[1].Split("?")[0];
-                                        var companyCode = strSplitZero[2].Split("companycode=")[1];
-                                        var secretKey = strSplitZero[0].Split("secret=")[1];
+                                MainThread.BeginInvokeOnMainThread(() => { Toasts.Show("Wrong QR Code format"); });
+                                return;
+                            }
 
-                                        var obj = new Account
-                                        {
-                                            AccountNo = acctNo.ToUpper(),
-                                            CompanyCode = companyCode,
-                                            SecretKey = secretKey
-                                        };
+                            var obj = new Account
+                            {
+                                Accode = acCode.ToUpper(),
+                                CompanyCode = companyCode,
+                                SecretKey = secretKey.ToUpper()
+                            };
 
-                                        var resSave = await AccountDatabase.SaveItemAsync(obj);
-                                        if (resSave == 1)
-                                        {
-                                            WeakReferenceMessenger.Default.Send(new MyMessage(new MessageContainer { Key = "RefreshList" }));
-                                        }
-                                    }
-                                }
-                                //await Application.Current.MainPage.Navigation.PopModalAsync();
+                            var resSave = await AccountDatabase.SaveItemAsync(obj);
+                            if (resSave == 1)
+                            {
+                                WeakReferenceMessenger.Default.Send(new MyMessage(new MessageContainer { Key = "RefreshList" }));
                             }
                         }
                     }

@@ -49,4 +49,16 @@ public partial class ScanQRCodePage : ContentPage
             Log.Write(Log.LogEnum.Error, nameof(BarcodesDetected), ex);
         }
     }
+
+    private async void btnBack_Clicked(object sender, EventArgs e)
+    {
+        try
+        {
+            await Navigation.PopModalAsync();
+        }
+        catch (Exception ex)
+        {
+            Log.Write(Log.LogEnum.Error, nameof(btnBack_Clicked), ex);
+        }
+    }
 }

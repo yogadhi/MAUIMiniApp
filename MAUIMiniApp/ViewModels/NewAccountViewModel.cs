@@ -12,7 +12,6 @@ using CommunityToolkit.Mvvm.Messaging;
 using YAP.Libs.Models;
 using YAP.Libs.Alerts;
 
-
 namespace MAUIMiniApp.ViewModels
 {
     public class NewAccountViewModel : BaseViewModel
@@ -61,7 +60,7 @@ namespace MAUIMiniApp.ViewModels
             {
                 var obj = new Account
                 {
-                    AccountNo = AccountNo,
+                    Accode = AccountNo,
                     CompanyCode = CompanyCode,
                     SecretKey = SecretKey
                 };

@@ -18,8 +18,11 @@
                                         BarcodesDetected="BarcodesDetected"/>
         <Grid Grid.Row="0"
               BackgroundColor="{StaticResource Primary}"
-              Padding="10">
-            <Label Text="Scan QR Code" FontSize="20" HorizontalOptions="Start" VerticalOptions="Center" />
+              Padding="5,10"
+              ColumnSpacing="5"
+              ColumnDefinitions="Auto,*">
+            <Button x:Name="btnBack" Grid.Column="0" HorizontalOptions="Center" VerticalOptions="Center" ImageSource="arrow_left.svg" CornerRadius="30" WidthRequest="30" HeightRequest="30" Clicked="btnBack_Clicked" />
+            <Label Grid.Column="1" Text="Scan QR Code" FontSize="20" HorizontalOptions="Start" VerticalOptions="Center" TextColor="White" />
         </Grid>
 
         <Image HorizontalOptions="CenterAndExpand" 

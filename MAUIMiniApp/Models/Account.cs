@@ -11,7 +11,7 @@ namespace MAUIMiniApp.Models
     {
         public string CompanyCode { get; set; }
         [PrimaryKey]
-        public string AccountNo { get; set; }
+        public string Accode { get; set; }
         public string SecretKey { get; set; }
     }
 }

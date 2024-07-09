@@ -2,7 +2,7 @@ using MAUIMiniApp.ViewModels;
 using YAP.Libs.Logger;
 using CommunityToolkit.Mvvm.Messaging;
 using YAP.Libs.Models;
-using MAUIMiniApp.Models;
+using YAP.Libs.Alerts;
 using CommunityToolkit.Maui.Views;
 
 namespace MAUIMiniApp.Views;
@@ -41,21 +41,21 @@ public partial class OTPPage : ContentPage
                         MainThread.BeginInvokeOnMainThread(() =>
                         {
                             vm.endTime = DateTime.Now;
-                            YAP.Libs.Alerts.Toasts.Show("New account successfully added");
+                            Toasts.Show("New account successfully added");
                         });
 
                     }
-                    else if (m.Value.Key == "InitScan")
-                    {
-                        var resPermission = await YAP.Libs.Helpers.Permission.CheckAndRequestCamera();
-                        if (resPermission == PermissionStatus.Granted)
-                        {
-                            MainThread.BeginInvokeOnMainThread(async () =>
-                            {
-                                await Navigation.PushModalAsync(new YAP.Libs.Views.ScanQRCodePage());
-                            });
-                        }
-                    }
+                    //else if (m.Value.Key == "InitScan")
+                    //{
+                    //    var resPermission = await YAP.Libs.Helpers.Permission.CheckAndRequestCamera();
+                    //    if (resPermission == PermissionStatus.Granted)
+                    //    {
+                    //        MainThread.BeginInvokeOnMainThread(async () =>
+                    //        {
+                    //            await Navigation.PushModalAsync(new YAP.Libs.Views.ScanQRCodePage());
+                    //        });
+                    //    }
+                    //}
                 }
             });
         }
@@ -65,7 +65,7 @@ public partial class OTPPage : ContentPage
         }
     }
 
-    protected override async void OnAppearing()
+    protected override void OnAppearing()
     {
         try
         {
@@ -79,9 +79,16 @@ public partial class OTPPage : ContentPage
 
     private void btnAddAccount_Clicked(object sender, EventArgs e)
     {
-        MainThread.BeginInvokeOnMainThread(async () =>
+        try
         {
-            await Navigation.ShowPopupAsync(new NewAccountPage());
-        });
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                await Application.Current.MainPage.ShowPopupAsync(new NewAccountPage());
+            });
+        }
+        catch (Exception ex)
+        {
+            Log.Write(Log.LogEnum.Error, nameof(btnAddAccount_Clicked), ex);
+        }
     }
 }

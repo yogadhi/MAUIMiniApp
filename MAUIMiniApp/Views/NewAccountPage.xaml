@@ -40,7 +40,7 @@
                        Placeholder="Enter your key"
                        HorizontalOptions="FillAndExpand"/>                
             </VerticalStackLayout>
-            <Grid HorizontalOptions="FillAndExpand" VerticalOptions="End" ColumnDefinitions="*,*" ColumnSpacing="5">
+            <Grid HorizontalOptions="FillAndExpand" VerticalOptions="End" ColumnDefinitions="*,*" ColumnSpacing="5" Padding="3">
                 <Button Text="Scan QR Code"
                         Grid.Column="0"
                         BackgroundColor="White"

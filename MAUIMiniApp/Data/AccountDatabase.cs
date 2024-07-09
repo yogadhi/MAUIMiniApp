@@ -26,7 +26,7 @@ namespace MAUIMiniApp.Data
         {
             await Init();
 
-            var res = await Database.Table<Account>().Where(x => x.CompanyCode == item.CompanyCode && x.AccountNo == item.AccountNo).FirstOrDefaultAsync();
+            var res = await Database.Table<Account>().Where(x => x.CompanyCode == item.CompanyCode && x.Accode == item.Accode).FirstOrDefaultAsync();
             if (res != null)
             {
                 return await Database.UpdateAsync(item);

@@ -9,8 +9,8 @@
         <vm:ToSViewModel />
     </ContentPage.BindingContext>
     
-    <Grid RowDefinitions="*,Auto" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Padding="10" RowSpacing="5">
-        <Frame HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" HasShadow="True" Padding="0" BackgroundColor="White">
+    <Grid RowDefinitions="*,Auto" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Padding="7" RowSpacing="5">
+        <Frame HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" HasShadow="True" Padding="3" BackgroundColor="White">
             <WebView HorizontalOptions="FillAndExpand"
                      VerticalOptions="FillAndExpand"
                      Source="{Binding HtmlSource}"
