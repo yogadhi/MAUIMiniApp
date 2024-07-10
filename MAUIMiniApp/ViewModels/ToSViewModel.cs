@@ -29,7 +29,7 @@ namespace MAUIMiniApp.ViewModels
         {
             try
             {
-                
+
             }
             catch (Exception ex)
             {
@@ -44,9 +44,13 @@ namespace MAUIMiniApp.ViewModels
         {
             try
             {
-
                 await SecureStorage.SetAsync("hasAcceptToS", "true");
-                WeakReferenceMessenger.Default.Send(new MyMessage(new MessageContainer { Key = "hasAcceptedToS", CustomObject = true }));
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    await Application.Current.MainPage.Navigation.PopModalAsync();
+                });
+
+                //WeakReferenceMessenger.Default.Send(new MyMessage(new MessageContainer { Key = "hasAcceptedToS", CustomObject = true }));
             }
             catch (Exception ex)
             {

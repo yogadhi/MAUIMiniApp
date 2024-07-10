@@ -23,6 +23,13 @@ namespace YAP.Libs.ViewModels
             set { SetProperty(ref isBusy, value); }
         }
 
+        bool _IsRefreshing = false;
+        public bool IsRefreshing
+        {
+            get { return _IsRefreshing; }
+            set { SetProperty(ref _IsRefreshing, value); }
+        }
+
         string title = string.Empty;
         public string Title
         {

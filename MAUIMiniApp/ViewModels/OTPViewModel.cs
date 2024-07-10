@@ -9,6 +9,7 @@ using YAP.Libs.Models;
 using System.Collections.ObjectModel;
 using CommunityToolkit.Maui.Views;
 using MAUIMiniApp.Data;
+using System;
 
 namespace MAUIMiniApp.ViewModels
 {
@@ -103,17 +104,22 @@ namespace MAUIMiniApp.ViewModels
         }
 
         ObservableCollection<OTPItem> _OTPItemList = new ObservableCollection<OTPItem>();
+        //public ObservableCollection<OTPItem> OTPItemList
+        //{
+        //    get { return _OTPItemList; }
+        //    set
+        //    {
+        //        if (_OTPItemList != value)
+        //        {
+        //            _OTPItemList = value;
+        //            OnPropertyChanged("OTPItemList");
+        //        }
+        //    }
+        //}
         public ObservableCollection<OTPItem> OTPItemList
         {
-            get { return _OTPItemList; }
-            set
-            {
-                if (_OTPItemList != value)
-                {
-                    _OTPItemList = value;
-                    OnPropertyChanged("OTPItemList");
-                }
-            }
+            get => _OTPItemList;
+            set => SetProperty(ref _OTPItemList, value);
         }
 
         OTPItem _SelectedOTP;
@@ -137,8 +143,8 @@ namespace MAUIMiniApp.ViewModels
             {
                 Title = "CQ Authenticator";
                 timer.Elapsed += t_Tick;
-                endTime = DateTime.Now;
-                timer.Start();
+                //endTime = DateTime.Now;
+                //timer.Start();
             }
             catch (Exception ex)
             {
@@ -153,17 +159,7 @@ namespace MAUIMiniApp.ViewModels
         {
             try
             {
-                if (IsBusy)
-                {
-                    return;
-                }
-
-                var hasAcceptToS = await SecureStorage.GetAsync("hasAcceptToS");
-                if (string.IsNullOrEmpty(hasAcceptToS))
-                {
-                    return;
-                }
-
+                if (IsBusy) { return; }
                 IsBusy = true;
 
                 //await AccountDatabase.TruncateItemAsync();
@@ -172,9 +168,7 @@ namespace MAUIMiniApp.ViewModels
                 {
                     if (resList.Count > 0)
                     {
-                        Random generator = new Random();
                         OTPItemList = new ObservableCollection<OTPItem>();
-
                         foreach (var index in resList)
                         {
                             OTPItemList.Add(new OTPItem
@@ -186,16 +180,39 @@ namespace MAUIMiniApp.ViewModels
                         }
 
                         endTime = DateTime.Now.AddSeconds(30);
-                        TimeSpan ts = endTime - DateTime.Now;
-                        cTimerInt = ts.Seconds;
+                        //TimeSpan ts = endTime - DateTime.Now;
+                        //cTimerInt = ts.Seconds;
                     }
                 }
-                IsBusy = false;
             }
             catch (Exception ex)
             {
                 Log.Write(Log.LogEnum.Error, nameof(ExecuteLoadCommand), ex);
+            }
+            finally
+            {
                 IsBusy = false;
+            }
+        }
+
+        ICommand _RefreshCommand;
+        public ICommand RefreshCommand => _RefreshCommand ?? (_RefreshCommand = new Command(async () => await ExecuteRefreshCommand()));
+        async Task ExecuteRefreshCommand()
+        {
+            try
+            {
+                IsRefreshing = true;
+                IsBusy = false;
+                endTime = DateTime.Now;
+                OTPItemList = new ObservableCollection<OTPItem>();
+            }
+            catch (Exception ex)
+            {
+                Log.Write(Log.LogEnum.Error, nameof(ExecuteRefreshCommand), ex);
+            }
+            finally
+            {
+                IsRefreshing = false;
             }
         }
 
@@ -235,21 +252,26 @@ namespace MAUIMiniApp.ViewModels
 
                 if ((ts.TotalMilliseconds < 0) || (ts.TotalMilliseconds < 1000))
                 {
-                    endTime = DateTime.Now;
-                    LoadCommand.Execute(null);
+                    if (!IsBusy)
+                    {
+                        LoadCommand.Execute(null);
+                    }
                 }
                 else
                 {
-                    if (OTPItemList != null)
+                    if (!IsBusy)
                     {
-                        if (OTPItemList.Count > 0)
+                        if (OTPItemList != null)
                         {
-                            OTPItemList.Select(c =>
+                            if (OTPItemList.Count > 0)
                             {
-                                c.TimerClock = cTimerInt;
-                                c.TimerColor = ProgressColor;
-                                return c;
-                            }).ToList();
+                                OTPItemList.Select(c =>
+                                {
+                                    c.TimerClock = cTimerInt;
+                                    c.TimerColor = ProgressColor;
+                                    return c;
+                                }).ToList();
+                            }
                         }
                     }
                 }

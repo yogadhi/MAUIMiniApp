@@ -26,7 +26,6 @@ public partial class OTPPage : ContentPage
                     if (m.Value.Key == "ClosePopUp")
                     {
                         vm.endTime = DateTime.Now;
-                        //vm.LoadCommand.Execute(null);
                     }
                     else if (m.Value.Key == "ScanResult")
                     {
@@ -65,11 +64,24 @@ public partial class OTPPage : ContentPage
         }
     }
 
-    protected override void OnAppearing()
+    protected override async void OnAppearing()
     {
         try
         {
             base.OnAppearing();
+            var hasAcceptToS = await SecureStorage.GetAsync("hasAcceptToS");
+            if (string.IsNullOrEmpty(hasAcceptToS))
+            {
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    await Navigation.PushModalAsync(new ToSPage());
+                });
+            }
+            else
+            {
+                vm.endTime = DateTime.Now;
+                vm.timer.Start();
+            }
         }
         catch (Exception ex)
         {

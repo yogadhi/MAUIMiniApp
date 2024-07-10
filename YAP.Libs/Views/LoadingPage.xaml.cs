@@ -31,9 +31,9 @@ public partial class LoadingPage : ContentPage
     {
         try
         {
-#if DEBUG
-            SecureStorage.RemoveAll();
-#endif
+//#if DEBUG
+//            SecureStorage.RemoveAll();
+//#endif
             //hardcoded because CQ Auth no need login page
             await SecureStorage.SetAsync("hasAuth", "true");
 
@@ -52,22 +52,12 @@ public partial class LoadingPage : ContentPage
                         }
                         else
                         {
-                            var hasAuth = await SecureStorage.GetAsync("hasAuth");
-                            var hasAcceptToS = await SecureStorage.GetAsync("hasAcceptToS");
+                            var page = RootItem.MenuItemList[0].TargetPage;
 
-                            if (!string.IsNullOrEmpty(hasAuth) && string.IsNullOrEmpty(hasAcceptToS))
+                            MainThread.BeginInvokeOnMainThread(() =>
                             {
-                                WeakReferenceMessenger.Default.Send(new MyMessage(new MessageContainer { Key = "hasAcceptedToS", CustomObject = false }));
-                            }
-                            else
-                            {
-                                var page = RootItem.MenuItemList[0].TargetPage;
-
-                                MainThread.BeginInvokeOnMainThread(() =>
-                                {
-                                    Application.Current.MainPage = new NavigationPage(page);
-                                });
-                            }
+                                Application.Current.MainPage = new NavigationPage(page);
+                            });
                         }
                     }
                 }

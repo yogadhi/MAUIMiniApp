@@ -56,57 +56,6 @@ namespace MAUIMiniApp
                 (handler.PlatformView as Android.Views.View).SetBackgroundColor(Microsoft.Maui.Graphics.Colors.Transparent.ToAndroid());
 #endif
                 });
-
-                WeakReferenceMessenger.Default.Register<MyMessage>(this, (r, m) =>
-                {
-                    if (m.Value != null)
-                    {
-                        if (m.Value.Key == "hasAcceptedToS")
-                        {
-                            if ((bool)m.Value.CustomObject)
-                            {
-                                var page = RootItem.MenuItemList[0].TargetPage;
-
-                                MainThread.BeginInvokeOnMainThread(() =>
-                                {
-                                    MainPage = new NavigationPage(page);
-                                });
-                            }
-                            else
-                            {
-                                MainThread.BeginInvokeOnMainThread(() =>
-                                {
-                                    MainPage = new ToSPage();
-                                });
-                            }
-                        }
-                    }
-                });
-
-                //                if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
-                //                {
-                //                    WeakReferenceMessenger.Default.Register<MyMessage>(this, (r, m) =>
-                //                    {
-                //                        if (m.Value != null)
-                //                        {
-                //                            if (m.Value.Key == "MainScreenLoaded")
-                //                            {
-                //                                Microsoft.Maui.Handlers.WindowHandler.Mapper.AppendToMapping(nameof(IWindow), (handler, view) =>
-                //                                {
-                //#if WINDOWS
-                //            var mauiWindow = handler.VirtualView;
-                //            var nativeWindow = handler.PlatformView;
-                //            nativeWindow.Activate();
-                //            IntPtr windowHandle = WinRT.Interop.WindowNative.GetWindowHandle(nativeWindow);
-                //            WindowId windowId = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(windowHandle);
-                //            AppWindow appWindow = Microsoft.UI.Windowing.AppWindow.GetFromWindowId(windowId);
-                //            appWindow.Resize(new SizeInt32(WindowWidth, WindowHeight));
-                //#endif
-                //                                });
-                //                            }
-                //                        }
-                //                    });
-                //                }
             }
             catch (Exception ex)
             {
@@ -115,17 +64,12 @@ namespace MAUIMiniApp
             }
         }
 
-        protected override async void OnStart()
+        protected override void OnStart()
         {
             try
             {
                 base.OnStart();
-
-                var versionInfo = await GetVersionInfoList();
-                if (versionInfo != null)
-                {
-
-                }
+                //var versionInfo = await GetVersionInfoList();
             }
             catch (Exception ex)
             {

@@ -27,28 +27,27 @@
 
     <Grid HorizontalOptions="FillAndExpand"
           VerticalOptions="FillAndExpand"
-          Padding="10"
+          Padding="5"
+          ColumnDefinitions="*"
           RowDefinitions="*">
 
-        <!--<Grid HorizontalOptions="CenterAndExpand"
-              VerticalOptions="Start"
-              Grid.Row="0"
-              Margin="5"
-              RowDefinitions="Auto"
-              ColumnDefinitions="Auto">
-            <Label x:Name="lblCounter" Grid.Row="0" Grid.Column="0" HorizontalOptions="Center" VerticalOptions="Center" Text="{Binding cTimer}" FontSize="50"/>
-            <ActivityIndicator IsRunning="True" Grid.Row="0" Grid.Column="0" HeightRequest="150" WidthRequest="150" Color="{Binding ProgressColor}" />
-        </Grid>-->
+        <VerticalStackLayout VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" Grid.Column="0" Grid.Row="0" IsVisible="{Binding IsBusy}">
+            <ActivityIndicator Color="{StaticResource Primary}"
+               IsRunning="{Binding IsBusy}" HeightRequest="50" WidthRequest="50"
+               IsVisible="True" />
+            <Label x:Name="lblLoadingMsg" Text="Loading..." HorizontalOptions="Center" TextColor="{StaticResource Primary}" />
+        </VerticalStackLayout>
 
         <RefreshView HorizontalOptions="FillAndExpand"
                      VerticalOptions="FillAndExpand"
-                     Command="{Binding LoadCommand}"
-                     IsRefreshing="{Binding IsBusy}"
+                     Command="{Binding RefreshCommand}"
+                     IsRefreshing="{Binding IsRefreshing}"
+                     IsVisible="{Binding IsBusy,Converter={converter:InverseBoolConverter}}"
+                     Grid.Column="0"
                      Grid.Row="0">
             <CollectionView x:Name="collectionView"
                             HorizontalOptions="FillAndExpand"
                             VerticalOptions="FillAndExpand"
-                            IsVisible="{Binding IsBusy,Converter={converter:InverseBoolConverter}}"
                             SelectedItem="{Binding SelectedOTP, Mode=TwoWay}"
                             SelectionChangedCommand="{Binding SelectionCommand}"
                             SelectionChangedCommandParameter="{Binding Path=SelectedItem, Source={x:Reference collectionView}}"
@@ -57,49 +56,44 @@
                             SelectionMode="Single">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Grid HorizontalOptions="FillAndExpand"
-                              VerticalOptions="FillAndExpand"
-                              RowDefinitions="Auto"
-                              ColumnDefinitions="*">
-                            <Grid RowDefinitions="*,*" ColumnDefinitions="Auto,Auto" Grid.Row="0" Grid.Column="0" Padding="10,10" VerticalOptions="FillAndExpand" HorizontalOptions="CenterAndExpand" RowSpacing="5">
-                                <HorizontalStackLayout Spacing="3" Grid.Row="0" Grid.Column="0" HorizontalOptions="StartAndExpand">
-                                    <Label Text="Account :" FontSize="16" HorizontalOptions="StartAndExpand" />
-                                    <Label x:Name="lblAccount" Text="{Binding MaskAccount}" FontSize="16" HorizontalOptions="StartAndExpand" />
-                                </HorizontalStackLayout>
+                        <ContentView>
+                            <Grid HorizontalOptions="FillAndExpand"
+                                  VerticalOptions="FillAndExpand"
+                                  Padding="5,0"
+                                  RowDefinitions="Auto"
+                                  ColumnDefinitions="*">
+                                <Grid RowDefinitions="*,*" ColumnDefinitions="Auto,Auto" Grid.Row="0" Grid.Column="0" Padding="10" VerticalOptions="FillAndExpand" HorizontalOptions="CenterAndExpand" >
+                                    <HorizontalStackLayout Spacing="3" Grid.Row="0" Grid.Column="0" HorizontalOptions="StartAndExpand">
+                                        <Label Text="Account :" FontSize="16" HorizontalOptions="StartAndExpand" />
+                                        <Label x:Name="lblAccount" Text="{Binding MaskAccount}" FontSize="16" HorizontalOptions="StartAndExpand" />
+                                    </HorizontalStackLayout>
 
-                                <pinview:PINView x:Name="existingPINView"
-                                                 HorizontalOptions="CenterAndExpand"
-                                                 Grid.Column="0"
-                                                 Grid.Row="1"
-                                                 PINValue="{Binding OTP}"
-                                                 Color="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
-                                                 BoxShape="Squere"
-                                                 PINLength="6"/>
+                                    <pinview:PINView x:Name="existingPINView"
+                                                     Grid.Column="0"
+                                                     Grid.Row="1"
+                                                     PINValue="{Binding OTP}"
+                                                     Color="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
+                                                     BoxShape="Squere"
+                                                     PINLength="6"/>
 
-                                <Frame BackgroundColor="Transparent" BorderColor="Transparent" Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" />
+                                    <Frame BackgroundColor="Transparent" BorderColor="Transparent" Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" />
 
-                                <Grid HorizontalOptions="CenterAndExpand"
-                                      VerticalOptions="CenterAndExpand"
-                                      Grid.Row="1"
-                                      Grid.Column="1"
-                                      Margin="5"
-                                      RowDefinitions="Auto"
-                                      ColumnDefinitions="Auto">
-                                    <Label Grid.Row="0" Grid.Column="0" HorizontalOptions="Center" VerticalOptions="Center" Text="{Binding TimerClock}" FontSize="20"/>
-                                    <ActivityIndicator IsRunning="True" Grid.Row="0" Grid.Column="0" HeightRequest="50" WidthRequest="50" Color="{Binding TimerColor}" />
+                                    <Grid HorizontalOptions="CenterAndExpand"
+                                          VerticalOptions="CenterAndExpand"
+                                          Grid.Row="1"
+                                          Grid.Column="1"
+                                          Margin="5"
+                                          RowDefinitions="Auto"
+                                          ColumnDefinitions="Auto">
+                                        <Label Grid.Row="0" Grid.Column="0" HorizontalOptions="Center" VerticalOptions="Center" Text="{Binding TimerClock}" FontSize="20"/>
+                                        <ActivityIndicator IsRunning="True" Grid.Row="0" Grid.Column="0" HeightRequest="50" WidthRequest="50" Color="{Binding TimerColor}" />
+                                    </Grid>
                                 </Grid>
                             </Grid>
-                        </Grid>
+                        </ContentView>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
         </RefreshView>
-
-        <VerticalStackLayout VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" Grid.Column="0" Grid.Row="0" IsVisible="{Binding IsBusy}">
-            <ActivityIndicator Color="{StaticResource Primary}"
-                       IsRunning="{Binding IsBusy}" HeightRequest="50" WidthRequest="50"
-                       IsVisible="True" />
-            <Label x:Name="lblLoadingMsg" Text="Loading..." HorizontalOptions="Center" TextColor="{StaticResource Primary}" />
-        </VerticalStackLayout>
     </Grid>
 </ContentPage>
