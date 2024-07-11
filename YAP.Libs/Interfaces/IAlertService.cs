@@ -16,7 +16,6 @@ namespace YAP.Libs.Interfaces
         void ShowAlert(string title, string message, string cancel = "OK");
 
         /// <param name="callback">Action to perform afterwards.</param>
-        void ShowConfirmation(string title, string message, Action<bool> callback,
-                              string accept = "Yes", string cancel = "No");
+        void ShowConfirmation(string title, string message, Action<bool> callback, string accept = "Yes", string cancel = "No");
     }
 }

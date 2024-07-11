@@ -5,6 +5,7 @@ using YAP.Libs.Models;
 using YAP.Libs.Views;
 using YAP.Libs.Helpers;
 using MAUIMiniApp.ViewModels;
+using System.Text.RegularExpressions;
 
 namespace MAUIMiniApp.Views;
 
@@ -44,6 +45,9 @@ public partial class NewAccountPage : Popup
         {
             if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
             {
+                btnAddAccount.ImageSource = ImageSource.FromFile("person_add_light.png");
+                btnScanQRCode.ImageSource = ImageSource.FromFile("qr_code_scanner.png");
+                btnClose.Source = ImageSource.FromFile("close_light.png");
                 width = DeviceDisplay.Current.MainDisplayInfo.Width / 4;
                 this.mainFrame.WidthRequest = width;
             }
@@ -71,7 +75,7 @@ public partial class NewAccountPage : Popup
         }
     }
 
-    private void btnScanQRCode_Clicked(object sender, EventArgs e)
+    private async void btnScanQRCode_Clicked(object sender, EventArgs e)
     {
         try
         {
@@ -79,14 +83,32 @@ public partial class NewAccountPage : Popup
 
             //WeakReferenceMessenger.Default.Send(new MyMessage(new MessageContainer { Key = "InitScan" }));
 
-            MainThread.BeginInvokeOnMainThread(async () =>
+            var resPermission = await Permission.CheckAndRequestCamera();
+            if (resPermission == PermissionStatus.Granted)
             {
-                await Application.Current.MainPage.Navigation.PushModalAsync(new ScanQRCodePage());
-            });
+                MainThread.BeginInvokeOnMainThread(async () => { await Application.Current.MainPage.Navigation.PushModalAsync(new ScanQRCodePage()); });
+            }
         }
         catch (Exception ex)
         {
             Log.Write(Log.LogEnum.Error, nameof(btnScanQRCode_Clicked), ex);
+        }
+    }
+
+    private void txtCompanyCode_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        // If the text field is empty or null then leave.
+        string regex = e.NewTextValue;
+        if (String.IsNullOrEmpty(regex))
+            return;
+
+        // If the text field only contains numbers then leave.
+        if (!Regex.Match(regex, "^[0-9]+$").Success)
+        {
+            // This returns to the previous valid state.
+            var entry = sender as Entry;
+            entry.Text = (string.IsNullOrEmpty(e.OldTextValue)) ?
+                    string.Empty : e.OldTextValue;
         }
     }
 }

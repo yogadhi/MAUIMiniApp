@@ -17,12 +17,12 @@
                      Order="Primary"
                      x:Name="btnAddAccount"
                      Clicked="btnAddAccount_Clicked"
-                     IconImageSource="{AppThemeBinding Light=account_plus.svg, Dark=account_plus_outline.svg}"/>
-        <ToolbarItem Text="Change Theme"
-                     Order="Primary"
+                     IconImageSource="add_light.svg"/>
+        <ToolbarItem Order="Primary"
+                     Text="{AppThemeBinding Light=Dark Mode, Dark=Light Mode, Default=Light Mode}"
                      x:Name="btnChangeTheme"
-                     Clicked="btnAddAccount_Clicked"
-                     IconImageSource="{AppThemeBinding Light=account_plus.svg, Dark=account_plus_outline.svg}"/>
+                     Clicked="btnChangeTheme_Clicked"
+                     IconImageSource="{AppThemeBinding Light=dark_mode.svg, Dark=light_mode.svg}"/>
     </ContentPage.ToolbarItems>
 
     <ContentPage.Resources>

@@ -23,13 +23,15 @@ public partial class OTPPage : ContentPage
 
             if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
             {
-                if (Application.Current.UserAppTheme == AppTheme.Dark) 
+                btnAddAccount.IconImageSource = ImageSource.FromFile("add_light.png");
+
+                if (Application.Current.UserAppTheme == AppTheme.Dark || Application.Current.UserAppTheme == AppTheme.Unspecified)
                 {
-                    btnAddAccount.IconImageSource = ImageSource.FromFile("account_plus_outline.png");
+                    btnChangeTheme.IconImageSource = ImageSource.FromFile("light_mode.png");
                 }
-                else
+                else if (Application.Current.UserAppTheme == AppTheme.Light)
                 {
-                    btnAddAccount.IconImageSource = ImageSource.FromFile("account_plus.png");
+                    btnChangeTheme.IconImageSource = ImageSource.FromFile("dark_mode.png");
                 }
             }
 
@@ -89,10 +91,7 @@ public partial class OTPPage : ContentPage
             var hasAcceptToS = await SecureStorage.GetAsync("hasAcceptToS");
             if (string.IsNullOrEmpty(hasAcceptToS))
             {
-                MainThread.BeginInvokeOnMainThread(async () =>
-                {
-                    await Navigation.PushModalAsync(new ToSPage());
-                });
+                MainThread.BeginInvokeOnMainThread(async () => { await Navigation.PushModalAsync(new ToSPage()); });
             }
             else
             {
@@ -110,14 +109,25 @@ public partial class OTPPage : ContentPage
     {
         try
         {
-            MainThread.BeginInvokeOnMainThread(async () =>
-            {
-                await Application.Current.MainPage.ShowPopupAsync(new NewAccountPage());
-            });
+            MainThread.BeginInvokeOnMainThread(async () => { await Application.Current.MainPage.ShowPopupAsync(new NewAccountPage()); });
         }
         catch (Exception ex)
         {
             Log.Write(Log.LogEnum.Error, nameof(btnAddAccount_Clicked), ex);
+        }
+    }
+
+    private void btnChangeTheme_Clicked(object sender, EventArgs e)
+    {
+        if (Application.Current.UserAppTheme == AppTheme.Dark || Application.Current.UserAppTheme == AppTheme.Unspecified)
+        {
+            btnChangeTheme.IconImageSource = ImageSource.FromFile("dark_mode.png");
+            Application.Current.UserAppTheme = AppTheme.Light;
+        }
+        else if (Application.Current.UserAppTheme == AppTheme.Light)
+        {
+            btnChangeTheme.IconImageSource = ImageSource.FromFile("light_mode.png");
+            Application.Current.UserAppTheme = AppTheme.Dark;
         }
     }
 }

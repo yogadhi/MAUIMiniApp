@@ -31,7 +31,7 @@ namespace MAUIMiniApp
             try
             {
                 InitializeComponent();
-                Current.UserAppTheme = AppTheme.Light;
+                Current.UserAppTheme = Current.PlatformAppTheme;
 
                 RootItem = new RootItem
                 {

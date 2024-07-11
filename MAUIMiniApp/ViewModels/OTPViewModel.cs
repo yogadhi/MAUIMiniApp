@@ -179,7 +179,7 @@ namespace MAUIMiniApp.ViewModels
                     {
                         Account = index.Accode,
                         SecretKey = index.SecretKey,
-                        OTP = Helpers.Global.GetFuturePIN(index.SecretKey),
+                        OTP = YAP.Libs.Helpers.Global.GetFuturePIN(index.SecretKey),
                     });
                 }
 

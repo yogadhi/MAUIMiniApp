@@ -58,13 +58,6 @@ namespace MAUIMiniApp.ViewModels
         {
             try
             {
-                var obj = new Account
-                {
-                    Accode = AccountNo,
-                    CompanyCode = CompanyCode,
-                    SecretKey = SecretKey
-                };
-
                 List<string> allFieldList = new List<string>();
                 allFieldList.Add(AccountNo);
                 allFieldList.Add(CompanyCode);
@@ -75,6 +68,13 @@ namespace MAUIMiniApp.ViewModels
                     Toasts.Show("Please fill all fields");
                     return;
                 }
+
+                var obj = new Account
+                {
+                    Accode = AccountNo,
+                    CompanyCode = CompanyCode,
+                    SecretKey = SecretKey
+                };
 
                 var resSave = await AccountDatabase.SaveItemAsync(obj);
                 if (resSave == 1)

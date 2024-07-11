@@ -29,17 +29,14 @@ namespace YAP.Libs.Alerts
         /// </summary>
         public void ShowAlert(string title, string message, string cancel = "OK")
         {
-            Application.Current.MainPage.Dispatcher.Dispatch(async () =>
-                await ShowAlertAsync(title, message, cancel)
-            );
+            Application.Current.MainPage.Dispatcher.Dispatch(async () => await ShowAlertAsync(title, message, cancel));
         }
 
         /// <summary>
         /// "Fire and forget". Method returns BEFORE showing alert.
         /// </summary>
         /// <param name="callback">Action to perform afterwards.</param>
-        public void ShowConfirmation(string title, string message, Action<bool> callback,
-                                     string accept = "Yes", string cancel = "No")
+        public void ShowConfirmation(string title, string message, Action<bool> callback, string accept = "Yes", string cancel = "No")
         {
             Application.Current.MainPage.Dispatcher.Dispatch(async () =>
             {

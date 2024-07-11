@@ -17,6 +17,11 @@ public partial class ScanQRCodePage : ContentPage
         {
             InitializeComponent();
             vm = BindingContext as BaseViewModel;
+
+            if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
+            {
+                btnBack.Source = ImageSource.FromFile("arrow_back_light.png");
+            }
         }
         catch (Exception ex)
         {

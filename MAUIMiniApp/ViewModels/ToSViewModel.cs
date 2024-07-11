@@ -45,10 +45,7 @@ namespace MAUIMiniApp.ViewModels
             try
             {
                 await SecureStorage.SetAsync("hasAcceptToS", "true");
-                MainThread.BeginInvokeOnMainThread(async () =>
-                {
-                    await Application.Current.MainPage.Navigation.PopModalAsync();
-                });
+                MainThread.BeginInvokeOnMainThread(async () => { await Application.Current.MainPage.Navigation.PopModalAsync(); });
 
                 //WeakReferenceMessenger.Default.Send(new MyMessage(new MessageContainer { Key = "hasAcceptedToS", CustomObject = true }));
             }

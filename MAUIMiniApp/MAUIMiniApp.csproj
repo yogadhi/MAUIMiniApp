@@ -94,9 +94,16 @@
 		<None Remove="Platforms\Android\Resources\xml\auto_backup_rules.xml" />
 		<None Remove="Resources\Images\account_plus.svg" />
 		<None Remove="Resources\Images\account_plus_outline.svg" />
+		<None Remove="Resources\Images\add_light.svg" />
+		<None Remove="Resources\Images\arrow_back_light.svg" />
 		<None Remove="Resources\Images\arrow_left.svg" />
 		<None Remove="Resources\Images\close.svg" />
+		<None Remove="Resources\Images\close_light.svg" />
+		<None Remove="Resources\Images\dark_mode.svg" />
+		<None Remove="Resources\Images\light_mode.svg" />
+		<None Remove="Resources\Images\person_add_light.svg" />
 		<None Remove="Resources\Images\qrcode_scan.svg" />
+		<None Remove="Resources\Images\qr_code_scanner.svg" />
 	</ItemGroup>
 
 	<ItemGroup>
