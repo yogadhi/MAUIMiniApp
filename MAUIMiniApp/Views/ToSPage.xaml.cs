@@ -30,7 +30,6 @@ public partial class ToSPage : ContentPage
         {
             base.OnAppearing();
             vm.LoadCommand.Execute(null);
-            //var deviceID = new GetDeviceInfo().GetDeviceID();
 
             //var res = await CQAuth.Authenticate(new Models.ReqAuthenticate
             //{

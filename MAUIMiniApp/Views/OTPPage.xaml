@@ -5,6 +5,7 @@
              xmlns:converter="clr-namespace:YAP.Libs.Converters;assembly=YAP.Libs"
              xmlns:pinview="clr-namespace:PINView.Maui;assembly=PINView.Maui"
              xmlns:control="clr-namespace:YAP.Libs.Views;assembly=YAP.Libs"
+             xmlns:resx="clr-namespace:MAUIMiniApp.Resources.Strings"
              x:Class="MAUIMiniApp.Views.OTPPage"
              Title="{Binding Title}">
     <ContentPage.BindingContext>
@@ -12,11 +13,16 @@
     </ContentPage.BindingContext>
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Add account"
+        <ToolbarItem Text="{x:Static resx:AppResources.Btn_Add_Account}"
                      Order="Primary"
                      x:Name="btnAddAccount"
                      Clicked="btnAddAccount_Clicked"
-                     IconImageSource="{AppThemeBinding Light=account_plus_outline.svg, Dark=account_plus_outline.svg}"/>
+                     IconImageSource="{AppThemeBinding Light=account_plus.svg, Dark=account_plus_outline.svg}"/>
+        <ToolbarItem Text="Change Theme"
+                     Order="Primary"
+                     x:Name="btnChangeTheme"
+                     Clicked="btnAddAccount_Clicked"
+                     IconImageSource="{AppThemeBinding Light=account_plus.svg, Dark=account_plus_outline.svg}"/>
     </ContentPage.ToolbarItems>
 
     <ContentPage.Resources>
@@ -35,7 +41,7 @@
             <ActivityIndicator Color="{StaticResource Primary}"
                IsRunning="{Binding IsBusy}" HeightRequest="50" WidthRequest="50"
                IsVisible="True" />
-            <Label x:Name="lblLoadingMsg" Text="Loading..." HorizontalOptions="Center" TextColor="{StaticResource Primary}" />
+            <Label x:Name="lblLoadingMsg" Text="{x:Static resx:AppResources.Loading_Indicator}" HorizontalOptions="Center" TextColor="{StaticResource Primary}" />
         </VerticalStackLayout>
 
         <RefreshView HorizontalOptions="FillAndExpand"
@@ -95,5 +101,6 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
         </RefreshView>
+        <Label Grid.Row="0" Grid.Column="0" HorizontalOptions="End" VerticalOptions="End" Text="{Binding DeviceID}"/>
     </Grid>
 </ContentPage>

@@ -27,10 +27,7 @@ public partial class NewAccountPage : Popup
                 {
                     if (m.Value.Key == "ClosePopUp")
                     {
-                        MainThread.BeginInvokeOnMainThread(async () =>
-                        {
-                            await CloseAsync();
-                        });
+                        MainThread.BeginInvokeOnMainThread(async () => { await CloseAsync(); });
                     }
                 }
             });
@@ -66,10 +63,7 @@ public partial class NewAccountPage : Popup
     {
         try
         {
-            MainThread.BeginInvokeOnMainThread(async () =>
-            {
-                await CloseAsync();
-            });
+            MainThread.BeginInvokeOnMainThread(async () => { await CloseAsync(); });
         }
         catch (Exception ex)
         {
@@ -81,10 +75,7 @@ public partial class NewAccountPage : Popup
     {
         try
         {
-            MainThread.BeginInvokeOnMainThread(async () =>
-            {
-                await CloseAsync();
-            });
+            MainThread.BeginInvokeOnMainThread(async () => { await CloseAsync(); });
 
             //WeakReferenceMessenger.Default.Send(new MyMessage(new MessageContainer { Key = "InitScan" }));
 

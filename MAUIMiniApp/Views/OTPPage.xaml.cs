@@ -4,6 +4,8 @@ using CommunityToolkit.Mvvm.Messaging;
 using YAP.Libs.Models;
 using YAP.Libs.Alerts;
 using CommunityToolkit.Maui.Views;
+using MAUIMiniApp.Resources.Strings;
+//using static Android.Icu.Text.ListFormatter;
 
 namespace MAUIMiniApp.Views;
 //https://svgtrace.com/svg-to-png
@@ -19,12 +21,28 @@ public partial class OTPPage : ContentPage
             InitializeComponent();
             vm = BindingContext as OTPViewModel;
 
-            WeakReferenceMessenger.Default.Register<MyMessage>(this, async (r, m) =>
+            if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
+            {
+                if (Application.Current.UserAppTheme == AppTheme.Dark) 
+                {
+                    btnAddAccount.IconImageSource = ImageSource.FromFile("account_plus_outline.png");
+                }
+                else
+                {
+                    btnAddAccount.IconImageSource = ImageSource.FromFile("account_plus.png");
+                }
+            }
+
+            WeakReferenceMessenger.Default.Register<MyMessage>(this, (r, m) =>
             {
                 if (m.Value != null)
                 {
                     if (m.Value.Key == "ClosePopUp")
                     {
+                        if (!vm.timer.Enabled)
+                        {
+                            vm.timer.Enabled = true;
+                        }
                         vm.endTime = DateTime.Now;
                     }
                     else if (m.Value.Key == "ScanResult")
@@ -35,15 +53,14 @@ public partial class OTPPage : ContentPage
                             vm.DecodeScanResultCommand.Execute(scanRes);
                         }
                     }
-                    else if (m.Value.Key == "RefreshList")
-                    {
-                        MainThread.BeginInvokeOnMainThread(() =>
-                        {
-                            vm.endTime = DateTime.Now;
-                            Toasts.Show("New account successfully added");
-                        });
-
-                    }
+                    //else if (m.Value.Key == "RefreshList")
+                    //{
+                    //    MainThread.BeginInvokeOnMainThread(() =>
+                    //    {
+                    //        vm.endTime = DateTime.Now;
+                    //        Toasts.Show("New account successfully added");
+                    //    });
+                    //}
                     //else if (m.Value.Key == "InitScan")
                     //{
                     //    var resPermission = await YAP.Libs.Helpers.Permission.CheckAndRequestCamera();

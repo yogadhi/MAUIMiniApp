@@ -104,18 +104,6 @@ namespace MAUIMiniApp.ViewModels
         }
 
         ObservableCollection<OTPItem> _OTPItemList = new ObservableCollection<OTPItem>();
-        //public ObservableCollection<OTPItem> OTPItemList
-        //{
-        //    get { return _OTPItemList; }
-        //    set
-        //    {
-        //        if (_OTPItemList != value)
-        //        {
-        //            _OTPItemList = value;
-        //            OnPropertyChanged("OTPItemList");
-        //        }
-        //    }
-        //}
         public ObservableCollection<OTPItem> OTPItemList
         {
             get => _OTPItemList;
@@ -135,6 +123,13 @@ namespace MAUIMiniApp.ViewModels
                 }
             }
         }
+
+        string _DeviceID;
+        public string DeviceID
+        {
+            get => _DeviceID;
+            set => SetProperty(ref _DeviceID, value);
+        }
         #endregion
 
         public OTPViewModel()
@@ -142,6 +137,7 @@ namespace MAUIMiniApp.ViewModels
             try
             {
                 Title = "CQ Authenticator";
+                DeviceID = new GetDeviceInfo().GetDeviceID();
                 timer.Elapsed += t_Tick;
                 //endTime = DateTime.Now;
                 //timer.Start();
@@ -164,26 +160,36 @@ namespace MAUIMiniApp.ViewModels
 
                 //await AccountDatabase.TruncateItemAsync();
                 var resList = await AccountDatabase.GetItemsAsync();
-                if (resList != null)
+                if (resList == null)
                 {
-                    if (resList.Count > 0)
-                    {
-                        OTPItemList = new ObservableCollection<OTPItem>();
-                        foreach (var index in resList)
-                        {
-                            OTPItemList.Add(new OTPItem
-                            {
-                                Account = index.Accode,
-                                SecretKey = index.SecretKey,
-                                OTP = Helpers.Global.GetFuturePIN(index.SecretKey),
-                            });
-                        }
-
-                        endTime = DateTime.Now.AddSeconds(30);
-                        //TimeSpan ts = endTime - DateTime.Now;
-                        //cTimerInt = ts.Seconds;
-                    }
+                    timer.Enabled = false;
+                    return;
                 }
+
+                if (resList.Count == 0)
+                {
+                    timer.Enabled = false;
+                    return;
+                }
+
+                OTPItemList = new ObservableCollection<OTPItem>();
+                foreach (var index in resList)
+                {
+                    OTPItemList.Add(new OTPItem
+                    {
+                        Account = index.Accode,
+                        SecretKey = index.SecretKey,
+                        OTP = Helpers.Global.GetFuturePIN(index.SecretKey),
+                    });
+                }
+
+                if (!timer.Enabled)
+                {
+                    timer.Enabled = true;
+                }
+                endTime = DateTime.Now.AddSeconds(30);
+                //TimeSpan ts = endTime - DateTime.Now;
+                //cTimerInt = ts.Seconds;
             }
             catch (Exception ex)
             {
@@ -202,7 +208,22 @@ namespace MAUIMiniApp.ViewModels
             try
             {
                 IsRefreshing = true;
+
+                if (OTPItemList == null)
+                {
+                    return;
+                }
+
+                if (OTPItemList.Count == 0)
+                {
+                    return;
+                }
+
                 IsBusy = false;
+                if (!timer.Enabled)
+                {
+                    timer.Enabled = true;
+                }
                 endTime = DateTime.Now;
                 OTPItemList = new ObservableCollection<OTPItem>();
             }
@@ -290,20 +311,20 @@ namespace MAUIMiniApp.ViewModels
             {
                 if (string.IsNullOrEmpty(scanResult))
                 {
-                    MainThread.BeginInvokeOnMainThread(() => { Toasts.Show("No scan result to process"); });
+                    Toasts.Show("No scan result to process");
                     return;
                 }
 
                 var strSplit = scanResult.Split("~:~");
                 if (strSplit == null)
                 {
-                    MainThread.BeginInvokeOnMainThread(() => { Toasts.Show("Wrong QR Code format"); });
+                    Toasts.Show("Wrong QR Code format");
                     return;
                 }
 
                 if (strSplit.Length == 0)
                 {
-                    MainThread.BeginInvokeOnMainThread(() => { Toasts.Show("Wrong QR Code format"); });
+                    Toasts.Show("Wrong QR Code format");
                     return;
                 }
 
@@ -320,7 +341,7 @@ namespace MAUIMiniApp.ViewModels
                             var secretKey = strSplitZero[0].Split("secret=")[1];
                             if (String.IsNullOrEmpty(YAP.Libs.Helpers.Global.Base32Decode(secretKey)))
                             {
-                                MainThread.BeginInvokeOnMainThread(() => { Toasts.Show("Wrong QR Code format"); });
+                                Toasts.Show("Wrong QR Code format");
                                 return;
                             }
 
@@ -334,7 +355,13 @@ namespace MAUIMiniApp.ViewModels
                             var resSave = await AccountDatabase.SaveItemAsync(obj);
                             if (resSave == 1)
                             {
-                                WeakReferenceMessenger.Default.Send(new MyMessage(new MessageContainer { Key = "RefreshList" }));
+                                Toasts.Show("New account successfully added");
+                                if (!timer.Enabled)
+                                {
+                                    timer.Enabled = true;
+                                }
+                                endTime = DateTime.Now;
+                                //WeakReferenceMessenger.Default.Send(new MyMessage(new MessageContainer { Key = "RefreshList" }));
                             }
                         }
                     }

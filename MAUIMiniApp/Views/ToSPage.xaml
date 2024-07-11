@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MAUIMiniApp.Views.ToSPage"
              xmlns:vm="clr-namespace:MAUIMiniApp.ViewModels"
+             xmlns:resx="clr-namespace:MAUIMiniApp.Resources.Strings"
              NavigationPage.HasNavigationBar="False"
              NavigationPage.HasBackButton="False">
     <ContentPage.BindingContext>
@@ -24,8 +25,8 @@
               ColumnSpacing="5"
               RowDefinitions="*"
               ColumnDefinitions="*,*">
-            <Button x:Name="btnReject" Grid.Column="0" Text="Reject" BackgroundColor="Red" HorizontalOptions="FillAndExpand" Clicked="btnReject_Clicked" />
-            <Button x:Name="btnAccept" Grid.Column="1" Text="Accept" BackgroundColor="#009e42" HorizontalOptions="FillAndExpand" Command="{Binding AcceptToSCommand}"/>
+            <Button x:Name="btnReject" Grid.Column="0" Text="{x:Static resx:AppResources.Btn_ToSPage_Reject}" BackgroundColor="Red" HorizontalOptions="FillAndExpand" Clicked="btnReject_Clicked" />
+            <Button x:Name="btnAccept" Grid.Column="1" Text="{x:Static resx:AppResources.Btn_ToSPage_Accept}" BackgroundColor="#009e42" HorizontalOptions="FillAndExpand" Command="{Binding AcceptToSCommand}"/>
         </Grid>
     </Grid>
 </ContentPage>
