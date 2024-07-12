@@ -61,11 +61,38 @@ namespace MAUIMiniApp.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to CQ Authenticator.
+        /// </summary>
+        public static string App_Title {
+            get {
+                return ResourceManager.GetString("App_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add Account.
         /// </summary>
         public static string Btn_Add_Account {
             get {
                 return ResourceManager.GetString("Btn_Add_Account", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add.
+        /// </summary>
+        public static string Btn_Add_Manual {
+            get {
+                return ResourceManager.GetString("Btn_Add_Manual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scan QR Code.
+        /// </summary>
+        public static string Btn_Scan_QRCode {
+            get {
+                return ResourceManager.GetString("Btn_Scan_QRCode", resourceCulture);
             }
         }
         
@@ -88,6 +115,33 @@ namespace MAUIMiniApp.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enter account no..
+        /// </summary>
+        public static string Ent_AcctNo_Placeholder {
+            get {
+                return ResourceManager.GetString("Ent_AcctNo_Placeholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter company code.
+        /// </summary>
+        public static string Ent_CompanyCode_Placeholder {
+            get {
+                return ResourceManager.GetString("Ent_CompanyCode_Placeholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter your key.
+        /// </summary>
+        public static string Ent_SecretKey_Placeholder {
+            get {
+                return ResourceManager.GetString("Ent_SecretKey_Placeholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please fill all fields.
         /// </summary>
         public static string Fill_All_Fields {
@@ -106,11 +160,29 @@ namespace MAUIMiniApp.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to New account failed to add.
+        /// </summary>
+        public static string New_Account_Add_Failed {
+            get {
+                return ResourceManager.GetString("New_Account_Add_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to New account successfully added.
         /// </summary>
-        public static string New_Account_added {
+        public static string New_Account_Added {
             get {
-                return ResourceManager.GetString("New_Account_added", resourceCulture);
+                return ResourceManager.GetString("New_Account_Added", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add new account.
+        /// </summary>
+        public static string New_Account_Title {
+            get {
+                return ResourceManager.GetString("New_Account_Title", resourceCulture);
             }
         }
         

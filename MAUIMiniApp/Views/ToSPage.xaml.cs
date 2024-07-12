@@ -30,14 +30,6 @@ public partial class ToSPage : ContentPage
         {
             base.OnAppearing();
             vm.LoadCommand.Execute(null);
-
-            //var res = await CQAuth.Authenticate(new Models.ReqAuthenticate
-            //{
-            //    UserLogin = "CQApp",
-            //    Password = "cq2fa02pws",
-            //    Accode = "asdfgh",
-            //    CompanyCode = "1",
-            //});
         }
         catch (Exception ex)
         {

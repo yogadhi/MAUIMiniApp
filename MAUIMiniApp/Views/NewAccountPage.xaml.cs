@@ -28,10 +28,13 @@ public partial class NewAccountPage : Popup
                 {
                     if (m.Value.Key == "ClosePopUp")
                     {
+                        App.IsPopUpShow = false;
                         MainThread.BeginInvokeOnMainThread(async () => { await CloseAsync(); });
                     }
                 }
             });
+
+            App.IsPopUpShow = true;
         }
         catch (Exception ex)
         {
@@ -67,6 +70,7 @@ public partial class NewAccountPage : Popup
     {
         try
         {
+            App.IsPopUpShow = false;
             MainThread.BeginInvokeOnMainThread(async () => { await CloseAsync(); });
         }
         catch (Exception ex)
@@ -79,8 +83,8 @@ public partial class NewAccountPage : Popup
     {
         try
         {
+            App.IsPopUpShow = false;
             MainThread.BeginInvokeOnMainThread(async () => { await CloseAsync(); });
-
             //WeakReferenceMessenger.Default.Send(new MyMessage(new MessageContainer { Key = "InitScan" }));
 
             var resPermission = await Permission.CheckAndRequestCamera();

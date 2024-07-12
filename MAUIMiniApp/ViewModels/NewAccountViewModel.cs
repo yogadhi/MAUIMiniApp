@@ -11,6 +11,7 @@ using MAUIMiniApp.Data;
 using CommunityToolkit.Mvvm.Messaging;
 using YAP.Libs.Models;
 using YAP.Libs.Alerts;
+using MAUIMiniApp.Controllers;
 
 namespace MAUIMiniApp.ViewModels
 {
@@ -58,6 +59,8 @@ namespace MAUIMiniApp.ViewModels
         {
             try
             {
+                IsBusy = true;
+
                 List<string> allFieldList = new List<string>();
                 allFieldList.Add(AccountNo);
                 allFieldList.Add(CompanyCode);
@@ -65,7 +68,7 @@ namespace MAUIMiniApp.ViewModels
 
                 if (allFieldList.Any(x => string.IsNullOrEmpty(x)))
                 {
-                    Toasts.Show("Please fill all fields");
+                    Toasts.Show(Resources.Strings.AppResources.Fill_All_Fields);
                     return;
                 }
 
@@ -76,16 +79,27 @@ namespace MAUIMiniApp.ViewModels
                     SecretKey = SecretKey
                 };
 
-                var resSave = await AccountDatabase.SaveItemAsync(obj);
-                if (resSave == 1)
+                var msg = string.Empty;
+                var resBind = await CQAuth.BindUserNewAccount(obj);
+                if (resBind)
                 {
-                    Toasts.Show("New account successfully added");
-                    WeakReferenceMessenger.Default.Send(new MyMessage(new MessageContainer { Key = "ClosePopUp" }));
+                    msg = Resources.Strings.AppResources.New_Account_Added;
                 }
+                else
+                {
+                    msg = Resources.Strings.AppResources.New_Account_Add_Failed;
+                }
+
+                Toasts.Show(msg);
+                WeakReferenceMessenger.Default.Send(new MyMessage(new MessageContainer { Key = "ClosePopUp" }));
             }
             catch (Exception ex)
             {
                 Log.Write(Log.LogEnum.Error, nameof(ExecuteAddNewAccountCommand), ex);
+            }
+            finally
+            {
+                IsBusy = false;
             }
         }
         #endregion

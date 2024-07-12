@@ -39,8 +39,7 @@
 
         <VerticalStackLayout VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" Grid.Column="0" Grid.Row="0" IsVisible="{Binding IsBusy}">
             <ActivityIndicator Color="{StaticResource Primary}"
-               IsRunning="{Binding IsBusy}" HeightRequest="50" WidthRequest="50"
-               IsVisible="True" />
+               IsRunning="{Binding IsBusy}" HeightRequest="50" WidthRequest="50" />
             <Label x:Name="lblLoadingMsg" Text="{x:Static resx:AppResources.Loading_Indicator}" HorizontalOptions="Center" TextColor="{StaticResource Primary}" />
         </VerticalStackLayout>
 

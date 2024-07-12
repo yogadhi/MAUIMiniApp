@@ -74,7 +74,7 @@ namespace YAP.Libs.ViewModels
                 var resPermission = await YAP.Libs.Helpers.Permission.CheckAndRequestCamera();
                 if (resPermission == PermissionStatus.Granted)
                 {
-                    await Application.Current.MainPage.Navigation.PushModalAsync(new ScanQRCodePage());
+                    MainThread.BeginInvokeOnMainThread(async () => { await Application.Current.MainPage.Navigation.PushModalAsync(new ScanQRCodePage()); });
                 }
             }
             catch (Exception ex)
@@ -95,7 +95,7 @@ namespace YAP.Libs.ViewModels
                     var val = scanResult.Value;
                     if (!string.IsNullOrWhiteSpace(val))
                     {
-                        await Application.Current.MainPage.Navigation.PopModalAsync();
+                        MainThread.BeginInvokeOnMainThread(async () => { await Application.Current.MainPage.Navigation.PopModalAsync(); });
                         WeakReferenceMessenger.Default.Send(new MyMessage(new MessageContainer { Key = "ScanResult", CustomObject = val }));
                     }
                 }
@@ -106,9 +106,7 @@ namespace YAP.Libs.ViewModels
             }
         }
 
-        protected bool SetProperty<T>(ref T backingStore, T value,
-            [CallerMemberName] string propertyName = "",
-            Action onChanged = null)
+        protected bool SetProperty<T>(ref T backingStore, T value, [CallerMemberName] string propertyName = "", Action onChanged = null)
         {
             if (EqualityComparer<T>.Default.Equals(backingStore, value))
                 return false;

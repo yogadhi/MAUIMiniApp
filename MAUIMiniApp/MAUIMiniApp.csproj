@@ -69,11 +69,13 @@
 	<PropertyGroup>
 		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net7.0-windows10.0.22621.0</TargetFrameworks>
 		<NeutralLanguage>en-US</NeutralLanguage>
+		<PackageIcon>icon_cqauth.png</PackageIcon>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
+		<!--<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />-->
+		<MauiIcon Include="Resources\AppIcon\icon_cqauth.svg" ForegroundFile="Resources\AppIcon\icon_cqauth.svg" Color="transparent" />
 
 		<!-- Splash Screen -->
 		<!--<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />-->

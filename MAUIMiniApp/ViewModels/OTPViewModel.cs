@@ -136,7 +136,7 @@ namespace MAUIMiniApp.ViewModels
         {
             try
             {
-                Title = "CQ Authenticator";
+                Title = Resources.Strings.AppResources.App_Title;
                 DeviceID = new GetDeviceInfo().GetDeviceID();
                 timer.Elapsed += t_Tick;
                 //endTime = DateTime.Now;
@@ -309,22 +309,24 @@ namespace MAUIMiniApp.ViewModels
         {
             try
             {
+                IsBusy = true;
+
                 if (string.IsNullOrEmpty(scanResult))
                 {
-                    Toasts.Show("No scan result to process");
+                    Toasts.Show(Resources.Strings.AppResources.No_QRCode_Result);
                     return;
                 }
 
                 var strSplit = scanResult.Split("~:~");
                 if (strSplit == null)
                 {
-                    Toasts.Show("Wrong QR Code format");
+                    Toasts.Show(Resources.Strings.AppResources.Wrong_QRCode_Format);
                     return;
                 }
 
                 if (strSplit.Length == 0)
                 {
-                    Toasts.Show("Wrong QR Code format");
+                    Toasts.Show(Resources.Strings.AppResources.Wrong_QRCode_Format);
                     return;
                 }
 
@@ -341,7 +343,7 @@ namespace MAUIMiniApp.ViewModels
                             var secretKey = strSplitZero[0].Split("secret=")[1];
                             if (String.IsNullOrEmpty(YAP.Libs.Helpers.Global.Base32Decode(secretKey)))
                             {
-                                Toasts.Show("Wrong QR Code format");
+                                Toasts.Show(Resources.Strings.AppResources.Wrong_QRCode_Format);
                                 return;
                             }
 
@@ -352,16 +354,19 @@ namespace MAUIMiniApp.ViewModels
                                 SecretKey = secretKey.ToUpper()
                             };
 
-                            var resSave = await AccountDatabase.SaveItemAsync(obj);
-                            if (resSave == 1)
+                            var resBind = await MAUIMiniApp.Controllers.CQAuth.BindUserNewAccount(obj);
+                            if (resBind)
                             {
-                                Toasts.Show("New account successfully added");
+                                Toasts.Show(Resources.Strings.AppResources.New_Account_Added);
                                 if (!timer.Enabled)
                                 {
                                     timer.Enabled = true;
                                 }
                                 endTime = DateTime.Now;
-                                //WeakReferenceMessenger.Default.Send(new MyMessage(new MessageContainer { Key = "RefreshList" }));
+                            }
+                            else
+                            {
+                                Toasts.Show(Resources.Strings.AppResources.New_Account_Add_Failed);
                             }
                         }
                     }
@@ -370,6 +375,10 @@ namespace MAUIMiniApp.ViewModels
             catch (Exception ex)
             {
                 Log.Write(Log.LogEnum.Error, nameof(ExecuteDecodeScanResultCommand), ex);
+            }
+            finally
+            {
+                IsBusy = false;
             }
         }
         #endregion

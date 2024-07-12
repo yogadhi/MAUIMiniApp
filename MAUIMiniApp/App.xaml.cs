@@ -23,8 +23,7 @@ namespace MAUIMiniApp
         public static IAlertService AlertSvc { get; set; }
         public static RootItem RootItem { get; set; }
         public static Dictionary<string, string> InfoList { get; set; }
-        public static int WindowWidth = 800;
-        public static int WindowHeight = 400;
+        public static bool IsPopUpShow { get; set; } = false;
 
         public App(IServiceProvider provider)
         {
@@ -50,12 +49,12 @@ namespace MAUIMiniApp
                     MainPage = new LoadingPage(RootItem);
                 });
 
-//                Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping("NoUnderLine", (handler, view) =>
-//                {
-//#if __ANDROID__
-//                (handler.PlatformView as Android.Views.View).SetBackgroundColor(Microsoft.Maui.Graphics.Colors.Transparent.ToAndroid());
-//#endif
-//                });
+                //                Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping("NoUnderLine", (handler, view) =>
+                //                {
+                //#if __ANDROID__
+                //                (handler.PlatformView as Android.Views.View).SetBackgroundColor(Microsoft.Maui.Graphics.Colors.Transparent.ToAndroid());
+                //#endif
+                //                });
             }
             catch (Exception ex)
             {
