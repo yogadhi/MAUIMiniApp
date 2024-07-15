@@ -10,6 +10,7 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Maui.Views;
 using MAUIMiniApp.Data;
 using System;
+using System.Globalization;
 
 namespace MAUIMiniApp.ViewModels
 {
@@ -246,13 +247,40 @@ namespace MAUIMiniApp.ViewModels
                 SelectedOTP = obj;
                 if (obj != null)
                 {
-                    string action = await Application.Current.MainPage.DisplayActionSheet((string)obj.Account, "Cancel", null, new string[] { "Copy", "Rename", "Remove", "Unbind" });
+                    var action = await Application.Current.MainPage.DisplayActionSheet(obj.Account, "Cancel", null, new string[] { "Copy", "Rename", "Remove", "Unbind" });
                     if (!string.IsNullOrEmpty(action))
                     {
                         if (action == "Copy")
                         {
                             await Clipboard.Default.SetTextAsync((string)obj.OTP);
                             Toasts.Show(obj.OTP + " copied");
+                        }
+                        else if (action == "Rename")
+                        {
+
+                        }
+                        else if (action == "Unbind")
+                        {
+                            string Lang = string.Empty;
+
+                            var account = await AccountDatabase.GetItemByAccodeAsync(obj.Account);
+                            if (account == null)
+                            {
+                                return;
+                            }
+
+                            var currCul = CultureInfo.InstalledUICulture;
+                            if (currCul.Name.Contains("zh"))
+                            {
+                                Lang = "ZH";
+                            }
+                            else
+                            {
+                                Lang = "EN";
+                            }
+
+                            Uri uri = new Uri(String.Format("https://cq2fa.cyberquote.com.hk/registration//Unbind?CompanyCode={0}&lang={1}&Accode={2}", account.CompanyCode, Lang, account.Accode));
+                            await Browser.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
                         }
                     }
                 }

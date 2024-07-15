@@ -24,7 +24,7 @@ public partial class ToSPage : ContentPage
         }
     }
 
-    protected override async void OnAppearing()
+    protected override void OnAppearing()
     {
         try
         {
@@ -34,6 +34,27 @@ public partial class ToSPage : ContentPage
         catch (Exception ex)
         {
             Log.Write(Log.LogEnum.Error, nameof(OnAppearing), ex);
+        }
+    }
+
+    protected override bool OnBackButtonPressed()
+    {
+        try
+        {
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                var leave = await DisplayAlert("Exit Application?", "Are you sure you want to exit application?", "Yes", "No");
+                if (leave)
+                {
+                    Application.Current.Quit();
+                }
+            });
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Log.Write(Log.LogEnum.Error, nameof(OnBackButtonPressed), ex);
+            return false;
         }
     }
 

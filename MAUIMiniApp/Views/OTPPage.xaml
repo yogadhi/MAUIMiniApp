@@ -13,16 +13,16 @@
     </ContentPage.BindingContext>
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="{x:Static resx:AppResources.Btn_Add_Account}"
-                     Order="Primary"
-                     x:Name="btnAddAccount"
-                     Clicked="btnAddAccount_Clicked"
-                     IconImageSource="add_light.svg"/>
         <ToolbarItem Order="Primary"
                      Text="{AppThemeBinding Light=Dark Mode, Dark=Light Mode, Default=Light Mode}"
                      x:Name="btnChangeTheme"
                      Clicked="btnChangeTheme_Clicked"
                      IconImageSource="{AppThemeBinding Light=dark_mode.svg, Dark=light_mode.svg}"/>
+        <ToolbarItem Text="{x:Static resx:AppResources.Btn_Add_Account}"
+                     Order="Primary"
+                     x:Name="btnAddAccount"
+                     Clicked="btnAddAccount_Clicked"
+                     IconImageSource="add_light.svg"/>
     </ContentPage.ToolbarItems>
 
     <ContentPage.Resources>
@@ -64,7 +64,7 @@
                         <ContentView>
                             <Grid HorizontalOptions="FillAndExpand"
                                   VerticalOptions="FillAndExpand"
-                                  Padding="5,0"
+                                  Padding="10,0"
                                   RowDefinitions="Auto"
                                   ColumnDefinitions="*">
                                 <Grid RowDefinitions="*,*" ColumnDefinitions="Auto,Auto" Grid.Row="0" Grid.Column="0" Padding="10" VerticalOptions="FillAndExpand" HorizontalOptions="CenterAndExpand" >

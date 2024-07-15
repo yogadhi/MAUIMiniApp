@@ -6,6 +6,7 @@ using MAUIMiniApp.Views;
 using MAUIMiniApp.Data;
 using MAUIMiniApp.ViewModels;
 using ZXing.Net.Maui.Controls;
+using YAP.Libs.Logger;
 
 namespace MAUIMiniApp
 {
@@ -14,31 +15,40 @@ namespace MAUIMiniApp
         public static MauiApp CreateMauiApp()
         {
             var builder = MauiApp.CreateBuilder();
-            builder.Services.AddSingleton<IAlertService, AlertService>();
 
-            builder.ConfigureEssentials(essentials =>
+            try
             {
-                essentials.UseVersionTracking();
-            });
+                builder.Services.AddSingleton<IAlertService, AlertService>();
 
-            builder.UseMauiApp<App>()
-                .UseBarcodeReader()
-                .ConfigureFonts(fonts =>
-            {
-                fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
-                fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-            }).UseMauiCommunityToolkit();
+                builder.ConfigureEssentials(essentials =>
+                {
+                    essentials.UseVersionTracking();
+                });
+
+                builder.UseMauiApp<App>()
+                    .UseBarcodeReader()
+                    .ConfigureFonts(fonts =>
+                    {
+                        fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
+                        fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+                    })
+                    .UseMauiCommunityToolkit();
 
 #if DEBUG
-            builder.Logging.AddDebug();
+                builder.Logging.AddDebug();
 #endif
 
-            Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping(nameof(Entry), (handler, view) =>
+//                Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping(nameof(Entry), (handler, view) =>
+//                {
+//#if ANDROID
+//                handler.PlatformView.SetBackgroundColor(Android.Graphics.Color.Transparent);
+//#endif
+//                });
+            }
+            catch (Exception ex)
             {
-#if ANDROID
-                handler.PlatformView.SetBackgroundColor(Android.Graphics.Color.Transparent);
-#endif
-            });
+                Log.Write(Log.LogEnum.Error, nameof(CreateMauiApp), ex);
+            }
 
             return builder.Build();
         }

@@ -3,12 +3,91 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using YAP.Libs.Logger;
 using System.Threading.Tasks;
 
 namespace YAP.Libs.Helpers
 {
     public class Global
     {
+        public static bool SetAppTheme()
+        {
+            try
+            {
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    var userAppTheme = await SecureStorage.GetAsync("userAppTheme");
+                    if (!string.IsNullOrEmpty(userAppTheme))
+                    {
+                        if (userAppTheme == "Dark")
+                        {
+                            Application.Current.UserAppTheme = AppTheme.Dark;
+                        }
+                        else if (userAppTheme == "Light")
+                        {
+                            Application.Current.UserAppTheme = AppTheme.Light;
+                        }
+                    }
+                    else
+                    {
+                        Application.Current.UserAppTheme = Application.Current.PlatformAppTheme;
+                    }
+                });
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Log.Write(Log.LogEnum.Error, nameof(SetAppTheme), ex);
+                return false;
+            }
+        }
+        public static Dictionary<string, string> GetVersionInfoList()
+        {
+            Dictionary<string, string> InfoList = new Dictionary<string, string>();
+
+            try
+            {
+                var IsFirst = VersionTracking.Default.IsFirstLaunchEver.ToString();
+                InfoList.Add("IsFirst", IsFirst);
+
+                var CurrentVersionIsFirst = VersionTracking.Default.IsFirstLaunchForCurrentVersion.ToString();
+                InfoList.Add("CurrentVersionIsFirst", CurrentVersionIsFirst);
+
+                var CurrentBuildIsFirst = VersionTracking.Default.IsFirstLaunchForCurrentBuild.ToString();
+                InfoList.Add("CurrentBuildIsFirst", CurrentBuildIsFirst);
+
+                var CurrentVersion = VersionTracking.Default.CurrentVersion.ToString();
+                InfoList.Add("CurrentVersion", CurrentVersion);
+
+                var CurrentBuild = VersionTracking.Default.CurrentBuild.ToString();
+                InfoList.Add("CurrentBuild", CurrentBuild);
+
+                var FirstInstalledVer = VersionTracking.Default.FirstInstalledVersion.ToString();
+                InfoList.Add("FirstInstalledVer", FirstInstalledVer);
+
+                var FirstInstalledBuild = VersionTracking.Default.FirstInstalledBuild.ToString();
+                InfoList.Add("FirstInstalledBuild", FirstInstalledBuild);
+
+                var VersionHistory = String.Join(',', VersionTracking.Default.VersionHistory);
+                InfoList.Add("VersionHistory", VersionHistory);
+
+                var BuildHistory = String.Join(',', VersionTracking.Default.BuildHistory);
+                InfoList.Add("BuildHistory", BuildHistory);
+
+                // These two properties may be null if this is the first version
+                var PreviousVersion = VersionTracking.Default.PreviousVersion?.ToString() ?? "none";
+                InfoList.Add("PreviousVersion", PreviousVersion);
+
+                var PreviousBuild = VersionTracking.Default.PreviousBuild?.ToString() ?? "none";
+                InfoList.Add("PreviousBuild", PreviousBuild);
+            }
+            catch (Exception ex)
+            {
+                Log.Write(Log.LogEnum.Error, nameof(GetVersionInfoList), ex);
+            }
+            return InfoList;
+        }
+
         private static byte[] Decode(String encoded)
         {
             Dictionary<char, int> CHAR_MAP = new Dictionary<char, int>();

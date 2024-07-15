@@ -11,9 +11,10 @@
     </ContentPage.BindingContext>
     
     <Grid RowDefinitions="*,Auto" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Padding="7" RowSpacing="5">
-        <Frame HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" HasShadow="True" Padding="3" BackgroundColor="White">
+        <Frame HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" HasShadow="True" Padding="3" BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Black}}">
             <WebView HorizontalOptions="FillAndExpand"
                      VerticalOptions="FillAndExpand"
+                     BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Black}}"
                      Source="{Binding HtmlSource}"
                      x:Name="webView"/>
         </Frame>

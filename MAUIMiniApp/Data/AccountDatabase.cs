@@ -49,6 +49,12 @@ namespace MAUIMiniApp.Data
             return await Database.Table<Account>().ToListAsync();
         }
 
+        public static async Task<Account> GetItemByAccodeAsync(string accode)
+        {
+            await Init();
+            return await Database.Table<Account>().Where(x=>x.Accode == accode).FirstOrDefaultAsync();
+        }
+
         public static async Task<int> TruncateItemAsync()
         {
             try

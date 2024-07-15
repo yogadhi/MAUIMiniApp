@@ -14,9 +14,7 @@ namespace MAUIMiniApp
         public partial string GetDeviceID()
         {
             var context = AndroidApp.Context;
-
             string id = Setting.Secure.GetString(context.ContentResolver, Secure.AndroidId);
-
             return id;
         }
     }

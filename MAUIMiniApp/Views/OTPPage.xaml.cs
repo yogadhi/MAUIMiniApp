@@ -5,6 +5,7 @@ using YAP.Libs.Models;
 using YAP.Libs.Alerts;
 using CommunityToolkit.Maui.Views;
 using MAUIMiniApp.Resources.Strings;
+using System;
 //using static Android.Icu.Text.ListFormatter;
 
 namespace MAUIMiniApp.Views;
@@ -35,7 +36,7 @@ public partial class OTPPage : ContentPage
                 }
             }
 
-            WeakReferenceMessenger.Default.Register<MyMessage>(this, (r, m) =>
+            WeakReferenceMessenger.Default.Register<MyMessage>(this, async (r, m) =>
             {
                 if (m.Value != null)
                 {
@@ -118,17 +119,47 @@ public partial class OTPPage : ContentPage
         }
     }
 
-    private void btnChangeTheme_Clicked(object sender, EventArgs e)
+    private async void btnChangeTheme_Clicked(object sender, EventArgs e)
     {
-        if (Application.Current.UserAppTheme == AppTheme.Dark || Application.Current.UserAppTheme == AppTheme.Unspecified)
+        try
         {
-            btnChangeTheme.IconImageSource = ImageSource.FromFile("dark_mode.png");
-            Application.Current.UserAppTheme = AppTheme.Light;
+            if (Application.Current.UserAppTheme == AppTheme.Dark || Application.Current.UserAppTheme == AppTheme.Unspecified)
+            {
+                btnChangeTheme.IconImageSource = ImageSource.FromFile("dark_mode.png");
+                Application.Current.UserAppTheme = AppTheme.Light;
+                await SecureStorage.SetAsync("userAppTheme", "Light");
+            }
+            else if (Application.Current.UserAppTheme == AppTheme.Light)
+            {
+                btnChangeTheme.IconImageSource = ImageSource.FromFile("light_mode.png");
+                Application.Current.UserAppTheme = AppTheme.Dark;
+                await SecureStorage.SetAsync("userAppTheme", "Dark");
+            }
         }
-        else if (Application.Current.UserAppTheme == AppTheme.Light)
+        catch (Exception ex)
         {
-            btnChangeTheme.IconImageSource = ImageSource.FromFile("light_mode.png");
-            Application.Current.UserAppTheme = AppTheme.Dark;
+            Log.Write(Log.LogEnum.Error, nameof(btnChangeTheme_Clicked), ex);
+        }
+    }
+
+    protected override bool OnBackButtonPressed()
+    {
+        try
+        {
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                var leave = await DisplayAlert("Exit Application?", "Are you sure you want to exit application?", "Yes", "No");
+                if (leave)
+                {
+                    Application.Current.Quit();
+                }
+            });
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Log.Write(Log.LogEnum.Error, nameof(OnBackButtonPressed), ex);
+            return false;
         }
     }
 }

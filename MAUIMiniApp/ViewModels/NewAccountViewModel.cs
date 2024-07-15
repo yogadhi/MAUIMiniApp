@@ -90,8 +90,8 @@ namespace MAUIMiniApp.ViewModels
                     msg = Resources.Strings.AppResources.New_Account_Add_Failed;
                 }
 
-                Toasts.Show(msg);
                 WeakReferenceMessenger.Default.Send(new MyMessage(new MessageContainer { Key = "ClosePopUp" }));
+                Toasts.Show(msg);
             }
             catch (Exception ex)
             {
