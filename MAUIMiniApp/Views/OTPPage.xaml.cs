@@ -20,7 +20,7 @@ public partial class OTPPage : ContentPage
         try
         {
             InitializeComponent();
-            vm = BindingContext as OTPViewModel;
+            BindingContext = vm = new OTPViewModel(Navigation);
 
             if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
             {
@@ -56,25 +56,6 @@ public partial class OTPPage : ContentPage
                             vm.DecodeScanResultCommand.Execute(scanRes);
                         }
                     }
-                    //else if (m.Value.Key == "RefreshList")
-                    //{
-                    //    MainThread.BeginInvokeOnMainThread(() =>
-                    //    {
-                    //        vm.endTime = DateTime.Now;
-                    //        Toasts.Show("New account successfully added");
-                    //    });
-                    //}
-                    //else if (m.Value.Key == "InitScan")
-                    //{
-                    //    var resPermission = await YAP.Libs.Helpers.Permission.CheckAndRequestCamera();
-                    //    if (resPermission == PermissionStatus.Granted)
-                    //    {
-                    //        MainThread.BeginInvokeOnMainThread(async () =>
-                    //        {
-                    //            await Navigation.PushModalAsync(new YAP.Libs.Views.ScanQRCodePage());
-                    //        });
-                    //    }
-                    //}
                 }
             });
         }
@@ -89,10 +70,18 @@ public partial class OTPPage : ContentPage
         try
         {
             base.OnAppearing();
+
             var hasAcceptToS = await SecureStorage.GetAsync("hasAcceptToS");
             if (string.IsNullOrEmpty(hasAcceptToS))
             {
-                MainThread.BeginInvokeOnMainThread(async () => { await Navigation.PushModalAsync(new ToSPage()); });
+                if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
+                {
+                    await YAP.Libs.Helpers.NavigationServices.PushAsync(Navigation, new ToSPage());
+                }
+                else if (DeviceInfo.Current.Platform == DevicePlatform.Android || DeviceInfo.Current.Platform == DevicePlatform.iOS)
+                {
+                    await YAP.Libs.Helpers.NavigationServices.PushModalAsync(Navigation, new ToSPage());
+                }
             }
             else
             {
@@ -146,14 +135,7 @@ public partial class OTPPage : ContentPage
     {
         try
         {
-            MainThread.BeginInvokeOnMainThread(async () =>
-            {
-                var leave = await DisplayAlert("Exit Application?", "Are you sure you want to exit application?", "Yes", "No");
-                if (leave)
-                {
-                    Application.Current.Quit();
-                }
-            });
+            Helpers.Globals.HandleExitApp();
             return true;
         }
         catch (Exception ex)

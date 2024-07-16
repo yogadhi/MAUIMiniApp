@@ -51,6 +51,13 @@ namespace YAP.Libs.ViewModels
             }
         }
 
+        INavigation _Navigation;
+        public INavigation Navigation
+        {
+            get { return _Navigation; }
+            set { SetProperty(ref _Navigation, value); }
+        }
+
         ICommand _OpenWebCommand;
         public ICommand OpenWebCommand => _OpenWebCommand ?? (_OpenWebCommand = new Command<string>(async (x) => await ExecuteOpenWebCommand(x)));
         async Task ExecuteOpenWebCommand(string url)

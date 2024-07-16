@@ -18,13 +18,13 @@ public partial class NewAccountPage : Popup
         try
         {
             InitializeComponent();
-            vm = BindingContext as NewAccountViewModel;
+            BindingContext = vm = new NewAccountViewModel(Application.Current.MainPage.Navigation);
 
             InitDisplay();
 
             WeakReferenceMessenger.Default.Register<MyMessage>(this, (r, m) =>
             {
-                if (m.Value as MessageContainer != null)
+                if (m.Value != null)
                 {
                     if (m.Value.Key == "ClosePopUp")
                     {
@@ -85,12 +85,11 @@ public partial class NewAccountPage : Popup
         {
             App.IsPopUpShow = false;
             MainThread.BeginInvokeOnMainThread(async () => { await CloseAsync(); });
-            //WeakReferenceMessenger.Default.Send(new MyMessage(new MessageContainer { Key = "InitScan" }));
 
             var resPermission = await Permission.CheckAndRequestCamera();
             if (resPermission == PermissionStatus.Granted)
             {
-                MainThread.BeginInvokeOnMainThread(async () => { await Application.Current.MainPage.Navigation.PushModalAsync(new ScanQRCodePage()); });
+                MainThread.BeginInvokeOnMainThread(async () => { await vm.Navigation.PushModalAsync(new ScanQRCodePage()); });
             }
         }
         catch (Exception ex)

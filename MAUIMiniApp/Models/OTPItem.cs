@@ -24,7 +24,7 @@ namespace MAUIMiniApp.Models
                     _Account = value;
                     OnPropertyChanged("Account");
 
-                    _MaskAccount = YAP.Libs.Helpers.Global.MaskString(_Account);
+                    _MaskAccount = YAP.Libs.Helpers.Globals.MaskString(_Account);
                     OnPropertyChanged("MaskAccount");
                 }
             }

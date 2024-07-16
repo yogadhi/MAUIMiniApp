@@ -11,7 +11,7 @@ namespace YAP.Libs.Alerts
             double fontSize = 14;
 
             var toast = Toast.Make(text, duration, fontSize);
-            MainThread.BeginInvokeOnMainThread(async () => { await toast.Show(cancellationTokenSource.Token); });
+            Application.Current.MainPage.Dispatcher.Dispatch(async () => { await toast.Show(cancellationTokenSource.Token); });
         }
     }
 }

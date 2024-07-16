@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace YAP.Libs.Helpers
 {
-    public class Global
+    public class Globals
     {
         public static bool SetAppTheme()
         {

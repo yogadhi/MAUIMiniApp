@@ -133,15 +133,14 @@ namespace MAUIMiniApp.ViewModels
         }
         #endregion
 
-        public OTPViewModel()
+        public OTPViewModel(INavigation navigation)
         {
             try
             {
+                Navigation = navigation;
                 Title = Resources.Strings.AppResources.App_Title;
                 DeviceID = new GetDeviceInfo().GetDeviceID();
                 timer.Elapsed += t_Tick;
-                //endTime = DateTime.Now;
-                //timer.Start();
             }
             catch (Exception ex)
             {
@@ -180,7 +179,7 @@ namespace MAUIMiniApp.ViewModels
                     {
                         Account = index.Accode,
                         SecretKey = index.SecretKey,
-                        OTP = YAP.Libs.Helpers.Global.GetFuturePIN(index.SecretKey),
+                        OTP = YAP.Libs.Helpers.Globals.GetFuturePIN(index.SecretKey),
                     });
                 }
 
@@ -189,8 +188,6 @@ namespace MAUIMiniApp.ViewModels
                     timer.Enabled = true;
                 }
                 endTime = DateTime.Now.AddSeconds(30);
-                //TimeSpan ts = endTime - DateTime.Now;
-                //cTimerInt = ts.Seconds;
             }
             catch (Exception ex)
             {
@@ -254,6 +251,24 @@ namespace MAUIMiniApp.ViewModels
                         {
                             await Clipboard.Default.SetTextAsync((string)obj.OTP);
                             Toasts.Show(obj.OTP + " copied");
+                        }
+                        else if (action == "Remove")
+                        {
+                            var remove = await App.AlertSvc.ShowConfirmationAsync("Remove " + obj.Account, "Are you sure you want to remove account " + obj.Account, "Yes", "No");
+                            if (remove)
+                            {
+                                var account = await AccountDatabase.GetItemByAccodeAsync(obj.Account);
+                                if (account == null)
+                                {
+                                    return;
+                                }
+
+                                var resDelete = await AccountDatabase.DeleteItemAsync(account);
+                                if (resDelete == 1)
+                                {
+                                    endTime = DateTime.Now;
+                                }
+                            }
                         }
                         else if (action == "Rename")
                         {
@@ -369,7 +384,7 @@ namespace MAUIMiniApp.ViewModels
                             var companyCode = strSplitZero[2].Split("companycode=")[1];
 
                             var secretKey = strSplitZero[0].Split("secret=")[1];
-                            if (String.IsNullOrEmpty(YAP.Libs.Helpers.Global.Base32Decode(secretKey)))
+                            if (String.IsNullOrEmpty(YAP.Libs.Helpers.Globals.Base32Decode(secretKey)))
                             {
                                 Toasts.Show(Resources.Strings.AppResources.Wrong_QRCode_Format);
                                 return;
@@ -382,7 +397,7 @@ namespace MAUIMiniApp.ViewModels
                                 SecretKey = secretKey.ToUpper()
                             };
 
-                            var resBind = await MAUIMiniApp.Controllers.CQAuth.BindUserNewAccount(obj);
+                            var resBind = await Controllers.CQAuth.BindUserNewAccount(obj);
                             if (resBind)
                             {
                                 Toasts.Show(Resources.Strings.AppResources.New_Account_Added);

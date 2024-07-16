@@ -4,6 +4,7 @@ using ZXing.Net.Maui;
 using CommunityToolkit.Mvvm.Messaging;
 using YAP.Libs.Models;
 using System.Collections.Generic;
+using YAP.Libs.Helpers;
 
 namespace YAP.Libs.Views;
 
@@ -29,7 +30,7 @@ public partial class ScanQRCodePage : ContentPage
         }
     }
 
-    private void BarcodesDetected(object sender, BarcodeDetectionEventArgs e)
+    private async void BarcodesDetected(object sender, BarcodeDetectionEventArgs e)
     {
         try
         {
@@ -41,10 +42,7 @@ public partial class ScanQRCodePage : ContentPage
                 var val = scanResult.Value;
                 if (!string.IsNullOrWhiteSpace(val))
                 {
-                    MainThread.BeginInvokeOnMainThread(async () =>
-                    {
-                        await Navigation.PopModalAsync();
-                    });
+                    await NavigationServices.PopModalAsync(Navigation);
                     WeakReferenceMessenger.Default.Send(new MyMessage(new MessageContainer { Key = "ScanResult", CustomObject = val }));
                 }
             }
@@ -59,7 +57,7 @@ public partial class ScanQRCodePage : ContentPage
     {
         try
         {
-            await Navigation.PopModalAsync();
+            await NavigationServices.PopModalAsync(Navigation);
         }
         catch (Exception ex)
         {

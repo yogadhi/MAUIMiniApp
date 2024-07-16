@@ -8,10 +8,6 @@
            x:Class="MAUIMiniApp.Views.NewAccountPage"
            CanBeDismissedByTappingOutsideOfPopup="False"
            Color="Transparent">
-    <mct:Popup.BindingContext>
-        <vm:NewAccountViewModel />
-    </mct:Popup.BindingContext>
-
     <Frame VerticalOptions="FillAndExpand"
            HorizontalOptions="FillAndExpand"
            x:Name="mainFrame"

@@ -31,7 +31,7 @@ namespace MAUIMiniApp
             {
                 InitializeComponent();
 
-                Global.SetAppTheme();
+                Globals.SetAppTheme();
 
                 RootItem = new RootItem
                 {

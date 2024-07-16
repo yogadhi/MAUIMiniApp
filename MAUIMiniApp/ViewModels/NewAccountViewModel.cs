@@ -40,11 +40,11 @@ namespace MAUIMiniApp.ViewModels
         }
         #endregion
 
-        public NewAccountViewModel()
+        public NewAccountViewModel(INavigation navigation)
         {
             try
             {
-
+                Navigation = navigation;
             }
             catch (Exception ex)
             {

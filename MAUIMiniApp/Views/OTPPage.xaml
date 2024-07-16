@@ -8,10 +8,6 @@
              xmlns:resx="clr-namespace:MAUIMiniApp.Resources.Strings"
              x:Class="MAUIMiniApp.Views.OTPPage"
              Title="{Binding Title}">
-    <ContentPage.BindingContext>
-        <vm:OTPViewModel />
-    </ContentPage.BindingContext>
-
     <ContentPage.ToolbarItems>
         <ToolbarItem Order="Primary"
                      Text="{AppThemeBinding Light=Dark Mode, Dark=Light Mode, Default=Light Mode}"

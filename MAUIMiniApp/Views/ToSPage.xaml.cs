@@ -16,7 +16,7 @@ public partial class ToSPage : ContentPage
         try
         {
             InitializeComponent();
-            vm = BindingContext as ToSViewModel;
+            BindingContext = vm = new ToSViewModel(Navigation);
         }
         catch (Exception ex)
         {
@@ -41,14 +41,7 @@ public partial class ToSPage : ContentPage
     {
         try
         {
-            MainThread.BeginInvokeOnMainThread(async () =>
-            {
-                var leave = await DisplayAlert("Exit Application?", "Are you sure you want to exit application?", "Yes", "No");
-                if (leave)
-                {
-                    Application.Current.Quit();
-                }
-            });
+            Helpers.Globals.HandleExitApp();
             return true;
         }
         catch (Exception ex)
@@ -62,7 +55,7 @@ public partial class ToSPage : ContentPage
     {
         try
         {
-            Application.Current.Quit();
+            Helpers.Globals.HandleExitApp();
         }
         catch (Exception ex)
         {

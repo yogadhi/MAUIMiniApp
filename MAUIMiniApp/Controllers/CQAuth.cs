@@ -96,10 +96,7 @@ namespace MAUIMiniApp.Controllers
                         if (resBind == "1")
                         {
                             var resSave = await AccountDatabase.SaveItemAsync(input);
-                            if (resSave == 1)
-                            {
-                                return true;
-                            }
+                            return resSave == 1;
                         }
                     }
                 }
