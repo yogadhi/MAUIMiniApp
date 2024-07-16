@@ -45,15 +45,16 @@ namespace MAUIMiniApp.ViewModels
             try
             {
                 await SecureStorage.SetAsync("hasAcceptToS", "true");
+                await YAP.Libs.Helpers.NavigationServices.PopModalAsync(Navigation);
 
-                if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
-                {
-                    await YAP.Libs.Helpers.NavigationServices.PopAsync(Navigation, true);
-                }
-                else if (DeviceInfo.Current.Platform == DevicePlatform.Android || DeviceInfo.Current.Platform == DevicePlatform.iOS)
-                {
-                    await YAP.Libs.Helpers.NavigationServices.PopModalAsync(Navigation, true);
-                }
+                //if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
+                //{
+                //    await YAP.Libs.Helpers.NavigationServices.PopAsync(Navigation, true);
+                //}
+                //else if (DeviceInfo.Current.Platform == DevicePlatform.Android || DeviceInfo.Current.Platform == DevicePlatform.iOS)
+                //{
+                //    await YAP.Libs.Helpers.NavigationServices.PopModalAsync(Navigation, true);
+                //}
             }
             catch (Exception ex)
             {

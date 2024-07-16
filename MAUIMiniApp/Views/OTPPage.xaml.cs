@@ -65,29 +65,41 @@ public partial class OTPPage : ContentPage
         }
     }
 
-    protected override async void OnAppearing()
+    private async void OTPPage_Loaded(object sender, EventArgs e)
     {
         try
         {
-            base.OnAppearing();
-
             var hasAcceptToS = await SecureStorage.GetAsync("hasAcceptToS");
             if (string.IsNullOrEmpty(hasAcceptToS))
             {
-                if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
-                {
-                    await YAP.Libs.Helpers.NavigationServices.PushAsync(Navigation, new ToSPage());
-                }
-                else if (DeviceInfo.Current.Platform == DevicePlatform.Android || DeviceInfo.Current.Platform == DevicePlatform.iOS)
-                {
-                    await YAP.Libs.Helpers.NavigationServices.PushModalAsync(Navigation, new ToSPage());
-                }
+                await YAP.Libs.Helpers.NavigationServices.PushModalAsync(Navigation, new ToSPage());
+
+                //if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
+                //{
+                //    await YAP.Libs.Helpers.NavigationServices.PushAsync(Navigation, new ToSPage());
+                //}
+                //else if (DeviceInfo.Current.Platform == DevicePlatform.Android || DeviceInfo.Current.Platform == DevicePlatform.iOS)
+                //{
+                //    await YAP.Libs.Helpers.NavigationServices.PushModalAsync(Navigation, new ToSPage());
+                //}
             }
             else
             {
                 vm.endTime = DateTime.Now;
                 vm.timer.Start();
             }
+        }
+        catch (Exception ex)
+        {
+            Log.Write(Log.LogEnum.Error, nameof(OTPPage_Loaded), ex);
+        }
+    }
+
+    protected override void OnAppearing()
+    {
+        try
+        {
+            base.OnAppearing();
         }
         catch (Exception ex)
         {

@@ -7,6 +7,7 @@
              xmlns:control="clr-namespace:YAP.Libs.Views;assembly=YAP.Libs"
              xmlns:resx="clr-namespace:MAUIMiniApp.Resources.Strings"
              x:Class="MAUIMiniApp.Views.OTPPage"
+             Loaded="OTPPage_Loaded"
              Title="{Binding Title}">
     <ContentPage.ToolbarItems>
         <ToolbarItem Order="Primary"

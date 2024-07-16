@@ -31,35 +31,40 @@ public partial class LoadingPage : ContentPage
     {
         try
         {
-#if DEBUG
-            SecureStorage.RemoveAll();
-#endif
+            //#if DEBUG
+            //            SecureStorage.RemoveAll();
+            //#endif
+
             //hardcoded because CQ Auth no need login page
             await SecureStorage.SetAsync("hasAuth", "true");
 
             if (await isAuthenticated())
             {
-                if (RootItem != null)
+                if (RootItem == null)
                 {
-                    if (RootItem.MenuItemList != null)
-                    {
-                        if (RootItem.MenuItemList.Count > 1)
-                        {
-                            MainThread.BeginInvokeOnMainThread(() =>
-                            {
-                                Application.Current.MainPage = new AppFlyout(RootItem);
-                            });
-                        }
-                        else
-                        {
-                            var page = RootItem.MenuItemList[0].TargetPage;
+                    return;
+                }
 
-                            MainThread.BeginInvokeOnMainThread(() =>
-                            {
-                                Application.Current.MainPage = new NavigationPage(page);
-                            });
-                        }
-                    }
+                if (RootItem.MenuItemList == null)
+                {
+                    return;
+                }
+
+                if (RootItem.MenuItemList.Count > 1)
+                {
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        Application.Current.MainPage = new AppFlyout(RootItem);
+                    });
+                }
+                else
+                {
+                    var page = RootItem.MenuItemList[0].TargetPage;
+
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        Application.Current.MainPage = new NavigationPage(page);
+                    });
                 }
             }
             else
