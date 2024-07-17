@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<mct:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+           xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+           xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+           xmlns:converter="clr-namespace:YAP.Libs.Converters;assembly=YAP.Libs"
+           xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
+           x:Class="YAP.Libs.Views.QRCodePage"
+           xmlns:vm="clr-namespace:YAP.Libs.ViewModels"
+           CanBeDismissedByTappingOutsideOfPopup="True"
+           Color="Transparent">
+    <Frame VerticalOptions="FillAndExpand"
+           HorizontalOptions="FillAndExpand"
+           x:Name="mainFrame"
+           BackgroundColor="{AppThemeBinding Light=WhiteSmoke, Dark=Black}"
+           BorderColor="Transparent"
+           Padding="0"
+           CornerRadius="10">
+        <Grid RowDefinitions="Auto,*"
+              ColumnDefinitions="*"
+              VerticalOptions="FillAndExpand"
+              HorizontalOptions="FillAndExpand"
+              RowSpacing="5">
+
+            <Grid Grid.Row="0" Grid.Column="0" HorizontalOptions="FillAndExpand" VerticalOptions="Start" Padding="10,5" ColumnDefinitions="*,Auto" BackgroundColor="{StaticResource Primary}">
+                <Label Text="QR Code" Grid.Column="0" TextColor="White" FontAttributes="Bold" FontSize="20" VerticalOptions="Center"/>
+                <ImageButton x:Name="btnClose" Grid.Column="1" HorizontalOptions="End" VerticalOptions="Center" BackgroundColor="Transparent" Source="close_light.svg" CornerRadius="30" Clicked="btnClose_Clicked" />
+            </Grid>
+
+            <VerticalStackLayout Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" IsVisible="{Binding IsBusy}">
+                <ActivityIndicator Color="{StaticResource Primary}" IsRunning="{Binding IsBusy}" HeightRequest="50" WidthRequest="50" />
+                <Label x:Name="lblLoadingMsg" Text="Loading..." HorizontalOptions="Center" TextColor="{StaticResource Primary}" />
+            </VerticalStackLayout>
+
+            <Grid HorizontalOptions="FillAndExpand"
+                  VerticalOptions="FillAndExpand"
+                  Grid.Column="0"
+                  Grid.Row="1"
+                  Padding="5"
+                  ColumnDefinitions="*"
+                  RowDefinitions="*">
+                <zxing:BarcodeGeneratorView x:Name="barcodeGenerator"
+                                            HorizontalOptions="CenterAndExpand"
+                                            VerticalOptions="CenterAndExpand"
+                                            Format="QrCode"/>
+
+                <Image x:Name="imgQRCode"
+                       IsVisible="false"
+                       HorizontalOptions="CenterAndExpand"
+                       VerticalOptions="CenterAndExpand"/>
+            </Grid>
+        </Grid>
+    </Frame>
+</mct:Popup>

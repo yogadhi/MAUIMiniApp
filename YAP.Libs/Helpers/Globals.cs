@@ -5,11 +5,66 @@ using System.Security.Cryptography;
 using System.Text;
 using YAP.Libs.Logger;
 using System.Threading.Tasks;
+using CommunityToolkit.Maui.Views;
+using System.Text.RegularExpressions;
 
 namespace YAP.Libs.Helpers
 {
     public class Globals
     {
+        public static void NumericOnly_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            // If the text field is empty or null then leave.
+            string regex = e.NewTextValue;
+            if (String.IsNullOrEmpty(regex))
+                return;
+
+            // If the text field only contains numbers then leave.
+            if (!Regex.Match(regex, "^[0-9]+$").Success)
+            {
+                // This returns to the previous valid state.
+                var entry = sender as Entry;
+                entry.Text = (string.IsNullOrEmpty(e.OldTextValue)) ? string.Empty : e.OldTextValue;
+            }
+        }
+
+        public static void AlphabetOnly_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(e.NewTextValue))
+            {
+                var textFiltered = new string(e.NewTextValue.Where(char.IsLetter).ToArray());
+                ((Entry)sender).Text = textFiltered;
+            }
+        }
+
+        public static void InitPopUpPageDisplay(Frame main, Popup mainPopup, ImageButton imgBtnClose, bool isSquare = false)
+        {
+            double width = 0;
+
+            try
+            {
+                if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
+                {
+                    imgBtnClose.Source = ImageSource.FromFile("close_light.png");
+                    width = DeviceDisplay.Current.MainDisplayInfo.Width / (isSquare ? 6 : 4);
+                    main.WidthRequest = width;
+                    if (isSquare)
+                    {
+                        main.HeightRequest = width;
+                    }
+                }
+                else
+                {
+                    width = DeviceDisplay.Current.MainDisplayInfo.Width / (isSquare ? 5 : 3);
+                    mainPopup.Size = new Microsoft.Maui.Graphics.Size(width, isSquare ? width : 0);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Write(Log.LogEnum.Error, nameof(InitPopUpPageDisplay), ex);
+            }
+        }
+
         public static bool SetAppTheme()
         {
             try

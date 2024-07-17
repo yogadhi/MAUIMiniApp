@@ -36,6 +36,16 @@ public partial class OTPPage : ContentPage
                 }
             }
 
+#if DEBUG
+            ToolbarItem item = new ToolbarItem
+            {
+                Text = "Show QR Code",
+                IconImageSource = ImageSource.FromFile(DeviceInfo.Current.Platform == DevicePlatform.WinUI ? "qr_code_light.png" : "qr_code_light.svg")
+            };
+            item.Clicked += btnShowQRCode_Clicked;
+            this.ToolbarItems.Add(item);
+#endif
+
             WeakReferenceMessenger.Default.Register<MyMessage>(this, async (r, m) =>
             {
                 if (m.Value != null)
@@ -73,15 +83,6 @@ public partial class OTPPage : ContentPage
             if (string.IsNullOrEmpty(hasAcceptToS))
             {
                 await YAP.Libs.Helpers.NavigationServices.PushModalAsync(Navigation, new ToSPage());
-
-                //if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
-                //{
-                //    await YAP.Libs.Helpers.NavigationServices.PushAsync(Navigation, new ToSPage());
-                //}
-                //else if (DeviceInfo.Current.Platform == DevicePlatform.Android || DeviceInfo.Current.Platform == DevicePlatform.iOS)
-                //{
-                //    await YAP.Libs.Helpers.NavigationServices.PushModalAsync(Navigation, new ToSPage());
-                //}
             }
             else
             {
@@ -107,10 +108,12 @@ public partial class OTPPage : ContentPage
         }
     }
 
-    private void btnAddAccount_Clicked(object sender, EventArgs e)
+    private async void btnAddAccount_Clicked(object sender, EventArgs e)
     {
         try
         {
+            
+
             if (App.IsPopUpShow) { return; }
             MainThread.BeginInvokeOnMainThread(async () => { await Application.Current.MainPage.ShowPopupAsync(new NewAccountPage()); });
         }
@@ -154,6 +157,34 @@ public partial class OTPPage : ContentPage
         {
             Log.Write(Log.LogEnum.Error, nameof(OnBackButtonPressed), ex);
             return false;
+        }
+    }
+
+    private async void btnShowQRCode_Clicked(object sender, EventArgs e)
+    {
+        try
+        {
+            vm.IsBusy = true;
+            var resQRCode = await Controllers.CQAuth.GetQRCode(new Models.Account { Accode = "ASDFGH", CompanyCode = "1" }, new Models.ReqGetQRCode { SysID = 1, Username = "ASDFGH" });
+            if (resQRCode != null)
+            {
+                if (resQRCode.data != null)
+                {
+                    if (!string.IsNullOrEmpty(resQRCode.data.Based64QRImg))
+                    {
+                        var strSplit = resQRCode.data.Based64QRImg.Split("data:image/png; base64,");
+                        await Application.Current.MainPage.ShowPopupAsync(new YAP.Libs.Views.QRCodePage(YAP.Libs.Views.QRCodePage.QRCodeMode.Image, strSplit[1]));
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Log.Write(Log.LogEnum.Error, nameof(btnShowQRCode_Clicked), ex);
+        }
+        finally
+        {
+            vm.IsBusy = false;
         }
     }
 }

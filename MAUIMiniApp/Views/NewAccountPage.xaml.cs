@@ -11,7 +11,6 @@ namespace MAUIMiniApp.Views;
 
 public partial class NewAccountPage : Popup
 {
-    double width = 0;
     NewAccountViewModel vm;
     public NewAccountPage()
     {
@@ -20,7 +19,16 @@ public partial class NewAccountPage : Popup
             InitializeComponent();
             BindingContext = vm = new NewAccountViewModel(Application.Current.MainPage.Navigation);
 
-            InitDisplay();
+            Globals.InitPopUpPageDisplay(mainFrame, this, btnClose, false);
+
+            if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
+            {
+                btnAddAccount.ImageSource = ImageSource.FromFile("person_add_light.png");
+                btnScanQRCode.ImageSource = ImageSource.FromFile("qr_code_scanner.png");
+            }
+
+            txtCompanyCode.TextChanged += Globals.NumericOnly_TextChanged;
+            txtAccountNo.TextChanged += Globals.AlphabetOnly_TextChanged;
 
             WeakReferenceMessenger.Default.Register<MyMessage>(this, (r, m) =>
             {
@@ -39,30 +47,6 @@ public partial class NewAccountPage : Popup
         catch (Exception ex)
         {
             Log.Write(Log.LogEnum.Error, nameof(NewAccountPage), ex);
-        }
-    }
-
-    private void InitDisplay()
-    {
-        try
-        {
-            if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
-            {
-                btnAddAccount.ImageSource = ImageSource.FromFile("person_add_light.png");
-                btnScanQRCode.ImageSource = ImageSource.FromFile("qr_code_scanner.png");
-                btnClose.Source = ImageSource.FromFile("close_light.png");
-                width = DeviceDisplay.Current.MainDisplayInfo.Width / 4;
-                this.mainFrame.WidthRequest = width;
-            }
-            else
-            {
-                width = DeviceDisplay.Current.MainDisplayInfo.Width / 3;
-                this.Size = new Microsoft.Maui.Graphics.Size(width, 0);
-            }
-        }
-        catch (Exception ex)
-        {
-            Log.Write(Log.LogEnum.Error, nameof(InitDisplay), ex);
         }
     }
 
@@ -95,23 +79,6 @@ public partial class NewAccountPage : Popup
         catch (Exception ex)
         {
             Log.Write(Log.LogEnum.Error, nameof(btnScanQRCode_Clicked), ex);
-        }
-    }
-
-    private void txtCompanyCode_TextChanged(object sender, TextChangedEventArgs e)
-    {
-        // If the text field is empty or null then leave.
-        string regex = e.NewTextValue;
-        if (String.IsNullOrEmpty(regex))
-            return;
-
-        // If the text field only contains numbers then leave.
-        if (!Regex.Match(regex, "^[0-9]+$").Success)
-        {
-            // This returns to the previous valid state.
-            var entry = sender as Entry;
-            entry.Text = (string.IsNullOrEmpty(e.OldTextValue)) ?
-                    string.Empty : e.OldTextValue;
         }
     }
 }

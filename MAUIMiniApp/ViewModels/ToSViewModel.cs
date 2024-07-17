@@ -11,6 +11,9 @@ using MAUIMiniApp.Data;
 using CommunityToolkit.Mvvm.Messaging;
 using YAP.Libs.Models;
 using YAP.Libs.Alerts;
+using CommunityToolkit.Maui.Views;
+using YAP.Libs.Views;
+using MAUIMiniApp.Controllers;
 
 namespace MAUIMiniApp.ViewModels
 {

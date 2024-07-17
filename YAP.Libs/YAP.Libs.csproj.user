@@ -17,6 +17,9 @@
     <MauiXaml Update="Views\LoginPage.xaml">
       <SubType>Designer</SubType>
     </MauiXaml>
+    <MauiXaml Update="Views\QRCodePage.xaml">
+      <SubType>Designer</SubType>
+    </MauiXaml>
     <MauiXaml Update="Views\ScanQRCodePage.xaml">
       <SubType>Designer</SubType>
     </MauiXaml>

@@ -104,6 +104,7 @@
 		<None Remove="Resources\Images\light_mode.svg" />
 		<None Remove="Resources\Images\person_add_light.svg" />
 		<None Remove="Resources\Images\qrcode_scan.svg" />
+		<None Remove="Resources\Images\qr_code_light.svg" />
 		<None Remove="Resources\Images\qr_code_scanner.svg" />
 	</ItemGroup>
 

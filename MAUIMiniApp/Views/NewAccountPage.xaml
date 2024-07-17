@@ -33,7 +33,6 @@
 
             <VerticalStackLayout Grid.Row="1" Grid.Column="0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Padding="5" Spacing="5" IsVisible="{Binding IsBusy,Converter={converter:InverseBoolConverter}}">
                 <Entry x:Name="txtCompanyCode"
-                       TextChanged="txtCompanyCode_TextChanged"
                        Text="{Binding CompanyCode}"
                        BackgroundColor="White"
                        TextColor="black"

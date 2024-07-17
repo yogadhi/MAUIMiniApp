@@ -11,6 +11,7 @@ using CommunityToolkit.Maui.Views;
 using MAUIMiniApp.Data;
 using System;
 using System.Globalization;
+using MAUIMiniApp.Controllers;
 
 namespace MAUIMiniApp.ViewModels
 {
@@ -158,6 +159,34 @@ namespace MAUIMiniApp.ViewModels
                 if (IsBusy) { return; }
                 IsBusy = true;
 
+                var strLastUnbindAccount = await SecureStorage.GetAsync("lastUnbindAccount");
+                if (!string.IsNullOrEmpty(strLastUnbindAccount))
+                {
+                    var list = strLastUnbindAccount.Split("|");
+                    if (list != null)
+                    {
+                        if (list.Length > 0)
+                        {
+                            var listDistinct = list.Distinct().ToList();
+                            foreach (var index in listDistinct)
+                            {
+                                var objAccount = await AccountDatabase.GetItemByAccodeAsync(index);
+                                if (objAccount != null)
+                                {
+                                    var checkBind = await CQAuth.CheckUserBinded(objAccount);
+                                    if (checkBind == 0)
+                                    {
+                                        var resDelete = await AccountDatabase.DeleteItemAsync(objAccount);
+                                    }
+                                }
+                            }
+                            SecureStorage.Remove("lastUnbindAccount");
+                        }
+                    }
+                }
+
+                OTPItemList = new ObservableCollection<OTPItem>();
+
                 //await AccountDatabase.TruncateItemAsync();
                 var resList = await AccountDatabase.GetItemsAsync();
                 if (resList == null)
@@ -172,7 +201,6 @@ namespace MAUIMiniApp.ViewModels
                     return;
                 }
 
-                OTPItemList = new ObservableCollection<OTPItem>();
                 foreach (var index in resList)
                 {
                     OTPItemList.Add(new OTPItem
@@ -255,19 +283,21 @@ namespace MAUIMiniApp.ViewModels
                         else if (action == "Remove")
                         {
                             var remove = await App.AlertSvc.ShowConfirmationAsync("Remove " + obj.Account, "Are you sure you want to remove account " + obj.Account, "Yes", "No");
-                            if (remove)
+                            if (!remove)
                             {
-                                var account = await AccountDatabase.GetItemByAccodeAsync(obj.Account);
-                                if (account == null)
-                                {
-                                    return;
-                                }
+                                return;
+                            }
 
-                                var resDelete = await AccountDatabase.DeleteItemAsync(account);
-                                if (resDelete == 1)
-                                {
-                                    endTime = DateTime.Now;
-                                }
+                            var account = await AccountDatabase.GetItemByAccodeAsync(obj.Account);
+                            if (account == null)
+                            {
+                                return;
+                            }
+
+                            var resDelete = await AccountDatabase.DeleteItemAsync(account);
+                            if (resDelete == 1)
+                            {
+                                endTime = DateTime.Now;
                             }
                         }
                         else if (action == "Rename")
@@ -277,6 +307,12 @@ namespace MAUIMiniApp.ViewModels
                         else if (action == "Unbind")
                         {
                             string Lang = string.Empty;
+
+                            var remove = await App.AlertSvc.ShowConfirmationAsync("Unbind " + obj.Account, "Are you sure you want to unbind account " + obj.Account, "Yes", "No");
+                            if (!remove)
+                            {
+                                return;
+                            }
 
                             var account = await AccountDatabase.GetItemByAccodeAsync(obj.Account);
                             if (account == null)
@@ -294,8 +330,31 @@ namespace MAUIMiniApp.ViewModels
                                 Lang = "EN";
                             }
 
-                            Uri uri = new Uri(String.Format("https://cq2fa.cyberquote.com.hk/registration//Unbind?CompanyCode={0}&lang={1}&Accode={2}", account.CompanyCode, Lang, account.Accode));
-                            await Browser.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
+                            IsBusy = true;
+
+                            var strLastUnbindAccount = await SecureStorage.GetAsync("lastUnbindAccount");
+                            if (!string.IsNullOrEmpty(strLastUnbindAccount))
+                            {
+                                List<string> lastUnbindAccountList = new List<string>();
+                                lastUnbindAccountList.Add(strLastUnbindAccount);
+                                lastUnbindAccountList.Add(obj.Account);
+                                await SecureStorage.SetAsync("lastUnbindAccount", string.Join("|", lastUnbindAccountList));
+                            }
+                            else
+                            {
+                                await SecureStorage.SetAsync("lastUnbindAccount", obj.Account);
+                            }
+
+                            var resUnbind = await CQAuth.Delink(account, new ReqDelink { SysID = Convert.ToInt32(account.CompanyCode), Username = account.Accode });
+                            if (resUnbind != null)
+                            {
+                                if (resUnbind.data)
+                                {
+                                    endTime = DateTime.Now;
+                                }
+                            }
+                            //Uri uri = new Uri(String.Format("https://cq2fa.cyberquote.com.hk/registration//Unbind?CompanyCode={0}&lang={1}&Accode={2}", account.CompanyCode, Lang, account.Accode));
+                            //await Browser.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
                         }
                     }
                 }
@@ -304,6 +363,10 @@ namespace MAUIMiniApp.ViewModels
             catch (Exception ex)
             {
                 Log.Write(Log.LogEnum.Error, nameof(ExecuteSelectionCommand), ex);
+            }
+            finally
+            {
+                IsBusy = false;
             }
         }
 

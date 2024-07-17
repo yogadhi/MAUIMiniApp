@@ -31,9 +31,9 @@ public partial class LoadingPage : ContentPage
     {
         try
         {
-            //#if DEBUG
-            //            SecureStorage.RemoveAll();
-            //#endif
+//#if DEBUG
+//            SecureStorage.RemoveAll();
+//#endif
 
             //hardcoded because CQ Auth no need login page
             await SecureStorage.SetAsync("hasAuth", "true");
