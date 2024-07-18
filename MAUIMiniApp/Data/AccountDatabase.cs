@@ -52,7 +52,7 @@ namespace MAUIMiniApp.Data
         public static async Task<Account> GetItemByAccodeAsync(string accode)
         {
             await Init();
-            return await Database.Table<Account>().Where(x=>x.Accode == accode).FirstOrDefaultAsync();
+            return await Database.Table<Account>().Where(x => x.Accode == accode).FirstOrDefaultAsync();
         }
 
         public static async Task<int> TruncateItemAsync()
@@ -68,6 +68,7 @@ namespace MAUIMiniApp.Data
             }
             catch (Exception ex)
             {
+                YAP.Libs.Logger.Log.Write(YAP.Libs.Logger.Log.LogEnum.Error, nameof(TruncateItemAsync), ex);
                 return 0;
             }
         }

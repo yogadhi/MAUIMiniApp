@@ -13,13 +13,12 @@
         <ToolbarItem Order="Primary"
                      Text="{AppThemeBinding Light=Dark Mode, Dark=Light Mode, Default=Light Mode}"
                      x:Name="btnChangeTheme"
-                     Clicked="btnChangeTheme_Clicked"
-                     IconImageSource="{AppThemeBinding Light=dark_mode.svg, Dark=light_mode.svg}"/>
+                     Clicked="btnChangeTheme_Clicked"/>
         <ToolbarItem Text="{x:Static resx:AppResources.Btn_Add_Account}"
                      Order="Primary"
                      x:Name="btnAddAccount"
                      Clicked="btnAddAccount_Clicked"
-                     IconImageSource="add_light.svg"/>
+                     IconImageSource="{Binding Source=add_light.svg, Converter={converter:SVGToPNGConverter}}"/>
     </ContentPage.ToolbarItems>
 
     <ContentPage.Resources>

@@ -37,7 +37,7 @@ namespace YAP.Libs.Helpers
             }
         }
 
-        public static void InitPopUpPageDisplay(Frame main, Popup mainPopup, ImageButton imgBtnClose, bool isSquare = false)
+        public static void InitPopUpPageDisplay(Frame main, Popup mainPopup, bool isSquare = false)
         {
             double width = 0;
 
@@ -45,7 +45,6 @@ namespace YAP.Libs.Helpers
             {
                 if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
                 {
-                    imgBtnClose.Source = ImageSource.FromFile("close_light.png");
                     width = DeviceDisplay.Current.MainDisplayInfo.Width / (isSquare ? 6 : 4);
                     main.WidthRequest = width;
                     if (isSquare)

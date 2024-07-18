@@ -18,8 +18,6 @@ namespace MAUIMiniApp.ViewModels
     public class OTPViewModel : BaseViewModel
     {
         #region Variables
-        decimal maxInterval = 30m;
-
         DateTime _endTime = DateTime.Now.AddSeconds(30);
         public DateTime endTime
         {
@@ -34,13 +32,6 @@ namespace MAUIMiniApp.ViewModels
             set { SetProperty(ref _timer, value); }
         }
 
-        string _CurrentOTP = string.Empty;
-        public string CurrentOTP
-        {
-            get { return _CurrentOTP; }
-            set { SetProperty(ref _CurrentOTP, value); }
-        }
-
         int _cTimerInt = 0;
         public int cTimerInt
         {
@@ -51,9 +42,6 @@ namespace MAUIMiniApp.ViewModels
                 {
                     _cTimerInt = value;
                     OnPropertyChanged("cTimerInt");
-
-                    _cTimer = _cTimerInt.ToString();
-                    OnPropertyChanged("cTimer");
 
                     if (_cTimerInt > 15)
                     {
@@ -70,26 +58,6 @@ namespace MAUIMiniApp.ViewModels
                     OnPropertyChanged("ProgressColor");
                 }
             }
-        }
-
-        string _cTimer = string.Empty;
-        public string cTimer
-        {
-            get { return _cTimer; }
-            set
-            {
-                if (_cTimer != value)
-                {
-                    _cTimer = value;
-                }
-            }
-        }
-
-        int _Progress;
-        public int Progress
-        {
-            get => _Progress;
-            set => SetProperty(ref _Progress, value);
         }
 
         Color _ProgressColor = Colors.Green;
@@ -156,7 +124,9 @@ namespace MAUIMiniApp.ViewModels
         {
             try
             {
-                if (IsBusy) { return; }
+                if (IsBusy)
+                    return;
+
                 IsBusy = true;
 
                 var strLastUnbindAccount = await SecureStorage.GetAsync("lastUnbindAccount");
@@ -168,19 +138,30 @@ namespace MAUIMiniApp.ViewModels
                         if (list.Length > 0)
                         {
                             var listDistinct = list.Distinct().ToList();
-                            foreach (var index in listDistinct)
+                            foreach (var index in listDistinct.ToList())
                             {
                                 var objAccount = await AccountDatabase.GetItemByAccodeAsync(index);
-                                if (objAccount != null)
+                                if (objAccount == null)
+                                    continue;
+
+                                var checkBind = await CQAuth.CheckUserBinded(objAccount);
+                                if (checkBind != 0)
+                                    continue;
+
+                                var resDelete = await AccountDatabase.DeleteItemAsync(objAccount);
+                                if (resDelete != 1)
+                                    continue;
+
+                                listDistinct.Remove(index);
+                                if (listDistinct.Count > 0)
                                 {
-                                    var checkBind = await CQAuth.CheckUserBinded(objAccount);
-                                    if (checkBind == 0)
-                                    {
-                                        var resDelete = await AccountDatabase.DeleteItemAsync(objAccount);
-                                    }
+                                    await SecureStorage.SetAsync("lastUnbindAccount", string.Join("|", listDistinct));
+                                }
+                                else
+                                {
+                                    SecureStorage.Remove("lastUnbindAccount");
                                 }
                             }
-                            SecureStorage.Remove("lastUnbindAccount");
                         }
                     }
                 }
@@ -215,6 +196,7 @@ namespace MAUIMiniApp.ViewModels
                 {
                     timer.Enabled = true;
                 }
+
                 endTime = DateTime.Now.AddSeconds(30);
             }
             catch (Exception ex)
@@ -235,21 +217,21 @@ namespace MAUIMiniApp.ViewModels
             {
                 IsRefreshing = true;
 
+                await Task.Delay(100);
+
                 if (OTPItemList == null)
-                {
                     return;
-                }
 
                 if (OTPItemList.Count == 0)
-                {
                     return;
-                }
 
                 IsBusy = false;
+
                 if (!timer.Enabled)
                 {
                     timer.Enabled = true;
                 }
+
                 endTime = DateTime.Now;
                 OTPItemList = new ObservableCollection<OTPItem>();
             }
@@ -270,95 +252,118 @@ namespace MAUIMiniApp.ViewModels
             try
             {
                 SelectedOTP = obj;
-                if (obj != null)
+
+                if (obj == null)
+                    return;
+
+                var account = await AccountDatabase.GetItemByAccodeAsync(obj.Account);
+                if (account == null)
+                    return;
+
+                List<string> menuList = new List<string>
                 {
-                    var action = await Application.Current.MainPage.DisplayActionSheet(obj.Account, "Cancel", null, new string[] { "Copy", "Rename", "Remove", "Unbind" });
-                    if (!string.IsNullOrEmpty(action))
+                    "Copy", "Rename", "Remove", "Unbind"
+                };
+
+#if DEBUG
+                menuList.Add("Show QR Code");
+#endif
+
+                menuList.Sort();
+
+                var action = await Application.Current.MainPage.DisplayActionSheet(obj.Account, "Cancel", null, menuList.ToArray());
+                if (string.IsNullOrEmpty(action))
+                    return;
+
+                if (action == "Copy")
+                {
+                    await Clipboard.Default.SetTextAsync(obj.OTP);
+                    Toasts.Show(obj.OTP + " copied");
+                }
+                else if (action == "Remove")
+                {
+                    var remove = await App.AlertSvc.ShowConfirmationAsync("Remove Account", "Are you sure you want to remove account " + obj.Account, "Yes", "No");
+                    if (!remove)
+                        return;
+
+                    var resDelete = await AccountDatabase.DeleteItemAsync(account);
+                    if (resDelete == 1)
                     {
-                        if (action == "Copy")
-                        {
-                            await Clipboard.Default.SetTextAsync((string)obj.OTP);
-                            Toasts.Show(obj.OTP + " copied");
-                        }
-                        else if (action == "Remove")
-                        {
-                            var remove = await App.AlertSvc.ShowConfirmationAsync("Remove " + obj.Account, "Are you sure you want to remove account " + obj.Account, "Yes", "No");
-                            if (!remove)
-                            {
-                                return;
-                            }
+                        endTime = DateTime.Now;
+                    }
+                }
+                else if (action == "Rename")
+                {
 
-                            var account = await AccountDatabase.GetItemByAccodeAsync(obj.Account);
-                            if (account == null)
-                            {
-                                return;
-                            }
+                }
+                else if (action == "Unbind")
+                {
+                    string Lang = string.Empty;
 
-                            var resDelete = await AccountDatabase.DeleteItemAsync(account);
-                            if (resDelete == 1)
+                    var remove = await App.AlertSvc.ShowConfirmationAsync("Unbind Account", "Are you sure you want to unbind account " + obj.Account, "Yes", "No");
+                    if (!remove)
+                        return;
+
+                    var currCul = CultureInfo.InstalledUICulture;
+                    if (currCul.Name.Contains("zh"))
+                    {
+                        Lang = "ZH";
+                    }
+                    else
+                    {
+                        Lang = "EN";
+                    }
+
+                    IsBusy = true;
+
+                    var strLastUnbindAccount = await SecureStorage.GetAsync("lastUnbindAccount");
+                    if (!string.IsNullOrEmpty(strLastUnbindAccount))
+                    {
+                        List<string> lastUnbindAccountList = new List<string>
+                        {
+                            strLastUnbindAccount,
+                            obj.Account
+                        };
+                        await SecureStorage.SetAsync("lastUnbindAccount", string.Join("|", lastUnbindAccountList));
+                    }
+                    else
+                    {
+                        await SecureStorage.SetAsync("lastUnbindAccount", obj.Account);
+                    }
+
+                    Uri uri = new Uri(String.Format("https://cq2fa.cyberquote.com.hk/registration//Unbind?CompanyCode={0}&lang={1}&Accode={2}", account.CompanyCode, Lang, account.Accode));
+                    var boolBrowser = await Browser.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
+                    if (boolBrowser)
+                    {
+                        var resUnbind = await CQAuth.Delink(account, new ReqDelink { SysID = Convert.ToInt32(account.CompanyCode), Username = account.Accode });
+                        if (resUnbind != null)
+                        {
+                            if (resUnbind.data)
                             {
                                 endTime = DateTime.Now;
                             }
                         }
-                        else if (action == "Rename")
-                        {
-
-                        }
-                        else if (action == "Unbind")
-                        {
-                            string Lang = string.Empty;
-
-                            var remove = await App.AlertSvc.ShowConfirmationAsync("Unbind " + obj.Account, "Are you sure you want to unbind account " + obj.Account, "Yes", "No");
-                            if (!remove)
-                            {
-                                return;
-                            }
-
-                            var account = await AccountDatabase.GetItemByAccodeAsync(obj.Account);
-                            if (account == null)
-                            {
-                                return;
-                            }
-
-                            var currCul = CultureInfo.InstalledUICulture;
-                            if (currCul.Name.Contains("zh"))
-                            {
-                                Lang = "ZH";
-                            }
-                            else
-                            {
-                                Lang = "EN";
-                            }
-
-                            IsBusy = true;
-
-                            var strLastUnbindAccount = await SecureStorage.GetAsync("lastUnbindAccount");
-                            if (!string.IsNullOrEmpty(strLastUnbindAccount))
-                            {
-                                List<string> lastUnbindAccountList = new List<string>();
-                                lastUnbindAccountList.Add(strLastUnbindAccount);
-                                lastUnbindAccountList.Add(obj.Account);
-                                await SecureStorage.SetAsync("lastUnbindAccount", string.Join("|", lastUnbindAccountList));
-                            }
-                            else
-                            {
-                                await SecureStorage.SetAsync("lastUnbindAccount", obj.Account);
-                            }
-
-                            var resUnbind = await CQAuth.Delink(account, new ReqDelink { SysID = Convert.ToInt32(account.CompanyCode), Username = account.Accode });
-                            if (resUnbind != null)
-                            {
-                                if (resUnbind.data)
-                                {
-                                    endTime = DateTime.Now;
-                                }
-                            }
-                            //Uri uri = new Uri(String.Format("https://cq2fa.cyberquote.com.hk/registration//Unbind?CompanyCode={0}&lang={1}&Accode={2}", account.CompanyCode, Lang, account.Accode));
-                            //await Browser.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
-                        }
                     }
                 }
-                SelectedOTP = null;
+                else if (action == "Show QR Code")
+                {
+                    IsBusy = true;
+
+                    var resQRCode = await Controllers.CQAuth.GetQRCode(account, new Models.ReqGetQRCode { SysID = Convert.ToInt32(account.CompanyCode), Username = account.Accode });
+                    if (resQRCode == null)
+                        return;
+
+                    if (resQRCode.data == null)
+                        return;
+
+                    if (string.IsNullOrEmpty(resQRCode.data.Based64QRImg))
+                        return;
+
+                    IsBusy = false;
+
+                    var strSplit = resQRCode.data.Based64QRImg.Split("data:image/png; base64,");
+                    await Application.Current.MainPage.ShowPopupAsync(new YAP.Libs.Views.QRCodePage(YAP.Libs.Views.QRCodePage.QRCodeMode.Image, strSplit[1]));
+                }
             }
             catch (Exception ex)
             {
@@ -366,6 +371,7 @@ namespace MAUIMiniApp.ViewModels
             }
             finally
             {
+                SelectedOTP = null;
                 IsBusy = false;
             }
         }
@@ -386,21 +392,21 @@ namespace MAUIMiniApp.ViewModels
                 }
                 else
                 {
-                    if (!IsBusy)
+                    if (IsBusy)
+                        return;
+
+                    if (OTPItemList == null)
+                        return;
+
+                    if (OTPItemList.Count == 0)
+                        return;
+
+                    OTPItemList.Select(c =>
                     {
-                        if (OTPItemList != null)
-                        {
-                            if (OTPItemList.Count > 0)
-                            {
-                                OTPItemList.Select(c =>
-                                {
-                                    c.TimerClock = cTimerInt;
-                                    c.TimerColor = ProgressColor;
-                                    return c;
-                                }).ToList();
-                            }
-                        }
-                    }
+                        c.TimerClock = cTimerInt;
+                        c.TimerColor = ProgressColor;
+                        return c;
+                    }).ToList();
                 }
             }
             catch (Exception ex)

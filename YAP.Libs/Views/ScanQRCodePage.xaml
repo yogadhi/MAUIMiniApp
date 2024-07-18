@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
              xmlns:vm="clr-namespace:YAP.Libs.ViewModels"
+             xmlns:converter="clr-namespace:YAP.Libs.Converters;assembly=YAP.Libs"
              x:Class="YAP.Libs.Views.ScanQRCodePage"
              Title="Scan QR Code">
     <ContentPage.BindingContext>
@@ -21,7 +22,7 @@
               Padding="10,3"
               ColumnSpacing="5"
               ColumnDefinitions="Auto,*">
-            <ImageButton x:Name="btnBack" Grid.Column="0" HorizontalOptions="Center" VerticalOptions="Center" BackgroundColor="Transparent" Source="arrow_back_light.svg" CornerRadius="30" Clicked="btnBack_Clicked" />
+            <ImageButton x:Name="btnBack" Grid.Column="0" HorizontalOptions="Center" VerticalOptions="Center" BackgroundColor="Transparent" Source="{Binding Source=arrow_back_light.svg, Converter={converter:SVGToPNGConverter}}" CornerRadius="30" Clicked="btnBack_Clicked" />
             <Label Grid.Column="1" Text="Scan QR Code" FontSize="Title" HorizontalOptions="Start" VerticalOptions="Center" TextColor="White" />
         </Grid>
 
@@ -29,6 +30,6 @@
                VerticalOptions="CenterAndExpand" 
                Grid.Row="0" 
                Grid.RowSpan="3"
-               WidthRequest="250" HeightRequest="250" Source="scan_helper.svg"/>
+               WidthRequest="250" HeightRequest="250" Source="{Binding Source=scan_helper.svg, Converter={converter:SVGToPNGConverter}}"/>
     </Grid>
 </ContentPage>

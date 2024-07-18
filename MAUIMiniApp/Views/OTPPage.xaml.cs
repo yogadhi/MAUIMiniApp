@@ -22,31 +22,16 @@ public partial class OTPPage : ContentPage
             InitializeComponent();
             BindingContext = vm = new OTPViewModel(Navigation);
 
-            if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
+            if (Application.Current.UserAppTheme == AppTheme.Dark || Application.Current.UserAppTheme == AppTheme.Unspecified)
             {
-                btnAddAccount.IconImageSource = ImageSource.FromFile("add_light.png");
-
-                if (Application.Current.UserAppTheme == AppTheme.Dark || Application.Current.UserAppTheme == AppTheme.Unspecified)
-                {
-                    btnChangeTheme.IconImageSource = ImageSource.FromFile("light_mode.png");
-                }
-                else if (Application.Current.UserAppTheme == AppTheme.Light)
-                {
-                    btnChangeTheme.IconImageSource = ImageSource.FromFile("dark_mode.png");
-                }
+                btnChangeTheme.IconImageSource = ImageSource.FromFile(YAP.Libs.Converters.SVGToPNGConverter.ConvertSVGToPNG("light_mode.svg"));
+            }
+            else if (Application.Current.UserAppTheme == AppTheme.Light)
+            {
+                btnChangeTheme.IconImageSource = ImageSource.FromFile(YAP.Libs.Converters.SVGToPNGConverter.ConvertSVGToPNG("dark_mode.svg"));
             }
 
-#if DEBUG
-            ToolbarItem item = new ToolbarItem
-            {
-                Text = "Show QR Code",
-                IconImageSource = ImageSource.FromFile(DeviceInfo.Current.Platform == DevicePlatform.WinUI ? "qr_code_light.png" : "qr_code_light.svg")
-            };
-            item.Clicked += btnShowQRCode_Clicked;
-            this.ToolbarItems.Add(item);
-#endif
-
-            WeakReferenceMessenger.Default.Register<MyMessage>(this, async (r, m) =>
+            WeakReferenceMessenger.Default.Register<MyMessage>(this, (r, m) =>
             {
                 if (m.Value != null)
                 {
@@ -108,11 +93,11 @@ public partial class OTPPage : ContentPage
         }
     }
 
-    private async void btnAddAccount_Clicked(object sender, EventArgs e)
+    private void btnAddAccount_Clicked(object sender, EventArgs e)
     {
         try
         {
-            
+
 
             if (App.IsPopUpShow) { return; }
             MainThread.BeginInvokeOnMainThread(async () => { await Application.Current.MainPage.ShowPopupAsync(new NewAccountPage()); });
@@ -129,13 +114,13 @@ public partial class OTPPage : ContentPage
         {
             if (Application.Current.UserAppTheme == AppTheme.Dark || Application.Current.UserAppTheme == AppTheme.Unspecified)
             {
-                btnChangeTheme.IconImageSource = ImageSource.FromFile("dark_mode.png");
+                btnChangeTheme.IconImageSource = ImageSource.FromFile(YAP.Libs.Converters.SVGToPNGConverter.ConvertSVGToPNG("dark_mode.png"));
                 Application.Current.UserAppTheme = AppTheme.Light;
                 await SecureStorage.SetAsync("userAppTheme", "Light");
             }
             else if (Application.Current.UserAppTheme == AppTheme.Light)
             {
-                btnChangeTheme.IconImageSource = ImageSource.FromFile("light_mode.png");
+                btnChangeTheme.IconImageSource = ImageSource.FromFile(YAP.Libs.Converters.SVGToPNGConverter.ConvertSVGToPNG("light_mode.png"));
                 Application.Current.UserAppTheme = AppTheme.Dark;
                 await SecureStorage.SetAsync("userAppTheme", "Dark");
             }
@@ -165,18 +150,19 @@ public partial class OTPPage : ContentPage
         try
         {
             vm.IsBusy = true;
+
             var resQRCode = await Controllers.CQAuth.GetQRCode(new Models.Account { Accode = "ASDFGH", CompanyCode = "1" }, new Models.ReqGetQRCode { SysID = 1, Username = "ASDFGH" });
-            if (resQRCode != null)
-            {
-                if (resQRCode.data != null)
-                {
-                    if (!string.IsNullOrEmpty(resQRCode.data.Based64QRImg))
-                    {
-                        var strSplit = resQRCode.data.Based64QRImg.Split("data:image/png; base64,");
-                        await Application.Current.MainPage.ShowPopupAsync(new YAP.Libs.Views.QRCodePage(YAP.Libs.Views.QRCodePage.QRCodeMode.Image, strSplit[1]));
-                    }
-                }
-            }
+            if (resQRCode == null)
+                return;
+
+            if (resQRCode.data == null)
+                return;
+
+            if (!string.IsNullOrEmpty(resQRCode.data.Based64QRImg))
+                return;
+
+            var strSplit = resQRCode.data.Based64QRImg.Split("data:image/png; base64,");
+            await Application.Current.MainPage.ShowPopupAsync(new YAP.Libs.Views.QRCodePage(YAP.Libs.Views.QRCodePage.QRCodeMode.Image, strSplit[1]));
         }
         catch (Exception ex)
         {

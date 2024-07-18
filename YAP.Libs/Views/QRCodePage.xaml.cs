@@ -16,7 +16,7 @@ public partial class QRCodePage : Popup
         try
         {
             InitializeComponent();
-            Globals.InitPopUpPageDisplay(mainFrame, this, btnClose, true);
+            Globals.InitPopUpPageDisplay(mainFrame, this, true);
 
             if (mode == QRCodeMode.Image)
             {

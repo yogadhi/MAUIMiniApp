@@ -61,10 +61,12 @@ namespace MAUIMiniApp.ViewModels
             {
                 IsBusy = true;
 
-                List<string> allFieldList = new List<string>();
-                allFieldList.Add(AccountNo);
-                allFieldList.Add(CompanyCode);
-                allFieldList.Add(SecretKey);
+                List<string> allFieldList = new List<string>
+                {
+                    AccountNo,
+                    CompanyCode,
+                    SecretKey
+                };
 
                 if (allFieldList.Any(x => string.IsNullOrEmpty(x)))
                 {

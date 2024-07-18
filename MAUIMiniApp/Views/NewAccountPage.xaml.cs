@@ -19,13 +19,7 @@ public partial class NewAccountPage : Popup
             InitializeComponent();
             BindingContext = vm = new NewAccountViewModel(Application.Current.MainPage.Navigation);
 
-            Globals.InitPopUpPageDisplay(mainFrame, this, btnClose, false);
-
-            if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
-            {
-                btnAddAccount.ImageSource = ImageSource.FromFile("person_add_light.png");
-                btnScanQRCode.ImageSource = ImageSource.FromFile("qr_code_scanner.png");
-            }
+            Globals.InitPopUpPageDisplay(mainFrame, this, false);
 
             txtCompanyCode.TextChanged += Globals.NumericOnly_TextChanged;
             txtAccountNo.TextChanged += Globals.AlphabetOnly_TextChanged;

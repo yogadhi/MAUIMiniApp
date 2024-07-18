@@ -23,7 +23,7 @@
             
             <Grid Grid.Row="0" Grid.Column="0" HorizontalOptions="FillAndExpand" VerticalOptions="Start" Padding="10,5" ColumnDefinitions="*,Auto" BackgroundColor="{StaticResource Primary}">
                 <Label Text="{x:Static resx:AppResources.New_Account_Title}" Grid.Column="0" TextColor="White" FontAttributes="Bold" FontSize="20" VerticalOptions="Center"/>
-                <ImageButton x:Name="btnClose" Grid.Column="1" HorizontalOptions="End" VerticalOptions="Center" BackgroundColor="Transparent" Source="close_light.svg" CornerRadius="30" Clicked="btnClose_Clicked" />
+                <ImageButton x:Name="btnClose" Grid.Column="1" HorizontalOptions="End" VerticalOptions="Center" BackgroundColor="Transparent" Source="{Binding Source=close_light.svg, Converter={converter:SVGToPNGConverter}}" CornerRadius="30" Clicked="btnClose_Clicked" />
             </Grid>
 
             <VerticalStackLayout Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" IsVisible="{Binding IsBusy}">
@@ -62,13 +62,13 @@
                         Grid.Column="0"
                         BackgroundColor="{AppThemeBinding Light=Transparent, Dark={StaticResource White}}"
                         TextColor="{StaticResource Primary}"
-                        ImageSource="qr_code_scanner.svg"
+                        ImageSource="{Binding Source=qr_code_scanner.svg, Converter={converter:SVGToPNGConverter}}"
                         HorizontalOptions="FillAndExpand"
                         x:Name="btnScanQRCode"
                         Clicked="btnScanQRCode_Clicked"/>
                 <Button Text="{x:Static resx:AppResources.Btn_Add_Manual}"
                         Grid.Column="1"
-                        ImageSource="person_add_light.svg"
+                        ImageSource="{Binding Source=person_add_light.svg, Converter={converter:SVGToPNGConverter}}"
                         HorizontalOptions="FillAndExpand"
                         x:Name="btnAddAccount"
                         Command="{Binding AddNewAccountCommand}"/>
