@@ -162,6 +162,7 @@ namespace MAUIMiniApp.Controllers
                 {
                     if (resBind == "1")
                     {
+                        input.SecretKey = YAP.Libs.Helpers.Globals.EncryptString(input.SecretKey, YAP.Libs.Helpers.Globals.Salt(input.CompanyCode));
                         var resSave = await AccountDatabase.SaveItemAsync(input);
                         return resSave == 1;
                     }
@@ -270,6 +271,45 @@ namespace MAUIMiniApp.Controllers
             catch (Exception ex)
             {
                 Log.Write(Log.LogEnum.Error, nameof(ViewUser), ex);
+                return res;
+            }
+        }
+
+        public static async Task<ResAuthenticateOTP> AuthenticateOTP(Account account, ReqAuthenticateOTP input)
+        {
+            ResAuthenticateOTP res = null;
+
+            try
+            {
+                if (account == null)
+                {
+                    return res;
+                }
+
+                if (input == null) 
+                {
+                    return res;
+                }
+
+                var resAuth = await GetToken(account);
+                if (string.IsNullOrEmpty(resAuth))
+                {
+                    return res;
+                }
+
+                var jsonRequest = JsonConvert.SerializeObject(input);
+                var resStr = await RESTAPI.POST(1, Helpers.Constants.APIUrl, "Authenticate", jsonRequest, resAuth);
+                if (!string.IsNullOrEmpty(resStr))
+                {
+                    res = new ResAuthenticateOTP();
+                    res = JsonConvert.DeserializeObject<ResAuthenticateOTP>(resStr);
+                }
+
+                return res;
+            }
+            catch (Exception ex)
+            {
+                Log.Write(Log.LogEnum.Error, nameof(AuthenticateOTP), ex);
                 return res;
             }
         }

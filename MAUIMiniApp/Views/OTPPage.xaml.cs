@@ -97,8 +97,6 @@ public partial class OTPPage : ContentPage
     {
         try
         {
-
-
             if (App.IsPopUpShow) { return; }
             MainThread.BeginInvokeOnMainThread(async () => { await Application.Current.MainPage.ShowPopupAsync(new NewAccountPage()); });
         }

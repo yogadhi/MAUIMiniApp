@@ -12,6 +12,7 @@ using MAUIMiniApp.Data;
 using System;
 using System.Globalization;
 using MAUIMiniApp.Controllers;
+using YAP.Libs.Helpers;
 
 namespace MAUIMiniApp.ViewModels
 {
@@ -184,12 +185,22 @@ namespace MAUIMiniApp.ViewModels
 
                 foreach (var index in resList)
                 {
+                    var privateKey = Globals.DecryptString(index.SecretKey, Globals.Salt(index.CompanyCode));
+                    var originalKey = Globals.Base32Decode(privateKey);
+                    var newKey = Globals.PSPLConstructKey(originalKey, index.Accode.ToUpper(), index.CompanyCode.ToUpper());
+                    var otp = Globals.GetFuturePIN(newKey);
+
                     OTPItemList.Add(new OTPItem
                     {
                         Account = index.Accode,
                         SecretKey = index.SecretKey,
-                        OTP = YAP.Libs.Helpers.Globals.GetFuturePIN(index.SecretKey),
+                        OTP = otp,
                     });
+
+                    //var resAuthOTP = await CQAuth.AuthenticateOTP(new Account { Accode = index.Accode, CompanyCode = index.CompanyCode }, new ReqAuthenticateOTP { SysID = Convert.ToInt32(index.CompanyCode), Username = index.Accode, OTP = otp });
+                    //if (resAuthOTP != null)
+                    //{
+                    //}
                 }
 
                 if (!timer.Enabled)
@@ -401,10 +412,13 @@ namespace MAUIMiniApp.ViewModels
                     if (OTPItemList.Count == 0)
                         return;
 
+                    double progress = ((double)cTimerInt / 30) * 100;
+
                     OTPItemList.Select(c =>
                     {
                         c.TimerClock = cTimerInt;
                         c.TimerColor = ProgressColor;
+                        c.TimerProgress = progress;
                         return c;
                     }).ToList();
                 }
@@ -453,7 +467,7 @@ namespace MAUIMiniApp.ViewModels
                             var companyCode = strSplitZero[2].Split("companycode=")[1];
 
                             var secretKey = strSplitZero[0].Split("secret=")[1];
-                            if (String.IsNullOrEmpty(YAP.Libs.Helpers.Globals.Base32Decode(secretKey)))
+                            if (String.IsNullOrEmpty(Globals.Base32Decode(secretKey)))
                             {
                                 Toasts.Show(Resources.Strings.AppResources.Wrong_QRCode_Format);
                                 return;

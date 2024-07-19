@@ -63,5 +63,19 @@ namespace MAUIMiniApp.Models
             get => _SecretKey;
             set => SetProperty(ref _SecretKey, value);
         }
+
+        double _TimerProgress = 0;
+        public double TimerProgress
+        {
+            get { return _TimerProgress; }
+            set
+            {
+                if (_TimerProgress != value)
+                {
+                    _TimerProgress = value;
+                    OnPropertyChanged("TimerProgress");
+                }
+            }
+        }
     }
 }

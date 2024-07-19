@@ -385,6 +385,234 @@ namespace YAP.Libs.Helpers
 
             return hmac;
         }
+
+        public static string Salt(string val)
+        {
+            List<char> module = new List<char>()
+            {
+                '!', '@', '#', '$', '%', '^', '&', '*',
+                '9', '8', '7', '6', '5', '4', '3', '2'
+            };
+
+            string value = "";
+            foreach (char c in val.ToCharArray())
+                value += c + "-";
+            string result = value;
+
+            if (value.Length > 16)
+            {
+                var idx = value.Length - 16;
+                var splitStr = value.Split(new string[] { value.Substring(idx, idx) }, StringSplitOptions.None);
+                result = splitStr[0] + splitStr[1];
+            }
+            else if (value.Length < 16)
+            {
+                var addValue = "";
+                var add = 16 - value.Length;
+                for (int i = 0; i < add; i++)
+                {
+                    addValue += module[i];
+                }
+                result = addValue + value;
+            }
+
+            return result;
+        }
+
+        public static string EncryptString(string Value, string Key)
+        {
+            string Passphrase = Salt(Key);
+            var keybytes = Encoding.UTF8.GetBytes(Passphrase);
+            var iv = Encoding.UTF8.GetBytes(Passphrase);
+
+            var encryptedFromJavascript = EncryptStringToBytes(Value, keybytes, iv);
+            string base64String = Convert.ToBase64String(encryptedFromJavascript, 0, encryptedFromJavascript.Length);
+            return base64String;
+        }
+
+        private static byte[] EncryptStringToBytes(string plainText, byte[] key, byte[] iv)
+        {
+            // Check arguments.  
+            if (plainText == null || plainText.Length <= 0)
+            {
+                return null;
+            }
+            if (key == null || key.Length <= 0)
+            {
+                return null;
+            }
+            if (iv == null || iv.Length <= 0)
+            {
+                return null;
+            }
+            byte[] encrypted;
+            // Create a RijndaelManaged object  
+            // with the specified key and IV.  
+            using (var rijAlg = new RijndaelManaged())
+            {
+                rijAlg.Mode = CipherMode.CBC;
+                rijAlg.Padding = PaddingMode.PKCS7;
+                rijAlg.FeedbackSize = 128;
+
+                rijAlg.Key = key;
+                rijAlg.IV = iv;
+
+                // Create a decrytor to perform the stream transform.  
+                var encryptor = rijAlg.CreateEncryptor(rijAlg.Key, rijAlg.IV);
+
+                // Create the streams used for encryption.  
+                using (var msEncrypt = new MemoryStream())
+                {
+                    using (var csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                    {
+                        using (var swEncrypt = new StreamWriter(csEncrypt))
+                        {
+                            //Write all data to the stream.  
+                            swEncrypt.Write(plainText);
+                        }
+                        encrypted = msEncrypt.ToArray();
+                    }
+                }
+            }
+            // Return the encrypted bytes from the memory stream.  
+            return encrypted;
+        }
+
+        public static string DecryptString(string encryptedValue, string Key)
+        {
+            try
+            {
+                string Passphrase = Salt(Key);
+                var keybytes = Encoding.UTF8.GetBytes(Passphrase);
+                var iv = Encoding.UTF8.GetBytes(Passphrase);
+
+                //DECRYPT FROM CRIPTOJS
+                var encrypted = Convert.FromBase64String(encryptedValue);
+                var decriptedFromJavascript = DecryptStringFromBytes(encrypted, keybytes, iv);
+
+                return decriptedFromJavascript;
+            }
+            catch (Exception ex)
+            {
+                return string.Empty;
+            }
+        }
+
+        private static string DecryptStringFromBytes(byte[] cipherText, byte[] key, byte[] iv)
+        {
+            // Check arguments.
+            if (cipherText == null || cipherText.Length <= 0)
+            {
+                return string.Empty;
+            }
+            if (key == null || key.Length <= 0)
+            {
+                return string.Empty;
+            }
+            if (iv == null || iv.Length <= 0)
+            {
+                return string.Empty;
+            }
+
+            // Declare the string used to hold
+            // the decrypted text.
+            string plaintext = null;
+
+            // Create an RijndaelManaged object
+            // with the specified key and IV.
+            using (var rijAlg = new RijndaelManaged())
+            {
+                //Settings
+                rijAlg.Mode = CipherMode.CBC;
+                rijAlg.Padding = PaddingMode.PKCS7;
+                rijAlg.FeedbackSize = 128;
+
+                rijAlg.Key = key;
+                rijAlg.IV = iv;
+
+                // Create a decrytor to perform the stream transform.
+                var decryptor = rijAlg.CreateDecryptor(rijAlg.Key, rijAlg.IV);
+
+                // Create the streams used for decryption.
+                using (var msDecrypt = new MemoryStream(cipherText))
+                {
+                    using (var csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+                    {
+                        using (var srDecrypt = new StreamReader(csDecrypt))
+                        {
+                            // Read the decrypted bytes from the decrypting stream
+                            // and place them in a string.
+                            plaintext = srDecrypt.ReadToEnd();
+                        }
+                    }
+                }
+            }
+
+            return plaintext;
+        }
+
+        public static string PSPLConstructKey(string key, string username, string prefix)
+        {
+            string final = "";
+            try
+            {
+                prefix = Salt(prefix);
+                string result = key + "$" + username + "@" + prefix;
+                final = EncodeAccountSecretKey(result);
+                string encFinal = EncodeAccountSecretKey(final);
+            }
+            catch (Exception ex)
+            {
+               
+            }
+            return final;
+        }
+
+        internal static string EncodeAccountSecretKey(string accountSecretKey)
+        {
+            return Base32Encode(Encoding.UTF8.GetBytes(accountSecretKey));
+        }
+
+        private static string Base32Encode(byte[] data)
+        {
+            int inByteSize = 8;
+            int outByteSize = 5;
+            char[] alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567".ToCharArray();
+
+            int i = 0, index = 0, digit;
+            int current_byte, next_byte;
+            StringBuilder result = new StringBuilder((data.Length + 7) * inByteSize / outByteSize);
+
+            while (i < data.Length)
+            {
+                current_byte = (data[i] >= 0) ? data[i] : (data[i] + 256); // Unsign
+
+                /* Is the current digit going to span a byte boundary? */
+                if (index > (inByteSize - outByteSize))
+                {
+                    if ((i + 1) < data.Length)
+                        next_byte = (data[i + 1] >= 0) ? data[i + 1] : (data[i + 1] + 256);
+                    else
+                        next_byte = 0;
+
+                    digit = current_byte & (0xFF >> index);
+                    index = (index + outByteSize) % inByteSize;
+                    digit <<= index;
+                    digit |= next_byte >> (inByteSize - index);
+                    i++;
+                }
+                else
+                {
+                    digit = (current_byte >> (inByteSize - (index + outByteSize))) & 0x1F;
+                    index = (index + outByteSize) % inByteSize;
+                    if (index == 0)
+                        i++;
+                }
+                result.Append(alphabet[digit]);
+            }
+
+            return result.ToString();
+        }
         #endregion
     }
 }

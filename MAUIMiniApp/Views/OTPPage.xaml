@@ -4,7 +4,7 @@
              xmlns:vm="clr-namespace:MAUIMiniApp.ViewModels"
              xmlns:converter="clr-namespace:YAP.Libs.Converters;assembly=YAP.Libs"
              xmlns:pinview="clr-namespace:PINView.Maui;assembly=PINView.Maui"
-             xmlns:control="clr-namespace:YAP.Libs.Views;assembly=YAP.Libs"
+             xmlns:controls="clr-namespace:YAP.Libs.Controls;assembly=YAP.Libs"
              xmlns:resx="clr-namespace:MAUIMiniApp.Resources.Strings"
              x:Class="MAUIMiniApp.Views.OTPPage"
              Loaded="OTPPage_Loaded"
@@ -86,8 +86,20 @@
                                           Margin="5"
                                           RowDefinitions="Auto"
                                           ColumnDefinitions="Auto">
+                                        <controls:RadialProgressBarControl x:Name="RadialProgressBar"
+                                                                           Grid.Column="0"
+                                                                           Grid.Row="0"
+                                                                           BarBackgroundColor="{Binding TimerColor}"
+                                                                           BarThickness="1"
+                                                                           FontSize="48"
+                                                                           HorizontalOptions="Center"
+                                                                           VerticalOptions="Center"
+                                                                           HeightRequest="50"
+                                                                           WidthRequest="50"
+                                                                           Progress="{Binding TimerProgress}"
+                                                                           TextColor="black"/>
                                         <Label Grid.Row="0" Grid.Column="0" HorizontalOptions="Center" VerticalOptions="Center" Text="{Binding TimerClock}" FontSize="20"/>
-                                        <ActivityIndicator IsRunning="True" Grid.Row="0" Grid.Column="0" HeightRequest="50" WidthRequest="50" Color="{Binding TimerColor}" />
+                                        <!--<ActivityIndicator IsRunning="True" Grid.Row="0" Grid.Column="0" HeightRequest="50" WidthRequest="50" Color="{Binding TimerColor}" />-->
                                     </Grid>
                                 </Grid>
                             </Grid>
