@@ -17,7 +17,7 @@ namespace YAP.Libs.Logger
             Log = 2
         }
 
-        public static async void Write(LogEnum logEnum, string functionName, object input)
+        public static void Write(LogEnum logEnum, string functionName, object input)
         {
             string message = functionName + " - ";
             string fileName = logEnum.ToString() + "_" + DateTime.Now.ToString("yyyyMMdd") + ".txt";
@@ -48,23 +48,24 @@ mainPath = Android.App.Application.Context.GetExternalFilesDir("").AbsolutePath;
 
             targetFile = Path.Combine(mainPath, fileName);
 
-            //FileStream outputStream = File.OpenWrite(targetFile);
-            //using StreamWriter streamWriter = new StreamWriter(outputStream);
-            //await streamWriter.WriteAsync(message);
+
 
             if (File.Exists(targetFile))
             {
-                using (StreamWriter sw = File.AppendText(targetFile))
+                using (FileStream fs = new FileStream(targetFile, FileMode.Append, FileAccess.Write))
+                using (StreamWriter sw = new StreamWriter(fs))
                 {
-                    await sw.WriteLineAsync(message);
+                    sw.WriteLine(message);
                 }
             }
             else
             {
-                using (StreamWriter sw = File.CreateText(targetFile))
-                {
-                    await sw.WriteLineAsync(message);
-                }
+                //MainThread.BeginInvokeOnMainThread(async () =>
+                //{
+                FileStream outputStream = File.OpenWrite(targetFile);
+                using StreamWriter streamWriter = new StreamWriter(outputStream);
+                streamWriter.Write(message);
+                //});
             }
         }
 
