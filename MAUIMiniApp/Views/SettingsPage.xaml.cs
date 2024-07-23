@@ -13,13 +13,13 @@ public partial class SettingsPage : ContentPage
 
         //if (await App.AlertSvc.ShowConfirmationAsync("Are you sure?", "You will be logged out.", "Yes", "No"))
         //{
-        //    SecureStorage.RemoveAll();
+        //    Preferences.Default.Clear();
         //    await Shell.Current.GoToAsync("///login");
         //}
 
         //if(await DisplayAlert("Are you sure?", "You will be logged out.", "Yes", "No"))
         //{
-        //    SecureStorage.RemoveAll();
+        //    Preferences.Default.Clear();
         //    await Shell.Current.GoToAsync("///login");
         //}
     }

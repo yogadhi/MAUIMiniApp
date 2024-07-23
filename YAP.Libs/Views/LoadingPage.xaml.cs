@@ -31,12 +31,15 @@ public partial class LoadingPage : ContentPage
     {
         try
         {
-//#if DEBUG
-//            SecureStorage.RemoveAll();
-//#endif
+            //#if DEBUG
+            //            Preferences.Default.Clear();
+            //#endif
 
             //hardcoded because CQ Auth no need login page
-            await SecureStorage.SetAsync("hasAuth", "true");
+            Log.Write(Log.LogEnum.Error, nameof(OnAppearing), "test logger");
+            //var logs = Log.ReadLogs();
+
+            Preferences.Default.Set("hasAuth", true);
 
             if (await isAuthenticated())
             {
@@ -69,7 +72,10 @@ public partial class LoadingPage : ContentPage
             }
             else
             {
-                Application.Current.MainPage = new LoginPage(RootItem);
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    Application.Current.MainPage = new LoginPage(RootItem);
+                });
             }
         }
         catch (Exception ex)
@@ -83,8 +89,8 @@ public partial class LoadingPage : ContentPage
         try
         {
             await Task.Delay(1000);
-            var hasAuth = await SecureStorage.GetAsync("hasAuth");
-            return !(hasAuth == null);
+            var hasAuth = Preferences.Default.Get("hasAuth", false);
+            return !(hasAuth == false);
         }
         catch (Exception ex)
         {

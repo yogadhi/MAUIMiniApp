@@ -93,9 +93,9 @@ namespace YAP.Libs.ViewModels
                 if (Username == "admin" && Password == "123456")
                 {
                     Toasts.Show("Login success");
-                    await SecureStorage.SetAsync("hasAuth", "true");
+                    Preferences.Default.Set("hasAuth", true);
 
-                    var hasAcceptToS = await SecureStorage.GetAsync("hasAcceptToS");
+                    var hasAcceptToS = Preferences.Default.Get("hasAcceptToS", "");
                     if (string.IsNullOrEmpty(hasAcceptToS))
                     {
                         WeakReferenceMessenger.Default.Send(new MyMessage(new MessageContainer { Key = "hasAcceptToS" }));

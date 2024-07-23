@@ -64,7 +64,7 @@ public partial class OTPPage : ContentPage
     {
         try
         {
-            var hasAcceptToS = await SecureStorage.GetAsync("hasAcceptToS");
+            var hasAcceptToS = Preferences.Default.Get("hasAcceptToS", "");
             if (string.IsNullOrEmpty(hasAcceptToS))
             {
                 await YAP.Libs.Helpers.NavigationServices.PushModalAsync(Navigation, new ToSPage());
@@ -74,9 +74,13 @@ public partial class OTPPage : ContentPage
                 vm.endTime = DateTime.Now;
                 vm.timer.Start();
             }
+
+            //var log = await Log.ReadTextFile(Log.LogEnum.Error, "");
+            //await App.AlertSvc.ShowAlertAsync("CQ Authenticator", log);
         }
         catch (Exception ex)
         {
+            Toasts.Show(ex.StackTrace);
             Log.Write(Log.LogEnum.Error, nameof(OTPPage_Loaded), ex);
         }
     }
@@ -106,7 +110,7 @@ public partial class OTPPage : ContentPage
         }
     }
 
-    private async void btnChangeTheme_Clicked(object sender, EventArgs e)
+    private void btnChangeTheme_Clicked(object sender, EventArgs e)
     {
         try
         {
@@ -114,13 +118,13 @@ public partial class OTPPage : ContentPage
             {
                 btnChangeTheme.IconImageSource = ImageSource.FromFile(YAP.Libs.Converters.SVGToPNGConverter.ConvertSVGToPNG("dark_mode.png"));
                 Application.Current.UserAppTheme = AppTheme.Light;
-                await SecureStorage.SetAsync("userAppTheme", "Light");
+                Preferences.Default.Set("userAppTheme", "Light");
             }
             else if (Application.Current.UserAppTheme == AppTheme.Light)
             {
                 btnChangeTheme.IconImageSource = ImageSource.FromFile(YAP.Libs.Converters.SVGToPNGConverter.ConvertSVGToPNG("light_mode.png"));
                 Application.Current.UserAppTheme = AppTheme.Dark;
-                await SecureStorage.SetAsync("userAppTheme", "Dark");
+                Preferences.Default.Set("userAppTheme", "Dark");
             }
         }
         catch (Exception ex)

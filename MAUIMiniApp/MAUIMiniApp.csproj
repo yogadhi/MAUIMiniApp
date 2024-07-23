@@ -34,27 +34,32 @@
 		<ApplicationDisplayVersion>1.0.0</ApplicationDisplayVersion>
 		<ApplicationId>com.yap.mauiminiapp</ApplicationId>
 		<MtouchLink>SdkOnly</MtouchLink>
+		<ApplicationTitle>CQ Authenticator</ApplicationTitle>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-maccatalyst|AnyCPU'">
 		<ApplicationDisplayVersion>1.0.0</ApplicationDisplayVersion>
 		<ApplicationId>com.yap.mauiminiapp</ApplicationId>
+		<ApplicationTitle>CQ Authenticator</ApplicationTitle>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-android33.0|AnyCPU'">
 		<ApplicationDisplayVersion>1.0.0</ApplicationDisplayVersion>
 		<ApplicationId>com.yap.mauiminiapp</ApplicationId>
 		<AndroidEnableMultiDex>False</AndroidEnableMultiDex>
+		<ApplicationTitle>CQ Authenticator</ApplicationTitle>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-ios|AnyCPU'">
 		<ApplicationDisplayVersion>1.0.0</ApplicationDisplayVersion>
 		<ApplicationId>com.yap.mauiminiapp</ApplicationId>
+		<ApplicationTitle>CQ Authenticator</ApplicationTitle>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-maccatalyst|AnyCPU'">
 		<ApplicationDisplayVersion>1.0.0</ApplicationDisplayVersion>
 		<ApplicationId>com.yap.mauiminiapp</ApplicationId>
+		<ApplicationTitle>CQ Authenticator</ApplicationTitle>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-android33.0|AnyCPU'">
@@ -64,6 +69,7 @@
 		<ApplicationId>com.yap.mauiminiapp</ApplicationId>
 		<AndroidEnableMultiDex>False</AndroidEnableMultiDex>
 		<PublishTrimmed>True</PublishTrimmed>
+		<ApplicationTitle>CQ Authenticator</ApplicationTitle>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -73,9 +79,20 @@
 		<DefaultLanguage>en-us</DefaultLanguage>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-windows10.0.22621.0|AnyCPU'">
+	  <ApplicationTitle>CQ Authenticator</ApplicationTitle>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-windows10.0.22621.0|AnyCPU'">
+	  <ApplicationTitle>CQ Authenticator</ApplicationTitle>
+	</PropertyGroup>
+
 	<ItemGroup>
-		<!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appicon.svg" Color="transparent" />
+		<!-- App Icon for all platforms-->
+		<MauiIcon Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'" Include="Resources\AppIcon\appicon.svg" Color="transparent" />
+
+		<!-- App icon for Android -->
+		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundScale="0.4" Color="white" />
 
 		<!-- Splash Screen -->
 		<MauiSplashScreen Include="Resources\Splash\splashscreen.svg" Color="#303F9F" BaseSize="128,128" />
@@ -123,34 +140,36 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Resource Include="Platforms\Android\Resources\xml\auto_backup_rules.xml" />
+		<EmbeddedResource Include="Platforms\Android\Resources\xml\auto_backup_rules.xml">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</EmbeddedResource>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="Platforms\MacCatalyst\GetDeviceInfo.cs">
-	    <ExcludeFromCurrentConfiguration>true</ExcludeFromCurrentConfiguration>
-	  </Compile>
-	  <Compile Update="Platforms\Tizen\GetDeviceInfo.cs">
-	    <ExcludeFromCurrentConfiguration>false</ExcludeFromCurrentConfiguration>
-	  </Compile>
-	  <Compile Update="Platforms\Windows\GetDeviceInfo.cs">
-	    <ExcludeFromCurrentConfiguration>false</ExcludeFromCurrentConfiguration>
-	  </Compile>
-	  <Compile Update="Resources\Strings\AppResources.Designer.cs">
-	    <DesignTime>True</DesignTime>
-	    <AutoGen>True</AutoGen>
-	    <DependentUpon>AppResources.resx</DependentUpon>
-	  </Compile>
+		<Compile Update="Platforms\MacCatalyst\GetDeviceInfo.cs">
+			<ExcludeFromCurrentConfiguration>true</ExcludeFromCurrentConfiguration>
+		</Compile>
+		<Compile Update="Platforms\Tizen\GetDeviceInfo.cs">
+			<ExcludeFromCurrentConfiguration>false</ExcludeFromCurrentConfiguration>
+		</Compile>
+		<Compile Update="Platforms\Windows\GetDeviceInfo.cs">
+			<ExcludeFromCurrentConfiguration>false</ExcludeFromCurrentConfiguration>
+		</Compile>
+		<Compile Update="Resources\Strings\AppResources.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>AppResources.resx</DependentUpon>
+		</Compile>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <EmbeddedResource Update="Resources\Strings\AppResources.resx">
-	    <Generator>PublicResXFileCodeGenerator</Generator>
-	    <LastGenOutput>AppResources.Designer.cs</LastGenOutput>
-	  </EmbeddedResource>
-	  <EmbeddedResource Update="Resources\Strings\AppResources.zh.resx">
-	    <Generator>PublicResXFileCodeGenerator</Generator>
-	  </EmbeddedResource>
+		<EmbeddedResource Update="Resources\Strings\AppResources.resx">
+			<Generator>PublicResXFileCodeGenerator</Generator>
+			<LastGenOutput>AppResources.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+		<EmbeddedResource Update="Resources\Strings\AppResources.zh.resx">
+			<Generator>PublicResXFileCodeGenerator</Generator>
+		</EmbeddedResource>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -161,7 +180,7 @@
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="Views\NewAccountPage.xaml">
-		  <Generator>MSBuild:Compile</Generator>
+			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="Views\OTPPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
@@ -172,10 +191,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Update="Resources\Images\icon_cqauth.png">
-	    <Pack>True</Pack>
-	    <PackagePath>\</PackagePath>
-	  </None>
+		<None Update="Resources\AppIcon\appicon.svg">
+		  <Pack>True</Pack>
+		  <PackagePath>\</PackagePath>
+		</None>
+		<None Update="Resources\Images\icon_cqauth.png">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
 	</ItemGroup>
 
 </Project>

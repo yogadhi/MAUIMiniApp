@@ -68,25 +68,22 @@ namespace YAP.Libs.Helpers
         {
             try
             {
-                MainThread.BeginInvokeOnMainThread(async () =>
+                var userAppTheme = Preferences.Default.Get("userAppTheme", "");
+                if (!string.IsNullOrEmpty(userAppTheme))
                 {
-                    var userAppTheme = await SecureStorage.GetAsync("userAppTheme");
-                    if (!string.IsNullOrEmpty(userAppTheme))
+                    if (userAppTheme == "Dark")
                     {
-                        if (userAppTheme == "Dark")
-                        {
-                            Application.Current.UserAppTheme = AppTheme.Dark;
-                        }
-                        else if (userAppTheme == "Light")
-                        {
-                            Application.Current.UserAppTheme = AppTheme.Light;
-                        }
+                        Application.Current.UserAppTheme = AppTheme.Dark;
                     }
-                    else
+                    else if (userAppTheme == "Light")
                     {
-                        Application.Current.UserAppTheme = Application.Current.PlatformAppTheme;
+                        Application.Current.UserAppTheme = AppTheme.Light;
                     }
-                });
+                }
+                else
+                {
+                    Application.Current.UserAppTheme = Application.Current.PlatformAppTheme;
+                }
                 return true;
             }
             catch (Exception ex)
@@ -563,7 +560,7 @@ namespace YAP.Libs.Helpers
             }
             catch (Exception ex)
             {
-               
+
             }
             return final;
         }

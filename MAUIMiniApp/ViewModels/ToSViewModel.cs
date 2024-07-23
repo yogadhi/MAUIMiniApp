@@ -47,7 +47,7 @@ namespace MAUIMiniApp.ViewModels
         {
             try
             {
-                await SecureStorage.SetAsync("hasAcceptToS", "true");
+                Preferences.Default.Set("hasAcceptToS", "true");
                 await YAP.Libs.Helpers.NavigationServices.PopModalAsync(Navigation);
 
                 //if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)

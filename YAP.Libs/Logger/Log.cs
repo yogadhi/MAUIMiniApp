@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Microsoft.Maui.Controls.PlatformConfiguration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace YAP.Libs.Logger
 {
@@ -15,9 +17,12 @@ namespace YAP.Libs.Logger
             Log = 2
         }
 
-        public static void Write(LogEnum logEnum, string functionName, object input)
+        public static async void Write(LogEnum logEnum, string functionName, object input)
         {
             string message = functionName + " - ";
+            string fileName = logEnum.ToString() + "_" + DateTime.Now.ToString("yyyyMMdd") + ".txt";
+            string targetFile = string.Empty;
+            string mainPath = FileSystem.AppDataDirectory;
 
             if (input is Exception)
             {
@@ -29,27 +34,69 @@ namespace YAP.Libs.Logger
                 message += (string)input;
             }
 
+#if ANDROID
+mainPath = Android.App.Application.Context.GetExternalFilesDir("").AbsolutePath;
+#endif
+
             if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
             {
-                var filePath = AppDomain.CurrentDomain.BaseDirectory + @"Log\";
-                var fileName = logEnum.ToString() + "_" + DateTime.Now.ToString("yyyyMMdd") + ".txt";
-                var filePathName = Path.Combine(filePath, fileName);
-
-                if (!Directory.Exists(filePath))
+                if (!Directory.Exists(mainPath))
                 {
-                    Directory.CreateDirectory(filePath);
+                    Directory.CreateDirectory(mainPath);
                 }
-
-                StreamWriter sw = new StreamWriter(filePathName, true);
-                sw.WriteLine(message);
-                sw.Flush();
-                sw.Close();
-                sw.Dispose();
             }
-            else if (DeviceInfo.Current.Platform == DevicePlatform.Android || DeviceInfo.Current.Platform == DevicePlatform.iOS)
+
+            targetFile = Path.Combine(mainPath, fileName);
+
+            //FileStream outputStream = File.OpenWrite(targetFile);
+            //using StreamWriter streamWriter = new StreamWriter(outputStream);
+            //await streamWriter.WriteAsync(message);
+
+            if (File.Exists(targetFile))
             {
-
+                using (StreamWriter sw = File.AppendText(targetFile))
+                {
+                    await sw.WriteLineAsync(message);
+                }
             }
+            else
+            {
+                using (StreamWriter sw = File.CreateText(targetFile))
+                {
+                    await sw.WriteLineAsync(message);
+                }
+            }
+        }
+
+
+        public static List<string> ReadLogs()
+        {
+            string mainPath = string.Empty;
+            List<string> logs = new List<string>();
+
+#if ANDROID
+mainPath = Android.App.Application.Context.GetExternalFilesDir("").AbsolutePath;
+#elif WINDOWS
+mainPath = AppDomain.CurrentDomain.BaseDirectory + @"Log\";
+#else
+            mainPath = FileSystem.AppDataDirectory;
+#endif
+
+            var files = Directory.GetFiles(mainPath, "*.txt");
+            if (files != null)
+            {
+                if (files.Length > 0)
+                {
+                    foreach (var file in files)
+                    {
+                        //string targetFile = System.IO.Path.Combine(FileSystem.Current.AppDataDirectory, targetFileName);
+                        using FileStream InputStream = System.IO.File.OpenRead(file);
+                        using StreamReader reader = new StreamReader(InputStream);
+                        logs.Add(reader.ReadLine());
+                    }
+                }
+            }
+            return logs;
         }
     }
 }

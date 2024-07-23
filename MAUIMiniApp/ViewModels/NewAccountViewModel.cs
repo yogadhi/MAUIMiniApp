@@ -76,9 +76,9 @@ namespace MAUIMiniApp.ViewModels
 
                 var obj = new Account
                 {
-                    Accode = AccountNo,
-                    CompanyCode = CompanyCode,
-                    SecretKey = SecretKey
+                    Accode = AccountNo.ToUpper(),
+                    CompanyCode = CompanyCode.ToUpper(),
+                    SecretKey = SecretKey.ToUpper()
                 };
 
                 var msg = string.Empty;

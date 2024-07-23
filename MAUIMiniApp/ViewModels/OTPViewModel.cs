@@ -46,7 +46,7 @@ namespace MAUIMiniApp.ViewModels
 
                     if (_cTimerInt > 15)
                     {
-                        _ProgressColor = Colors.Green;
+                        _ProgressColor = Colors.LightGreen;
                     }
                     else if (_cTimerInt <= 15 && _cTimerInt > 10)
                     {
@@ -61,7 +61,7 @@ namespace MAUIMiniApp.ViewModels
             }
         }
 
-        Color _ProgressColor = Colors.Green;
+        Color _ProgressColor = Colors.LightGreen;
         public Color ProgressColor
         {
             get { return _ProgressColor; }
@@ -130,7 +130,7 @@ namespace MAUIMiniApp.ViewModels
 
                 IsBusy = true;
 
-                var strLastUnbindAccount = await SecureStorage.GetAsync("lastUnbindAccount");
+                var strLastUnbindAccount = Preferences.Default.Get("lastUnbindAccount", "");
                 if (!string.IsNullOrEmpty(strLastUnbindAccount))
                 {
                     var list = strLastUnbindAccount.Split("|");
@@ -156,11 +156,11 @@ namespace MAUIMiniApp.ViewModels
                                 listDistinct.Remove(index);
                                 if (listDistinct.Count > 0)
                                 {
-                                    await SecureStorage.SetAsync("lastUnbindAccount", string.Join("|", listDistinct));
+                                    Preferences.Default.Set("lastUnbindAccount", string.Join("|", listDistinct));
                                 }
                                 else
                                 {
-                                    SecureStorage.Remove("lastUnbindAccount");
+                                    Preferences.Default.Remove("lastUnbindAccount");
                                 }
                             }
                         }
@@ -185,22 +185,40 @@ namespace MAUIMiniApp.ViewModels
 
                 foreach (var index in resList)
                 {
-                    var privateKey = Globals.DecryptString(index.SecretKey, Globals.Salt(index.CompanyCode));
-                    var originalKey = Globals.Base32Decode(privateKey);
-                    var newKey = Globals.PSPLConstructKey(originalKey, index.Accode.ToUpper(), index.CompanyCode.ToUpper());
-                    var otp = Globals.GetFuturePIN(newKey);
-
-                    OTPItemList.Add(new OTPItem
+                    OTPItem objOTPItem = new OTPItem
                     {
                         Account = index.Accode,
-                        SecretKey = index.SecretKey,
-                        OTP = otp,
-                    });
+                    };
 
-                    //var resAuthOTP = await CQAuth.AuthenticateOTP(new Account { Accode = index.Accode, CompanyCode = index.CompanyCode }, new ReqAuthenticateOTP { SysID = Convert.ToInt32(index.CompanyCode), Username = index.Accode, OTP = otp });
-                    //if (resAuthOTP != null)
-                    //{
-                    //}
+                    var privateKey = Globals.DecryptString(index.SecretKey, Globals.Salt(index.CompanyCode));
+                    if (String.IsNullOrEmpty(index.Accode) && String.IsNullOrEmpty(index.CompanyCode))
+                    {
+                        objOTPItem.SecretKey = privateKey;
+                        objOTPItem.OTP = Globals.GetFuturePIN(privateKey);
+                    }
+                    else
+                    {
+                        var originalPrivateKey = Globals.Base32Decode(privateKey);
+                        var newSecretKey = Globals.PSPLConstructKey(originalPrivateKey, index.Accode.ToUpper(), index.CompanyCode.ToUpper());
+                        objOTPItem.SecretKey = newSecretKey;
+                        objOTPItem.OTP = Globals.GetFuturePIN(newSecretKey);
+                    }
+                    OTPItemList.Add(objOTPItem);
+
+#if DEBUG
+                    var resAuthOTP = await CQAuth.AuthenticateOTP(new Account { Accode = index.Accode, CompanyCode = index.CompanyCode }, new ReqAuthenticateOTP { SysID = Convert.ToInt32(index.CompanyCode), Username = index.Accode, OTP = objOTPItem.OTP });
+                    if (resAuthOTP != null)
+                    {
+                        if (resAuthOTP.data)
+                        {
+                            Toasts.Show("OTP is valid");
+                        }
+                        else
+                        {
+                            Toasts.Show("OTP is invalid");
+                        }
+                    }
+#endif
                 }
 
                 if (!timer.Enabled)
@@ -327,7 +345,7 @@ namespace MAUIMiniApp.ViewModels
 
                     IsBusy = true;
 
-                    var strLastUnbindAccount = await SecureStorage.GetAsync("lastUnbindAccount");
+                    var strLastUnbindAccount = Preferences.Default.Get("lastUnbindAccount", "");
                     if (!string.IsNullOrEmpty(strLastUnbindAccount))
                     {
                         List<string> lastUnbindAccountList = new List<string>
@@ -335,11 +353,11 @@ namespace MAUIMiniApp.ViewModels
                             strLastUnbindAccount,
                             obj.Account
                         };
-                        await SecureStorage.SetAsync("lastUnbindAccount", string.Join("|", lastUnbindAccountList));
+                        Preferences.Default.Set("lastUnbindAccount", string.Join("|", lastUnbindAccountList));
                     }
                     else
                     {
-                        await SecureStorage.SetAsync("lastUnbindAccount", obj.Account);
+                        Preferences.Default.Set("lastUnbindAccount", obj.Account);
                     }
 
                     Uri uri = new Uri(String.Format("https://cq2fa.cyberquote.com.hk/registration//Unbind?CompanyCode={0}&lang={1}&Accode={2}", account.CompanyCode, Lang, account.Accode));
@@ -360,7 +378,7 @@ namespace MAUIMiniApp.ViewModels
                 {
                     IsBusy = true;
 
-                    var resQRCode = await Controllers.CQAuth.GetQRCode(account, new Models.ReqGetQRCode { SysID = Convert.ToInt32(account.CompanyCode), Username = account.Accode });
+                    var resQRCode = await Controllers.CQAuth.GetQRCode(account, new ReqGetQRCode { SysID = Convert.ToInt32(account.CompanyCode), Username = account.Accode });
                     if (resQRCode == null)
                         return;
 
@@ -413,6 +431,7 @@ namespace MAUIMiniApp.ViewModels
                         return;
 
                     double progress = ((double)cTimerInt / 30) * 100;
+                    progress = 100 - progress;
 
                     OTPItemList.Select(c =>
                     {
@@ -443,60 +462,79 @@ namespace MAUIMiniApp.ViewModels
                     return;
                 }
 
-                var strSplit = scanResult.Split("~:~");
-                if (strSplit == null)
-                {
-                    Toasts.Show(Resources.Strings.AppResources.Wrong_QRCode_Format);
+                var objAccount = Helpers.Globals.ParseQRCodeCQAuth(scanResult);
+                if (objAccount == null)
                     return;
-                }
 
-                if (strSplit.Length == 0)
+                var resBind = await Controllers.CQAuth.BindUserNewAccount(objAccount);
+                if (resBind)
                 {
-                    Toasts.Show(Resources.Strings.AppResources.Wrong_QRCode_Format);
-                    return;
-                }
-
-                if (!string.IsNullOrEmpty(strSplit[0]))
-                {
-                    var strSplitZero = strSplit[0].Split("&");
-                    if (strSplitZero != null)
+                    Toasts.Show(Resources.Strings.AppResources.New_Account_Added);
+                    if (!timer.Enabled)
                     {
-                        if (strSplitZero.Length == 3)
-                        {
-                            var acCode = strSplitZero[0].Split("cq2faauth://totp/")[1].Split("?")[0];
-                            var companyCode = strSplitZero[2].Split("companycode=")[1];
-
-                            var secretKey = strSplitZero[0].Split("secret=")[1];
-                            if (String.IsNullOrEmpty(Globals.Base32Decode(secretKey)))
-                            {
-                                Toasts.Show(Resources.Strings.AppResources.Wrong_QRCode_Format);
-                                return;
-                            }
-
-                            var obj = new Account
-                            {
-                                Accode = acCode.ToUpper(),
-                                CompanyCode = companyCode,
-                                SecretKey = secretKey.ToUpper()
-                            };
-
-                            var resBind = await Controllers.CQAuth.BindUserNewAccount(obj);
-                            if (resBind)
-                            {
-                                Toasts.Show(Resources.Strings.AppResources.New_Account_Added);
-                                if (!timer.Enabled)
-                                {
-                                    timer.Enabled = true;
-                                }
-                                endTime = DateTime.Now;
-                            }
-                            else
-                            {
-                                Toasts.Show(Resources.Strings.AppResources.New_Account_Add_Failed);
-                            }
-                        }
+                        timer.Enabled = true;
                     }
+                    endTime = DateTime.Now;
                 }
+                else
+                {
+                    Toasts.Show(Resources.Strings.AppResources.New_Account_Add_Failed);
+                }
+
+                //var strSplit = scanResult.Split("~:~");
+                //if (strSplit == null)
+                //{
+                //    Toasts.Show(Resources.Strings.AppResources.Wrong_QRCode_Format);
+                //    return;
+                //}
+
+                //if (strSplit.Length == 0)
+                //{
+                //    Toasts.Show(Resources.Strings.AppResources.Wrong_QRCode_Format);
+                //    return;
+                //}
+
+                //if (!string.IsNullOrEmpty(strSplit[0]))
+                //{
+                //    var strSplitZero = strSplit[0].Split("&");
+                //    if (strSplitZero != null)
+                //    {
+                //        if (strSplitZero.Length == 3)
+                //        {
+                //            var acCode = strSplitZero[0].Split("cq2faauth://totp/")[1].Split("?")[0];
+                //            var companyCode = strSplitZero[2].Split("companycode=")[1];
+
+                //            var secretKey = strSplitZero[0].Split("secret=")[1];
+                //            if (String.IsNullOrEmpty(Globals.Base32Decode(secretKey)))
+                //            {
+                //                Toasts.Show(Resources.Strings.AppResources.Wrong_QRCode_Format);
+                //                return;
+                //            }
+
+                //            var obj = new Account
+                //            {
+                //                Accode = acCode.ToUpper(),
+                //                CompanyCode = companyCode,
+                //                SecretKey = secretKey.ToUpper()
+                //            };
+
+                //            var resBind = await Controllers.CQAuth.BindUserNewAccount(obj);
+                //            if (resBind)
+                //            {
+                //                Toasts.Show(Resources.Strings.AppResources.New_Account_Added);
+                //                if (!timer.Enabled)
+                //                {
+                //                    timer.Enabled = true;
+                //                }
+                //                endTime = DateTime.Now;
+                //            }
+                //            else
+                //            {
+                //                Toasts.Show(Resources.Strings.AppResources.New_Account_Add_Failed);
+                //            }
+                //        }
+                //    }
+                //}
             }
             catch (Exception ex)
             {

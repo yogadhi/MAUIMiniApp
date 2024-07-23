@@ -38,7 +38,7 @@ namespace MAUIMiniApp
                     Provider = provider,
                     MenuItemList = new List<FlyoutPageItem>()
                     {
-                        new FlyoutPageItem { Title = "OTP", IconSource = "reminders.png", TargetType = typeof(OTPPage), TargetPage = new OTPPage() },
+                        new FlyoutPageItem { Title = "OTP", TargetType = typeof(OTPPage), TargetPage = new OTPPage() },
                     }
                 };
                 //RootItem.SelectedMenuIndex = 1;
