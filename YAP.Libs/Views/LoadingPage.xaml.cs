@@ -36,9 +36,6 @@ public partial class LoadingPage : ContentPage
             //#endif
 
             //hardcoded because CQ Auth no need login page
-            Log.Write(Log.LogEnum.Error, nameof(OnAppearing), "test logger");
-            var logs = Log.ReadLogs();
-
             Preferences.Default.Set("hasAuth", true);
 
             if (await isAuthenticated())

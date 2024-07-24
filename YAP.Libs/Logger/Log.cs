@@ -17,10 +17,10 @@ namespace YAP.Libs.Logger
             Log = 2
         }
 
-        public static void Write(LogEnum logEnum, string functionName, object input)
+        public static void WriteNew(LogEnum logEnum, string functionName, object input)
         {
             string message = functionName + " - ";
-            string fileName = logEnum.ToString() + "_" + DateTime.Now.ToString("yyyyMMdd") + ".txt";
+            string fileName = logEnum.ToString() + "_" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".txt";
             string targetFile = string.Empty;
             string mainPath = FileSystem.AppDataDirectory;
 
@@ -48,8 +48,6 @@ mainPath = Android.App.Application.Context.GetExternalFilesDir("").AbsolutePath;
 
             targetFile = Path.Combine(mainPath, fileName);
 
-
-
             if (File.Exists(targetFile))
             {
                 using (FileStream fs = new FileStream(targetFile, FileMode.Append, FileAccess.Write))
@@ -69,35 +67,58 @@ mainPath = Android.App.Application.Context.GetExternalFilesDir("").AbsolutePath;
             }
         }
 
-
-        public static List<string> ReadLogs()
+        public static async Task<List<string>> ReadLogs(LogEnum logEnum)
         {
-            string mainPath = string.Empty;
+            string _logFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "logs");
             List<string> logs = new List<string>();
 
-#if ANDROID
-mainPath = Android.App.Application.Context.GetExternalFilesDir("").AbsolutePath;
-#elif WINDOWS
-mainPath = AppDomain.CurrentDomain.BaseDirectory + @"Log\";
-#else
-            mainPath = FileSystem.AppDataDirectory;
-#endif
-
-            var files = Directory.GetFiles(mainPath, "*.txt");
+            var files = Directory.GetFiles(_logFilePath, "*.log");
             if (files != null)
             {
                 if (files.Length > 0)
                 {
                     foreach (var file in files)
                     {
-                        //string targetFile = System.IO.Path.Combine(FileSystem.Current.AppDataDirectory, targetFileName);
-                        using FileStream InputStream = System.IO.File.OpenRead(file);
-                        using StreamReader reader = new StreamReader(InputStream);
-                        logs.Add(reader.ReadLine());
+                        string[] lines = await File.ReadAllLinesAsync(file);
+                        if (lines != null && lines.Length > 0)
+                        {
+                            logs.AddRange(lines);
+                        }
                     }
                 }
             }
             return logs;
+        }
+
+        public static async void Write(LogEnum logEnum, string functionName, object input)
+        {
+            try
+            {
+                string message = $"{functionName} - ";
+                string fileName = $"{logEnum.ToString()}_{DateTime.Now.ToString("yyyyMMddHHmmss")}.log";
+                string filePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                string _logFilePath = Path.Combine(filePath, "logs", fileName);
+
+                Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+
+                if (input is Exception)
+                {
+                    var ex = (Exception)input;
+                    message += $"{ex.Source} - {ex.StackTrace} - {ex.Message}";
+                    SentrySdk.CaptureException(ex);
+                }
+                else if (input is string)
+                {
+                    message += (string)input;
+                    message = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} - {message}{Environment.NewLine}";
+                    SentrySdk.CaptureMessage(message);
+                }
+                await File.WriteAllTextAsync(_logFilePath, message);
+            }
+            catch (Exception ex)
+            {
+                SentrySdk.CaptureException(ex);
+            }
         }
     }
 }

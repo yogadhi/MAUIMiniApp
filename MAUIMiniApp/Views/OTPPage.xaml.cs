@@ -97,7 +97,7 @@ public partial class OTPPage : ContentPage
         }
     }
 
-    private void btnAddAccount_Clicked(object sender, EventArgs e)
+    private async void btnAddAccount_Clicked(object sender, EventArgs e)
     {
         try
         {

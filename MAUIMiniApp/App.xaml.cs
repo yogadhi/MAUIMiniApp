@@ -16,6 +16,7 @@ using YAP.Libs.Logger;
 using YAP.Libs.Models;
 using YAP.Libs.Views;
 using YAP.Libs.Helpers;
+using Microsoft.Maui.Storage;
 
 namespace MAUIMiniApp
 {
@@ -63,11 +64,15 @@ namespace MAUIMiniApp
             }
         }
 
-        protected override void OnStart()
+        protected override async void OnStart()
         {
             try
             {
                 base.OnStart();
+#if ANDROID
+                await YAP.Libs.Helpers.Permission.CheckAndRequestStorageWrite();
+                await YAP.Libs.Helpers.Permission.CheckAndRequestStorageRead();
+#endif
             }
             catch (Exception ex)
             {
